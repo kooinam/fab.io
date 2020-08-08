@@ -1,6 +1,7 @@
-package controllers
+package fab
 
 import (
+	"fabio/controllers"
 	"fmt"
 	"net/http"
 
@@ -8,51 +9,48 @@ import (
 	"github.com/name5566/leaf/log"
 )
 
-var rack *Rack
+var engine *Engine
 
-func init() {
-	rack = &Rack{}
-}
-
-type Rack struct {
+// Engine is the core rack for fab.io
+type Engine struct {
 	server             *socketio.Server
-	controllerHandlers map[string]*ControllerHandler
+	controllerHandlers map[string]*controllers.ControllerHandler
 }
 
+// Setup used to update setup
 func Setup() {
 	fmt.Printf("hello...ddd")
 
-	rack.controllerHandlers = make(map[string]*ControllerHandler)
+	engine.controllerHandlers = make(map[string]*controllers.ControllerHandler)
 
-	rack.startServer()
+	engine.startServer()
 }
 
 // BroadcastEvent used to broadcast event
 func BroadcastEvent(nsp string, room string, event string, view interface{}, parameters map[string]interface{}) {
-	socketEvent := makeSocketEvent(nsp, room, event, view, parameters)
-	json := socketEvent.render()
+	socketEvent := controllers.MakeSocketEvent(nsp, room, event, view, parameters)
 
-	rack.server.BroadcastToRoom(socketEvent.nsp, socketEvent.room, socketEvent.name, json)
+	socketEvent.Broadcast(engine.server)
 }
 
 // RegisterController used to register controller
-func RegisterController(nsp string, controller Controller) {
+func RegisterController(nsp string, controller controllers.Controller) {
 	formattedNsp := fmt.Sprintf("/%v", nsp)
-	rack.controllerHandlers[formattedNsp] = makeControllerHandler(rack.server, formattedNsp, controller)
+	engine.controllerHandlers[formattedNsp] = controllers.MakeControllerHandler(engine.server, formattedNsp, controller)
 
-	rack.server.OnError(formattedNsp, func(conn socketio.Conn, e error) {
+	engine.server.OnError(formattedNsp, func(conn socketio.Conn, e error) {
 		log.Debug("%v", e)
 	})
 }
 
-func (rack *Rack) startServer() {
+func (engine *Engine) startServer() {
 	server, err := socketio.NewServer(nil)
 
 	if err != nil {
 		log.Debug("socket.io error %v", err)
 	}
 
-	rack.server = server
+	engine.server = server
 
 	server.OnConnect("/", func(conn socketio.Conn) error {
 		log.Debug("connected: %v - %v", conn.Namespace(), conn.ID())

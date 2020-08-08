@@ -22,8 +22,8 @@ type ControllerHandler struct {
 	actionsHandler   *ActionsHandler
 }
 
-// makeControllerHandler used to instantiate controller handler
-func makeControllerHandler(server *socketio.Server, nsp string, controller Controller) *ControllerHandler {
+// MakeControllerHandler used to instantiate controller handler
+func MakeControllerHandler(server *socketio.Server, nsp string, controller Controller) *ControllerHandler {
 	handler := &ControllerHandler{
 		server:           server,
 		nsp:              nsp,

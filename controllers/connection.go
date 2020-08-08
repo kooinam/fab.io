@@ -4,12 +4,14 @@ import (
 	socketio "github.com/googollee/go-socket.io"
 )
 
+// Connection used to represent connection with properties and params
 type Connection struct {
 	conn       socketio.Conn
 	properties map[string]interface{}
 	Params     map[string]interface{}
 }
 
+// MakeConnection use to instantiate connection instance
 func MakeConnection(conn socketio.Conn, params map[string]interface{}) *Connection {
 	connection := &Connection{
 		conn:       conn,

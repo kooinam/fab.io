@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"time"
+
+	socketio "github.com/googollee/go-socket.io"
 )
 
 // SocketEvent used as medium of communication
@@ -16,7 +18,8 @@ type SocketEvent struct {
 	parameters map[string]interface{}
 }
 
-func makeSocketEvent(nsp string, room string, eventName string, view interface{}, parameters map[string]interface{}) *SocketEvent {
+// MakeSocketEvent used to instantiate an socket event
+func MakeSocketEvent(nsp string, room string, eventName string, view interface{}, parameters map[string]interface{}) *SocketEvent {
 	formattedNsp := fmt.Sprintf("/%v", nsp)
 
 	return &SocketEvent{
@@ -27,6 +30,13 @@ func makeSocketEvent(nsp string, room string, eventName string, view interface{}
 		view:       view,
 		parameters: parameters,
 	}
+}
+
+// Broadcast used to broadcast event
+func (socketEvent *SocketEvent) Broadcast(server *socketio.Server) {
+	json := socketEvent.render()
+
+	server.BroadcastToRoom(socketEvent.nsp, socketEvent.room, socketEvent.name, json)
 }
 
 func (socketEvent *SocketEvent) render() string {
