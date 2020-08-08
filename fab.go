@@ -1,11 +1,11 @@
 package fab
 
 import (
-	"fabio/controllers"
 	"fmt"
 	"net/http"
 
 	socketio "github.com/googollee/go-socket.io"
+	"github.com/kooinam/fabio/controllers"
 	"github.com/name5566/leaf/log"
 )
 
@@ -19,8 +19,6 @@ type Engine struct {
 
 // Setup used to update setup
 func Setup() {
-	fmt.Printf("hello...ddd")
-
 	engine.controllerHandlers = make(map[string]*controllers.ControllerHandler)
 
 	engine.startServer()
