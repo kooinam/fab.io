@@ -6,7 +6,7 @@ import (
 
 	socketio "github.com/googollee/go-socket.io"
 	"github.com/kooinam/fabio/controllers"
-	"github.com/name5566/leaf/log"
+	"github.com/kooinam/fabio/logger"
 )
 
 var engine *Engine
@@ -17,13 +17,31 @@ type Engine struct {
 	controllerHandlers map[string]*controllers.ControllerHandler
 }
 
-// Setup used to update setup
+// Setup used to setup engine
 func Setup() {
 	engine = &Engine{
 		controllerHandlers: make(map[string]*controllers.ControllerHandler),
 	}
 
-	engine.startServer()
+	engine.setup()
+}
+
+// Serve used to serve
+func Serve() {
+	server := engine.server
+
+	go server.Serve()
+
+	logger.Debug("Initializing fab.io...")
+
+	http.Handle("/socket.io/", server)
+
+	fs := http.FileServer(http.Dir("./demo"))
+	http.Handle("/demo/", http.StripPrefix("/demo/", fs))
+
+	logger.Debug("Starting Socket Server...")
+
+	http.ListenAndServe(":8000", nil)
 }
 
 // BroadcastEvent used to broadcast event
@@ -39,39 +57,26 @@ func RegisterController(nsp string, controller controllers.Controller) {
 	engine.controllerHandlers[formattedNsp] = controllers.MakeControllerHandler(engine.server, formattedNsp, controller)
 
 	engine.server.OnError(formattedNsp, func(conn socketio.Conn, e error) {
-		log.Debug("%v", e)
+		logger.Debug("%v", e)
 	})
 }
 
-func (engine *Engine) startServer() {
+func (engine *Engine) setup() {
 	server, err := socketio.NewServer(nil)
 
 	if err != nil {
-		log.Debug("socket.io error %v", err)
+		logger.Debug("socket.io error %v", err)
 	}
 
 	engine.server = server
 
 	server.OnConnect("/", func(conn socketio.Conn) error {
-		log.Debug("connected: %v - %v", conn.Namespace(), conn.ID())
+		logger.Debug("connected: %v - %v", conn.Namespace(), conn.ID())
 
 		return nil
 	})
 
 	server.OnDisconnect("/", func(conn socketio.Conn, reason string) {
-		log.Debug("disconnected: %v - %v, %v ", conn.Namespace(), conn.ID(), reason)
+		logger.Debug("disconnected: %v - %v, %v ", conn.Namespace(), conn.ID(), reason)
 	})
-
-	go server.Serve()
-
-	go func() {
-		http.Handle("/socket.io/", server)
-
-		fs := http.FileServer(http.Dir("./demo"))
-		http.Handle("/demo/", http.StripPrefix("/demo/", fs))
-
-		log.Debug("starting Socket Server...")
-
-		http.ListenAndServe(":8000", nil)
-	}()
 }

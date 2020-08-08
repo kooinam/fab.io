@@ -5,7 +5,7 @@ import (
 	"runtime/debug"
 
 	socketio "github.com/googollee/go-socket.io"
-	"github.com/name5566/leaf/log"
+	"github.com/kooinam/fabio/logger"
 )
 
 // ActionsHandler used to mange callbacks for controllers
@@ -30,7 +30,7 @@ func (handler *ActionsHandler) AddAction(actionName string, action func(*Connect
 	nsp := handler.controllerHandler.nsp
 
 	handler.controllerHandler.server.OnEvent(nsp, actionName, func(conn socketio.Conn, message string) string {
-		log.Debug("Receiving Event %v#%v", nsp, actionName)
+		logger.Debug("Receiving Event %v#%v", nsp, actionName)
 
 		var status int
 		var errors *Errors
@@ -56,7 +56,7 @@ func (handler *ActionsHandler) AddAction(actionName string, action func(*Connect
 			Errors:   errors,
 		})
 
-		log.Debug("--------------------------------------------")
+		logger.Debug("--------------------------------------------")
 
 		return string(json)
 	})
@@ -65,7 +65,7 @@ func (handler *ActionsHandler) AddAction(actionName string, action func(*Connect
 func (handler *ActionsHandler) call(actionName string, conn socketio.Conn, message string) (response interface{}, networkError *NetworkError) {
 	defer func() {
 		if r := recover(); r != nil {
-			log.Debug("%v", r)
+			logger.Debug("%v", r)
 			debug.PrintStack()
 
 			networkError = &NetworkError{
