@@ -19,7 +19,9 @@ type Engine struct {
 
 // Setup used to update setup
 func Setup() {
-	engine.controllerHandlers = make(map[string]*controllers.ControllerHandler)
+	engine = &Engine{
+		controllerHandlers: make(map[string]*controllers.ControllerHandler),
+	}
 
 	engine.startServer()
 }
