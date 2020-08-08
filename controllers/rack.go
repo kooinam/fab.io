@@ -20,6 +20,8 @@ type Rack struct {
 }
 
 func Setup() {
+	fmt.Printf("hello...ddd")
+
 	rack.controllerHandlers = make(map[string]*ControllerHandler)
 
 	rack.startServer()
