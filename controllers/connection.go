@@ -51,7 +51,7 @@ func (connection *Connection) PropertyWithFallback(key string, fallback interfac
 }
 
 // Params used to retrieve params value
-func (connection *Connection) Params(key string, fallback interface{}) interface{} {
+func (connection *Connection) Params(key string) interface{} {
 	value := connection.properties[key]
 
 	return value
