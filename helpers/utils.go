@@ -12,9 +12,13 @@ func Range(min int, max int) []int {
 }
 
 // Times used to iterate n times with handler
-func Times(n int, handler func(int)) {
+func Times(n int, handler func(int) bool) {
 	for i := range Range(0, n) {
-		handler(i)
+		shouldContinue := handler(i)
+
+		if !shouldContinue {
+			break
+		}
 	}
 }
 
