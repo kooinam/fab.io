@@ -27,7 +27,7 @@ func Setup() {
 }
 
 // Serve used to serve
-func Serve() {
+func Serve(httpHandler func()) {
 	server := engine.server
 
 	go server.Serve()
@@ -36,8 +36,9 @@ func Serve() {
 
 	http.Handle("/socket.io/", server)
 
-	fs := http.FileServer(http.Dir("./demo"))
-	http.Handle("/demo/", http.StripPrefix("/demo/", fs))
+	if httpHandler != nil {
+		httpHandler()
+	}
 
 	logger.Debug("Starting Socket Server...")
 
