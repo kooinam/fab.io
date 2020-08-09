@@ -32,8 +32,15 @@ func (connection *Connection) SetProperty(key string, value interface{}) {
 	connection.properties[key] = value
 }
 
-// Property used to retrieve context property value with a fallback
-func (connection *Connection) Property(key string, fallback interface{}) interface{} {
+// Property used to retrieve context property value
+func (connection *Connection) Property(key string) interface{} {
+	value := connection.properties[key]
+
+	return value
+}
+
+// PropertyWithFallback used to retrieve context property value with a fallback
+func (connection *Connection) PropertyWithFallback(key string, fallback interface{}) interface{} {
 	value := connection.properties[key]
 
 	if value != nil {
@@ -43,8 +50,15 @@ func (connection *Connection) Property(key string, fallback interface{}) interfa
 	return fallback
 }
 
-// Params used to retrieve params property value with a fallback
+// Params used to retrieve params value
 func (connection *Connection) Params(key string, fallback interface{}) interface{} {
+	value := connection.properties[key]
+
+	return value
+}
+
+// ParamsWithFallback used to retrieve params value with a fallback
+func (connection *Connection) ParamsWithFallback(key string, fallback interface{}) interface{} {
 	value := connection.properties[key]
 
 	if value != nil {
