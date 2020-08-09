@@ -52,14 +52,14 @@ func (connection *Connection) PropertyWithFallback(key string, fallback interfac
 
 // Params used to retrieve params value
 func (connection *Connection) Params(key string) interface{} {
-	value := connection.properties[key]
+	value := connection.params[key]
 
 	return value
 }
 
 // ParamsWithFallback used to retrieve params value with a fallback
 func (connection *Connection) ParamsWithFallback(key string, fallback interface{}) interface{} {
-	value := connection.properties[key]
+	value := connection.params[key]
 
 	if value != nil {
 		return value
