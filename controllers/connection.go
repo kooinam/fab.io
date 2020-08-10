@@ -30,6 +30,17 @@ func (connection *Connection) Join(room string) {
 	connection.conn.Join(room)
 }
 
+// SingleJoin used to join socketio room while leaving other joined rooms
+func (connection *Connection) SingleJoin(room string) {
+	for _, joinedRoom := range connection.Rooms() {
+		if joinedRoom != room {
+			connection.Leave(joinedRoom)
+		}
+	}
+
+	connection.Join(room)
+}
+
 // Leave used to leave socketio room
 func (connection *Connection) Leave(room string) {
 	connection.conn.Leave(room)
