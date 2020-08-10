@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"fmt"
+	"strconv"
 
 	socketio "github.com/googollee/go-socket.io"
 )
@@ -76,6 +77,19 @@ func (connection *Connection) ParamsInt(key string, fallback int) int {
 
 	if value == nil {
 		return fallback
+	}
+
+	switch value.(type) {
+	case string:
+		i, err := strconv.Atoi(value.(string))
+
+		if err != nil {
+			return fallback
+		}
+
+		return i
+	case float64:
+		return int(value.(float64))
 	}
 
 	return value.(int)
