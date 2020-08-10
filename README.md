@@ -47,7 +47,7 @@ $ go get -u github.com/kooinam/fabio
 $ mkdir controllers
 ```
 8. Create an go file `chat_controller.go` in `controllers` folder. Put the following snippet content into `chat_controller.go`.
-```
+```go
 package controllers
 
 import (
@@ -96,7 +96,7 @@ func (controller *ChatController) message(connection *controllers.Connection) (i
 
 ```
 9. Lastly, create `main.go` in root directory and put the following snippet content into `main.go`.
-```
+```go
 package main
 
 import (
