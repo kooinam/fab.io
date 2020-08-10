@@ -1,6 +1,8 @@
 package controllers
 
 import (
+	"fmt"
+
 	socketio "github.com/googollee/go-socket.io"
 )
 
@@ -55,6 +57,28 @@ func (connection *Connection) Params(key string) interface{} {
 	value := connection.params[key]
 
 	return value
+}
+
+// ParamsStr used to retrieve params value in string
+func (connection *Connection) ParamsStr(key string) string {
+	value := connection.params[key]
+
+	if value == nil {
+		return ""
+	}
+
+	return fmt.Sprintf("%v", value)
+}
+
+// ParamsInt used to retrieve params value in int
+func (connection *Connection) ParamsInt(key string, fallback int) int {
+	value := connection.params[key]
+
+	if value == nil {
+		return fallback
+	}
+
+	return value.(int)
 }
 
 // ParamsWithFallback used to retrieve params value with a fallback
