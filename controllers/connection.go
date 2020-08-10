@@ -30,6 +30,16 @@ func (connection *Connection) Join(room string) {
 	connection.conn.Join(room)
 }
 
+// Leave used to leave socketio room
+func (connection *Connection) Leave(room string) {
+	connection.conn.Leave(room)
+}
+
+// Rooms used to retrieve all connection's rooms
+func (connection *Connection) Rooms() []string {
+	return connection.conn.Rooms()
+}
+
 // SetProperty used to set property that can used across the context
 func (connection *Connection) SetProperty(key string, value interface{}) {
 	connection.properties[key] = value
