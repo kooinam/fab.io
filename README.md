@@ -15,7 +15,7 @@ $ go get -u github.com/kooinam/fabio
 ```
 2. Import it in your code:
 
-```sh
+```go
 import (
 	fab "github.com/kooinam/fabio"
 )
