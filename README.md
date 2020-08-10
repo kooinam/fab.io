@@ -140,6 +140,7 @@ go run main.go
  - Containerize Solutions
  - Distributed Solutions
  - Graceful Shutdown
+ - Actor Model
 
 License
 ----
