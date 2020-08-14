@@ -10,6 +10,10 @@ func (base *Base) Initialize(collection *Collection) {
 	base.collection = collection
 }
 
+func (base *Base) GetCollectionName() string {
+	return base.collection.name
+}
+
 func (base *Base) GetID() string {
 	return base.ID
 }
