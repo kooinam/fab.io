@@ -17,8 +17,8 @@ func makeHooksHandler() *HooksHandler {
 	return hooksHandler
 }
 
-// RegisterBeforeHooks used to add before hook
-func (handler *HooksHandler) RegisterBeforeHooks(beforeHook Hook) {
+// RegisterBeforeHook used to add before hook
+func (handler *HooksHandler) RegisterBeforeHook(beforeHook Hook) {
 	handler.beforeHooks = append(handler.beforeHooks, beforeHook)
 }
 
