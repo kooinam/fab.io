@@ -43,7 +43,7 @@ $ go mod init
 ```sh
 $ go get -u github.com/kooinam/fabio
 ```
-7. Create an empty directory `controllers` to hold our controllers. An controller is reponsible for handling any request and producing the appropriate output. Every controller should implement two functions `AddBeforeActions` and `AddActions`.
+7. Create an empty directory `controllers` to hold our controllers. An controller is reponsible for handling any request and producing the appropriate output. Every controller should implement two functions `RegisterBeforeHooks` and `RegisterActions`.
 ```sh
 $ mkdir controllers
 ```
