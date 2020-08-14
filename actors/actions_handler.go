@@ -19,9 +19,13 @@ func makeActionsHandler() *ActionsHandler {
 
 // RegisterAction used to register action
 func (handler *ActionsHandler) RegisterAction(actionName string, action Action) {
-
+	handler.actions[actionName] = action
 }
 
 func (handler *ActionsHandler) handleEvent(event Event) {
+	action := handler.actions[event.name]
 
+	if action != nil {
+		action(nil)
+	}
 }

@@ -32,6 +32,8 @@ func (collection *Collection) Count() int {
 func (collection *Collection) Create(args ...interface{}) Modellable {
 	item := collection.createHandler(collection, args...)
 
+	collection.append(item)
+
 	return item
 }
 

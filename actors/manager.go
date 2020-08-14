@@ -1,6 +1,8 @@
 package actors
 
-import "time"
+import (
+	"time"
+)
 
 // Mailboxes is alias for map[string]chan Event
 type Mailboxes map[string]chan Event

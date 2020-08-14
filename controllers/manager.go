@@ -16,6 +16,8 @@ type Manager struct {
 
 // Setup used to setup cotroller manager
 func (manager *Manager) Setup() {
+	manager.controllerHandlers = make(map[string]*ControllerHandler)
+
 	server, err := socketio.NewServer(nil)
 
 	if err != nil {
