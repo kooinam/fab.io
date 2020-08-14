@@ -8,7 +8,7 @@ import (
 type FiniteStateMachine struct {
 	state            string
 	handlers         map[string]*StateHandler
-	activeAgent      Base
+	activeAgent      Modellable
 	currentTurnEndAt time.Time
 }
 
@@ -33,7 +33,7 @@ func (fsm *FiniteStateMachine) AddStateHandler(
 }
 
 // GoTo used for fsm's state transition
-func (fsm *FiniteStateMachine) GoTo(stateName string, base Base) {
+func (fsm *FiniteStateMachine) GoTo(stateName string, item Modellable) {
 	previousState := fsm.state
 	previousStateHandler := fsm.getStateHandler()
 
@@ -70,7 +70,7 @@ func (fsm *FiniteStateMachine) Run(item Modellable) {
 }
 
 // SetTurn used to set new turn
-func (fsm *FiniteStateMachine) SetTurn(activeAgent Base, endAt time.Time) {
+func (fsm *FiniteStateMachine) SetTurn(activeAgent Modellable, endAt time.Time) {
 	fsm.activeAgent = activeAgent
 	fsm.currentTurnEndAt = endAt
 }
