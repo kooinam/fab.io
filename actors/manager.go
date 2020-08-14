@@ -1,5 +1,7 @@
 package actors
 
+import "time"
+
 // Mailboxes is alias for map[string]chan Event
 type Mailboxes map[string]chan Event
 
@@ -14,7 +16,7 @@ func (manager *Manager) Setup() {
 
 	go func() {
 		for {
-			manager.run()
+			manager.update()
 		}
 	}()
 }
@@ -23,13 +25,22 @@ func (manager *Manager) Setup() {
 func (manager *Manager) RegisterActor(actable Actable) *Actor {
 	actor := makeActor(actable)
 
+	manager.mailboxes[actor.Identifier()] = actor.ch
+
 	return actor
 }
 
-func (manager *Manager) run() {
-	// runner.handler()
+func (manager *Manager) Broadcast(actorIdentifier string, eventName string) {
+	ch := manager.mailboxes[actorIdentifier]
+	event := makeEvent(eventName)
 
-	// time.Sleep(runner.interval * time.Second)
+	ch <- *event
+}
 
-	// runner.elapsed += runner.interval * time.Second
+func (manager *Manager) update() {
+	time.Sleep(1 * time.Second)
+
+	for actorIdentifier := range manager.mailboxes {
+		manager.Broadcast(actorIdentifier, "Update")
+	}
 }

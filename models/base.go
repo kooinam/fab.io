@@ -3,7 +3,7 @@ package models
 // Base used to represent base classes for all models
 type Base struct {
 	collection *Collection
-	id         string
+	ID         string `json:"id"`
 }
 
 func (base *Base) Initialize(collection *Collection) {
@@ -11,5 +11,5 @@ func (base *Base) Initialize(collection *Collection) {
 }
 
 func (base *Base) GetID() string {
-	return base.id
+	return base.ID
 }
