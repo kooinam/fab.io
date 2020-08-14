@@ -8,13 +8,15 @@ type FindPredicate func(Modellable) bool
 
 // Collection used to contain models
 type Collection struct {
+	name          string
 	createHandler CreateHandler
 	items         []Modellable
 }
 
-// MakeCollection used to instantiate collection instance
-func MakeCollection(createHandler CreateHandler) *Collection {
+// makeCollection used to instantiate collection instance
+func makeCollection(collectionName string, createHandler CreateHandler) *Collection {
 	collection := &Collection{
+		name:          collectionName,
 		createHandler: createHandler,
 	}
 

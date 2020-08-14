@@ -61,7 +61,7 @@ func (fsm *FiniteStateMachine) GetName() string {
 }
 
 // Run used to run fsm's state
-func (fsm *FiniteStateMachine) Run(base Base) {
+func (fsm *FiniteStateMachine) Run(item Modellable) {
 	handler := fsm.getStateHandler()
 
 	if handler.runHandler != nil {
