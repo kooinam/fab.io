@@ -3,7 +3,7 @@
 Fab.io is a lightweight game backend framework written in Go (Golang).
 
   - MVC Pattern
-  - Actor Model
+  - [Actor Model](https://github.com/kooinam/fabio/wiki/Actor-Model)
   - Powered by socket.io
 
 ### Installation
