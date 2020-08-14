@@ -1,6 +1,15 @@
 package models
 
 // Base used to represent base classes for all models
-type Base interface {
-	GetID() string
+type Base struct {
+	collection *Collection
+	id         string
+}
+
+func (base *Base) Initialize(collection *Collection) {
+	base.collection = collection
+}
+
+func (base *Base) GetID() string {
+	return base.id
 }

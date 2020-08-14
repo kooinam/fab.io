@@ -8,8 +8,8 @@ import (
 	socketio "github.com/googollee/go-socket.io"
 )
 
-// SocketEvent used as medium of communication
-type SocketEvent struct {
+// Event used as medium of communication
+type Event struct {
 	createdAt  time.Time
 	nsp        string
 	room       string
@@ -18,11 +18,11 @@ type SocketEvent struct {
 	parameters map[string]interface{}
 }
 
-// MakeSocketEvent used to instantiate an socket event
-func MakeSocketEvent(nsp string, room string, eventName string, view interface{}, parameters map[string]interface{}) *SocketEvent {
+// makeEvent used to instantiate an socket event
+func makeEvent(nsp string, room string, eventName string, view interface{}, parameters map[string]interface{}) *Event {
 	formattedNsp := fmt.Sprintf("/%v", nsp)
 
-	return &SocketEvent{
+	return &Event{
 		createdAt:  time.Now(),
 		nsp:        formattedNsp,
 		room:       room,
@@ -33,16 +33,16 @@ func MakeSocketEvent(nsp string, room string, eventName string, view interface{}
 }
 
 // Broadcast used to broadcast event
-func (socketEvent *SocketEvent) Broadcast(server *socketio.Server) {
-	json := socketEvent.render()
+func (event *Event) Broadcast(server *socketio.Server) {
+	json := event.render()
 
-	server.BroadcastToRoom(socketEvent.nsp, socketEvent.room, socketEvent.name, json)
+	server.BroadcastToRoom(event.nsp, event.room, event.name, json)
 }
 
-func (socketEvent *SocketEvent) render() string {
+func (event *Event) render() string {
 	response := make(map[string]interface{})
-	response["response"] = socketEvent.view
-	parameters := socketEvent.parameters
+	response["response"] = event.view
+	parameters := event.parameters
 
 	if parameters == nil {
 		parameters = make(map[string]interface{})
@@ -53,8 +53,8 @@ func (socketEvent *SocketEvent) render() string {
 		Name       string                 `json:"name"`
 		Parameters map[string]interface{} `json:"parameters"`
 	}{
-		CreatedAt:  socketEvent.createdAt.Unix(),
-		Name:       socketEvent.name,
+		CreatedAt:  event.createdAt.Unix(),
+		Name:       event.name,
 		Parameters: parameters,
 	}
 

@@ -1,13 +1,19 @@
 package models
 
+// CreateHandler is alias for func(args ...interface{}) Modellable
+type CreateHandler func(args ...interface{}) Modellable
+
+// FindPredicate is alias for func(Modellable) bool
+type FindPredicate func(Modellable) bool
+
 // Collection used to contain models
 type Collection struct {
-	createHandler func(args ...interface{}) Base
-	items         []Base
+	createHandler CreateHandler
+	items         []Modellable
 }
 
 // MakeCollection used to instantiate collection instance
-func MakeCollection(createHandler func(args ...interface{}) Base) *Collection {
+func MakeCollection(createHandler CreateHandler) *Collection {
 	collection := &Collection{
 		createHandler: createHandler,
 	}
@@ -21,8 +27,9 @@ func (collection *Collection) Count() int {
 }
 
 // Create used to create item
-func (collection *Collection) Create(args ...interface{}) Base {
+func (collection *Collection) Create(args ...interface{}) Modellable {
 	item := collection.createHandler(args...)
+	item.Initialize(collection)
 
 	collection.append(item)
 
@@ -30,8 +37,8 @@ func (collection *Collection) Create(args ...interface{}) Base {
 }
 
 // Find used to find item in collection, return nil if not found
-func (collection *Collection) Find(predicate func(Base) bool) Base {
-	var found Base
+func (collection *Collection) Find(predicate FindPredicate) Modellable {
+	var found Modellable
 
 	for _, el := range collection.items {
 		if predicate(el) {
@@ -45,16 +52,16 @@ func (collection *Collection) Find(predicate func(Base) bool) Base {
 }
 
 // FindByID used to find item in collection by id, return nil if not found
-func (collection *Collection) FindByID(id string) Base {
-	found := collection.Find(func(base Base) bool {
-		return base.GetID() == id
+func (collection *Collection) FindByID(id string) Modellable {
+	found := collection.Find(func(modellable Modellable) bool {
+		return modellable.GetID() == id
 	})
 
 	return found
 }
 
 // FindOrCreate used to find item in collection, create one if not found
-func (collection *Collection) FindOrCreate(predicate func(Base) bool) Base {
+func (collection *Collection) FindOrCreate(predicate FindPredicate) Modellable {
 	found := collection.Find(predicate)
 
 	if found == nil {
@@ -65,15 +72,15 @@ func (collection *Collection) FindOrCreate(predicate func(Base) bool) Base {
 }
 
 // First used to return first item in collection
-func (collection *Collection) First() Base {
+func (collection *Collection) First() Modellable {
 	return collection.items[0]
 }
 
 // GetItems used to return all items in collections
-func (collection *Collection) GetItems() []Base {
+func (collection *Collection) GetItems() []Modellable {
 	return collection.items
 }
 
-func (collection *Collection) append(item Base) {
+func (collection *Collection) append(item Modellable) {
 	collection.items = append(collection.items, item)
 }

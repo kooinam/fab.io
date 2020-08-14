@@ -4,36 +4,27 @@ import (
 	socketio "github.com/googollee/go-socket.io"
 )
 
-type Errors struct {
-	Messages string
-}
-
-type NetworkError struct {
-	Status int
-	Error  string
-}
-
 // ControllerHandler used to handle controller
 type ControllerHandler struct {
-	server           *socketio.Server
-	nsp              string
-	controller       Controller
-	callbacksHandler *CallbacksHandler
-	actionsHandler   *ActionsHandler
+	server         *socketio.Server
+	nsp            string
+	controller     Controllable
+	hooksHandler   *HooksHandler
+	actionsHandler *ActionsHandler
 }
 
-// MakeControllerHandler used to instantiate controller handler
-func MakeControllerHandler(server *socketio.Server, nsp string, controller Controller) *ControllerHandler {
+// makeControllerHandler used to instantiate controller handler
+func makeControllerHandler(server *socketio.Server, nsp string, controllable Controllable) *ControllerHandler {
 	handler := &ControllerHandler{
-		server:           server,
-		nsp:              nsp,
-		controller:       controller,
-		callbacksHandler: makeCallbacksHandler(),
+		server:       server,
+		nsp:          nsp,
+		controller:   controllable,
+		hooksHandler: makeHooksHandler(),
 	}
 	handler.actionsHandler = makeActionsHandler(handler)
 
-	handler.controller.AddBeforeActions(handler.callbacksHandler)
-	handler.controller.AddActions(handler.actionsHandler)
+	handler.controller.RegisterBeforeHooks(handler.hooksHandler)
+	handler.controller.RegisterActions(handler.actionsHandler)
 
 	return handler
 }

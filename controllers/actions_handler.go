@@ -8,24 +8,27 @@ import (
 	"github.com/kooinam/fabio/logger"
 )
 
+// Action is handler for func(*Connection) (interface{}, error)
+type Action func(*Context) (interface{}, error)
+
 // ActionsHandler used to mange callbacks for controllers
 type ActionsHandler struct {
 	controllerHandler *ControllerHandler
-	actions           map[string]func(*Connection) (interface{}, error)
+	actions           map[string]Action
 }
 
-// MakeActionsHandler used to instantiate ActionsHandler
+// makeActionsHandler used to instantiate ActionsHandler
 func makeActionsHandler(controllerHandler *ControllerHandler) *ActionsHandler {
 	actionsHandler := &ActionsHandler{
 		controllerHandler: controllerHandler,
-		actions:           make(map[string]func(*Connection) (interface{}, error)),
+		actions:           make(map[string]Action),
 	}
 
 	return actionsHandler
 }
 
-// AddAction used to add action
-func (handler *ActionsHandler) AddAction(actionName string, action func(*Connection) (interface{}, error)) {
+// RegisterAction used to register action
+func (handler *ActionsHandler) RegisterAction(actionName string, action Action) {
 	handler.actions[actionName] = action
 	nsp := handler.controllerHandler.nsp
 
@@ -33,13 +36,13 @@ func (handler *ActionsHandler) AddAction(actionName string, action func(*Connect
 		logger.Debug("Receiving Event %v#%v", nsp, actionName)
 
 		var status int
-		var errors *Errors
-		response, err := handler.call(actionName, conn, message)
+		var errorsView *ErrorsView
+		response, err := handler.execute(actionName, conn, message)
 
 		if err != nil {
 			status = err.Status
 
-			errors = &Errors{
+			errorsView = &ErrorsView{
 				Messages: err.Error,
 			}
 		} else {
@@ -49,11 +52,11 @@ func (handler *ActionsHandler) AddAction(actionName string, action func(*Connect
 		json, _ := json.Marshal(&struct {
 			Status   int
 			Response interface{} `json:"response"`
-			Errors   *Errors
+			Errors   *ErrorsView
 		}{
 			Status:   status,
 			Response: response,
-			Errors:   errors,
+			Errors:   errorsView,
 		})
 
 		logger.Debug("--------------------------------------------")
@@ -62,7 +65,7 @@ func (handler *ActionsHandler) AddAction(actionName string, action func(*Connect
 	})
 }
 
-func (handler *ActionsHandler) call(actionName string, conn socketio.Conn, message string) (response interface{}, networkError *NetworkError) {
+func (handler *ActionsHandler) execute(actionName string, conn socketio.Conn, message string) (response interface{}, networkError *NetworkError) {
 	defer func() {
 		if r := recover(); r != nil {
 			logger.Debug("%v", r)
@@ -78,13 +81,13 @@ func (handler *ActionsHandler) call(actionName string, conn socketio.Conn, messa
 	var params map[string]interface{}
 	json.Unmarshal([]byte(message), &params)
 
-	connection := MakeConnection(conn, params)
+	context := makeContext(conn, params)
 
-	err := handler.controllerHandler.callbacksHandler.CallBeforeActions(actionName, connection)
+	err := handler.controllerHandler.hooksHandler.executeBeforeHooks(actionName, context)
 
 	if err == nil {
 		action := handler.actions[actionName]
-		response, err = action(connection)
+		response, err = action(context)
 	}
 
 	if err != nil {
