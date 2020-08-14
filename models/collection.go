@@ -1,7 +1,7 @@
 package models
 
 // CreateHandler is alias for func(args ...interface{}) Modellable
-type CreateHandler func(initializer func(Modellable), args ...interface{}) Modellable
+type CreateHandler func(collection *Collection, args ...interface{}) Modellable
 
 // FindPredicate is alias for func(Modellable) bool
 type FindPredicate func(Modellable) bool
@@ -30,13 +30,7 @@ func (collection *Collection) Count() int {
 
 // Create used to create item
 func (collection *Collection) Create(args ...interface{}) Modellable {
-	initializer := func(item Modellable) {
-		item.Initialize(collection)
-
-		collection.append(item)
-	}
-
-	item := collection.createHandler(initializer, args...)
+	item := collection.createHandler(collection, args...)
 
 	return item
 }
