@@ -2,8 +2,8 @@
 
 Fab.io is a lightweight game backend framework written in Go (Golang).
 
-  - MVC Pattern
-  - Actor Model
+  - [MVC Pattern](https://github.com/kooinam/fabio/wiki/MVC)
+  - [Synchronized Loop Based Actor Model](https://github.com/kooinam/fabio/wiki/Actor-Model)
   - Powered by socket.io
 
 ### Installation
@@ -43,7 +43,7 @@ $ go mod init
 ```sh
 $ go get -u github.com/kooinam/fabio
 ```
-7. Create an empty directory `controllers` to hold our controllers. An controller is reponsible for handling any request and producing the appropriate output. Every controller should implement two functions `AddBeforeActions` and `AddActions`.
+7. Create an empty directory `controllers` to hold our controllers. An controller is reponsible for handling any request and producing the appropriate output. Every controller should implement two functions `RegisterBeforeHooks` and `RegisterActions`.
 ```sh
 $ mkdir controllers
 ```
