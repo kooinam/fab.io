@@ -126,7 +126,7 @@ go run main.go
 
 ### Resources
 - [Wiki](https://github.com/kooinam/fabio/wiki)
-- https://github.com/kooinam/fabio-chat-demo - An simple chatroom demo with demonstrations of using controllers and routings.
+- https://github.com/kooinam/fabio-chat-demo - An simple chatroom demo with demonstrations of using routings and controllers.
 - https://github.com/kooinam/fabio-demo - An simple tic-tac-toe demo with demonstrations of an MVC pattern architecture.
 
 ### Dependencies
