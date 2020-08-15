@@ -122,6 +122,10 @@ func main() {
 go run main.go
 ```
 11. Navigate your browser to `http://0.0.0.0:8000` to see our chatroom application in action.
+12. Expore more by reading our [Wiki](https://github.com/kooinam/fabio/wiki)
+
+### Documentations
+- [Wiki](https://github.com/kooinam/fabio/wiki)
 
 ### Examples
 - https://github.com/kooinam/fabio-chat-demo - An simple chatroom application with demonstrations of using controllers and routings.
