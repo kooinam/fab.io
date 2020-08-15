@@ -124,12 +124,10 @@ go run main.go
 11. Navigate your browser to `http://0.0.0.0:8000` to see our chatroom application in action.
 12. Expore more by reading our [Wiki](https://github.com/kooinam/fabio/wiki)
 
-### Documentations
+### Resources
 - [Wiki](https://github.com/kooinam/fabio/wiki)
-
-### Examples
-- https://github.com/kooinam/fabio-chat-demo - An simple chatroom application with demonstrations of using controllers and routings.
-- https://github.com/kooinam/fabio-demo - An simple tic-tac-toe application with demonstrations of an MVC pattern architecture.
+- https://github.com/kooinam/fabio-chat-demo - An simple chatroom demo with demonstrations of using controllers and routings.
+- https://github.com/kooinam/fabio-demo - An simple tic-tac-toe demo with demonstrations of an MVC pattern architecture.
 
 ### Dependencies
 | Package | Link |
