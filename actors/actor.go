@@ -12,9 +12,9 @@ type Actor struct {
 }
 
 // makeActor used to instantiate runner instance
-func makeActor(actable Actable) *Actor {
+func makeActor(nsp string, actable Actable) *Actor {
 	actor := &Actor{
-		identifier:     fmt.Sprintf("%v:%v", actable.GetCollectionName(), actable.GetID()),
+		identifier:     fmt.Sprintf("%v:%v", nsp, actable.GetID()),
 		actionsHandler: makeActionsHandler(),
 		ch:             make(chan Event),
 	}
@@ -26,14 +26,14 @@ func makeActor(actable Actable) *Actor {
 	return actor
 }
 
+func (actor *Actor) Identifier() string {
+	return actor.identifier
+}
+
 func (actor *Actor) start() {
 	go func() {
 		for event := range actor.ch {
 			actor.actionsHandler.handleEvent(event)
 		}
 	}()
-}
-
-func (actor *Actor) Identifier() string {
-	return actor.identifier
 }
