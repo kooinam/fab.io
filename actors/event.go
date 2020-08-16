@@ -22,10 +22,22 @@ func (event *Event) dispatch(ch chan Event) {
 	select {
 	case ch <- *event:
 	default:
-		if event.resCh != nil {
-			response := makeResponse(1, "server is busy")
+		event.nak("server is busy")
+	}
+}
 
-			event.resCh <- *response
-		}
+func (event *Event) ack() {
+	if event.resCh != nil {
+		response := makeResponse(0, "ok")
+
+		event.resCh <- *response
+	}
+}
+
+func (event *Event) nak(message string) {
+	if event.resCh != nil {
+		response := makeResponse(1, message)
+
+		event.resCh <- *response
 	}
 }

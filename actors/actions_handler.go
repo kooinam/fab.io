@@ -29,6 +29,10 @@ func (handler *ActionsHandler) handleEvent(event Event) {
 		context := makeContext(event.params)
 		err := action(context)
 
-		_ = err
+		if err != nil {
+			event.nak(err.Error())
+		} else {
+			event.ack()
+		}
 	}
 }
