@@ -26,7 +26,8 @@ func (handler *ActionsHandler) handleEvent(event Event) {
 	action := handler.actions[event.name]
 
 	if action != nil {
-		err := action(nil)
+		context := makeContext(event.params)
+		err := action(context)
 
 		_ = err
 	}
