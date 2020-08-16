@@ -5,21 +5,22 @@ import (
 	"strconv"
 
 	socketio "github.com/googollee/go-socket.io"
+	"github.com/kooinam/fabio/helpers"
 )
 
 // Context used to represent context with properties and params
 type Context struct {
 	conn       socketio.Conn
-	properties map[string]interface{}
-	params     map[string]interface{}
+	properties helpers.H
+	params     helpers.H
 }
 
-// makeConnection use to instantiate connection instance
-func makeContext(conn socketio.Conn, params map[string]interface{}) *Context {
+// makeContext use to instantiate controller context instance
+func makeContext(conn socketio.Conn, params helpers.H) *Context {
 	context := &Context{
 		conn:       conn,
 		params:     params,
-		properties: make(map[string]interface{}),
+		properties: helpers.H{},
 	}
 
 	return context

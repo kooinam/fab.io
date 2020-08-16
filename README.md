@@ -88,7 +88,7 @@ func (controller *ChatController) message(context *controllers.Context) (interfa
 	message := context.ParamsStr("message")
 
 	// broadcast message to room
-	fab.ControllerManager().BroadcastEvent("chat", roomID, "Message", nil, fab.H{
+	fab.ControllerManager().BroadcastEvent("chat", roomID, "Message", nil, helpers.H{
 		"message": message,
 	})
 

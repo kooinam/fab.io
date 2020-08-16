@@ -16,7 +16,7 @@ func makeActor(nsp string, actable Actable) *Actor {
 	actor := &Actor{
 		identifier:     fmt.Sprintf("%v:%v", nsp, actable.GetID()),
 		actionsHandler: makeActionsHandler(),
-		ch:             make(chan Event),
+		ch:             make(chan Event, 5),
 	}
 
 	actable.RegisterActions(actor.actionsHandler)
@@ -26,6 +26,7 @@ func makeActor(nsp string, actable Actable) *Actor {
 	return actor
 }
 
+// Identifier used to identify mailbox's address of actor
 func (actor *Actor) Identifier() string {
 	return actor.identifier
 }

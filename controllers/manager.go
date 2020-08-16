@@ -48,7 +48,7 @@ func (manager *Manager) RegisterController(nsp string, controllable Controllable
 }
 
 // Serve used to serve
-func (manager *Manager) Serve(httpHandler func()) {
+func (manager *Manager) Serve(port string, httpHandler func()) {
 	server := manager.server
 
 	go server.Serve()
@@ -63,7 +63,7 @@ func (manager *Manager) Serve(httpHandler func()) {
 
 	logger.Debug("Starting Socket Server...")
 
-	http.ListenAndServe(":8000", nil)
+	http.ListenAndServe(fmt.Sprintf(":%v", port), nil)
 }
 
 // BroadcastEvent used to broadcast event

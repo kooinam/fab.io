@@ -1,5 +1,8 @@
 package helpers
 
+// H is alias for map[string]interface{}
+type H map[string]interface{}
+
 // Range used to create slice
 func Range(min int, max int) []int {
 	ls := []int{}

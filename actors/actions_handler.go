@@ -26,6 +26,8 @@ func (handler *ActionsHandler) handleEvent(event Event) {
 	action := handler.actions[event.name]
 
 	if action != nil {
-		action(nil)
+		err := action(nil)
+
+		_ = err
 	}
 }
