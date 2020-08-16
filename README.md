@@ -1,6 +1,6 @@
 # Fab.io
 
-Fab.io is a lightweight game backend framework written in Go (Golang).
+Fab.io is a lightweight real-time game backend framework written in Go (Golang).
 
   - MVC Pattern
   - [Synchronized Loop Based Actor Model](https://github.com/kooinam/fabio/wiki/Actor-Model)
