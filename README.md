@@ -2,7 +2,7 @@
 
 Fab.io is a lightweight game backend framework written in Go (Golang).
 
-  - [MVC Pattern](https://github.com/kooinam/fabio/wiki/MVC)
+  - MVC Pattern
   - [Synchronized Loop Based Actor Model](https://github.com/kooinam/fabio/wiki/Actor-Model)
   - Powered by socket.io
 
@@ -122,10 +122,12 @@ func main() {
 go run main.go
 ```
 11. Navigate your browser to `http://0.0.0.0:8000` to see our chatroom application in action.
+12. Expore more by reading our [Wiki](https://github.com/kooinam/fabio/wiki)
 
-### Examples
-- https://github.com/kooinam/fabio-chat-demo - An simple chatroom application with demonstrations of using controllers and routings.
-- https://github.com/kooinam/fabio-demo - An simple tic-tac-toe application with demonstrations of an MVC pattern architecture.
+### Resources
+- [Wiki](https://github.com/kooinam/fabio/wiki)
+- https://github.com/kooinam/fabio-chat-demo - An simple chatroom demo with demonstrations of using routings and controllers.
+- https://github.com/kooinam/fabio-demo - An simple tic-tac-toe demo with demonstrations of an MVC pattern architecture.
 
 ### Dependencies
 | Package | Link |
