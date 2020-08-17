@@ -1,53 +1,91 @@
-# Fab.io
+<!-- PROJECT SHIELDS -->
+[![Contributors][contributors-shield]][contributors-url]
+[![Forks][forks-shield]][forks-url]
+[![Stargazers][stars-shield]][stars-url]
+[![Issues][issues-shield]][issues-url]
+[![MIT License][license-shield]][license-url]
 
+<!-- MARKDOWN LINKS & IMAGES -->
+<!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
+[contributors-shield]: https://img.shields.io/github/contributors/kooinam/fabio.svg?style=flat-square
+[contributors-url]: https://github.com/kooinam/fabio/graphs/contributors
+[forks-shield]: https://img.shields.io/github/forks/kooinam/fabio.svg?style=flat-square
+[forks-url]: https://github.com/kooinam/fabio/network/members
+[stars-shield]: https://img.shields.io/github/stars/kooinam/fabio.svg?style=flat-square
+[stars-url]: https://github.com/kooinam/fabio/stargazers
+[issues-shield]: https://img.shields.io/github/issues/kooinam/fabio.svg?style=flat-square
+[issues-url]: https://github.com/kooinam/fabio/issues
+[license-shield]: https://img.shields.io/github/license/kooinam/fabio.svg?style=flat-square
+[license-url]: https://github.com/kooinam/fabio/blob/master/LICENSE.txt
+
+# Fab.io
 Fab.io is a lightweight real-time game backend framework written in Go (Golang).
 
   - MVC Pattern
   - [Synchronized Loop Based Actor Model](https://github.com/kooinam/fabio/wiki/Actor-Model)
   - Powered by socket.io
+  
+## Table of Contents
+* [Getting Started](#getting-started)
+  * [Prerequisites](#prerequisites)
+  * [Installation](#installation)
+* [Usage](#usage)
+* [Resources](#resources)
+* [Dependencies](#dependencies)
+* [Roadmap](#roadmap)
+* [License](#license)
+
+## Getting Started
+
+### Prerequisites
+
+To install Fab.io package, you will need to:
+1. Have Go installed. Head over to Go's download page [here](https://golang.org/dl/) to install it.
+2. Setup your Go workspace.
 
 ### Installation
 
-To install Fab.io package, you need to install Go and set your Go workspace first.
-
-1. Intstall fab.io
+1. Install Fab.io
 ```sh
 $ go get -u github.com/kooinam/fabio
 ```
 2. Import it in your code:
-
 ```go
 import (
 	fab "github.com/kooinam/fabio"
 )
 ```
 
-### Quick Start
-
-1. Create an empty folder
+## Usage
+### Example - (Simple JavaScript Chatroom App):
+In our first example, we start by creating an simple JavaScript chatroom application which will be connecting to backend services using Fab.io.
+#### Setting up your workspace:
+1. Create an empty directory. In this example we shall use `fabio-chat-demo`:
 ```sh
 $ mkdir fabio-chat-demo
 $ cd fabio-chat-demo
 ```
-2. Start by creating an simple Javascript chatroom application which will be connecting to our backend services.
-3. Create an empty directory `demo` to hold our Javascript application codes.
+2. Create an empty directory `demo` inside `fabio-chat-demo` to hold our Javascript application codes.
 ```sh
 $ mkdir demo
 ```
-4. Create an HTML file `chat.html` in `demo` folder and copy the [snippet content](https://raw.githubusercontent.com/kooinam/fabio-chat-demo/master/demo/chat.html) over to `chat.html`.
-5. Now proceed to setup our backend services. Use `go mod` to manage our package dependencies.
+3. Create an HTML file `chat.html` in the `demo` folder and copy the [snippet content](https://raw.githubusercontent.com/kooinam/fabio-chat-demo/master/demo/chat.html) over into `chat.html`.
+
+#### Setting up backend services:
+Now, let's proceed to setup our backend services.
+1. Use the `go mod` command to manage our package dependencies. Let's go ahead and initialize our package dependencies:
 ```sh
-$ go mod init
+$ go mod init fabio-chat-demo
 ```
-6. Install fab.io.
+2. Install Fab.io.
 ```sh
 $ go get -u github.com/kooinam/fabio
 ```
-7. Create an empty directory `controllers` to hold our controllers. An controller is reponsible for handling any request and producing the appropriate output. Every controller should implement two functions `RegisterBeforeHooks` and `RegisterActions`.
+3. Create an empty directory `controllers` inside `fabio-chat-demo` to hold our controllers. A controller is reponsible for handling any request and producing the appropriate output. Every controller should implement two functions `RegisterBeforeHooks` and `RegisterActions`.
 ```sh
 $ mkdir controllers
 ```
-8. Create an go file `chat_controller.go` in `controllers` folder. Put the following snippet content into `chat_controller.go`.
+4. Create an go file `chat_controller.go` in `controllers` folder. Put the following snippet content into `chat_controller.go`.
 ```go
 package controllers
 
@@ -95,7 +133,7 @@ func (controller *ChatController) message(context *controllers.Context) (interfa
 	return nil, err
 }
 ```
-9. Lastly, create `main.go` in root directory and put the following snippet content into `main.go`.
+5. Lastly, create `main.go` in root directory and put the following snippet content into `main.go`.
 ```go
 package main
 
@@ -117,25 +155,30 @@ func main() {
 	})
 }
 ```
-10. Start our application by running
+
+#### You are done!
+Congrats! Now all that's left to do is run the app!
+1. Start our application by running:
 ```sh
 go run main.go
 ```
-11. Navigate your browser to `http://0.0.0.0:8000` to see our chatroom application in action.
-12. Expore more by reading our [Wiki](https://github.com/kooinam/fabio/wiki)
+2. Navigate to `http://localhost:8000/demo/chat.html` on your browser to see your chatroom application in action!
 
-### Resources
+#### Interested on other use cases?
+Expore more example use cases by reading our [Wiki](https://github.com/kooinam/fabio/wiki)!
+
+## Resources
 - [Wiki](https://github.com/kooinam/fabio/wiki)
 - https://github.com/kooinam/fabio-chat-demo - An simple chatroom demo with demonstrations of using routings and controllers.
 - https://github.com/kooinam/fabio-demo - An simple tic-tac-toe demo with demonstrations of an MVC pattern architecture.
 
-### Dependencies
+## Dependencies
 | Package | Link |
 | ------ | ------ |
 | go-socket.io | github.com/googollee/go-socket.io |
 
-### Todos
-
+## Roadmap
+Some of our upcoming key feature(s)/improvement(s) include:
  - Write MORE Tests
  - Tutorials and Documentations
  - Containerize Solutions
@@ -143,10 +186,10 @@ go run main.go
  - Graceful Shutdown
  - Actor Model
 
-License
+## License
 ----
 
-MIT
+Distributed under the MIT License.
 
 [//]: # (These are reference links used in the body of this note and get stripped out when the markdown processor does its job. There is no need to format nicely because it shouldn't be seen. Thanks SO - http://stackoverflow.com/questions/4823468/store-comments-in-markdown-syntax)
 
