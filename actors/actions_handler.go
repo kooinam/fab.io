@@ -34,5 +34,7 @@ func (handler *ActionsHandler) handleEvent(event Event) {
 		} else {
 			event.ack()
 		}
+	} else {
+		event.nak("no action found")
 	}
 }
