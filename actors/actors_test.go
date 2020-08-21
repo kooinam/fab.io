@@ -9,24 +9,24 @@ import (
 	"github.com/kooinam/fabio/helpers"
 )
 
-type TestBot struct {
+type TesterBot struct {
 	id          string
 	tester      *Tester
 	updateCount int
 	energy      int
 }
 
-func (bot *TestBot) GetID() string {
+func (bot *TesterBot) GetID() string {
 	return bot.id
 }
 
-func (bot *TestBot) RegisterActions(actionsHandler *ActionsHandler) {
+func (bot *TesterBot) RegisterActions(actionsHandler *ActionsHandler) {
 	actionsHandler.RegisterAction("Start", bot.start)
 	actionsHandler.RegisterAction("Update", bot.update)
 	actionsHandler.RegisterAction("Attack", bot.attack)
 }
 
-func (bot *TestBot) start(context *Context) error {
+func (bot *TesterBot) start(context *Context) error {
 	var err error
 
 	bot.energy = bot.tester.botEnergyCount
@@ -34,7 +34,7 @@ func (bot *TestBot) start(context *Context) error {
 	return err
 }
 
-func (bot *TestBot) update(context *Context) error {
+func (bot *TesterBot) update(context *Context) error {
 	var err error
 
 	bot.updateCount++
@@ -42,7 +42,7 @@ func (bot *TestBot) update(context *Context) error {
 	return err
 }
 
-func (bot *TestBot) attack(context *Context) error {
+func (bot *TesterBot) attack(context *Context) error {
 	var err error
 
 	if bot.energy <= 0 {
@@ -64,7 +64,7 @@ type Tester struct {
 func (tester *Tester) RegistorActions() {
 	var err error
 
-	bot := &TestBot{
+	bot := &TesterBot{
 		tester: tester,
 	}
 
@@ -82,11 +82,9 @@ func (tester *Tester) RegistorActions() {
 
 	err = tester.manager.Request(actor.Identifier(), "Attack", helpers.H{})
 	expect.Expect(bot.energy).To.Equal(4)
-
-	_ = err
 }
 
-func TestActorRegisterActions(t *testing.T) {
+func TestActor(t *testing.T) {
 	manager := &Manager{}
 
 	manager.Setup()
@@ -97,6 +95,4 @@ func TestActorRegisterActions(t *testing.T) {
 	}
 
 	expect.Expectify(tester, t)
-
-	// tester.RegistorActions()
 }
