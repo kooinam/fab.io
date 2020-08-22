@@ -72,6 +72,19 @@ func (collection *Collection) FindOrCreate(predicate FindPredicate) Modellable {
 	return found
 }
 
+// FindAll used to find items in collection
+func (collection *Collection) FindAll(predicate FindPredicate) []Modellable {
+	founds := []Modellable{}
+
+	for _, el := range collection.items {
+		if predicate(el) {
+			founds = append(founds, el)
+		}
+	}
+
+	return founds
+}
+
 // First used to return first item in collection
 func (collection *Collection) First() Modellable {
 	return collection.items[0]
