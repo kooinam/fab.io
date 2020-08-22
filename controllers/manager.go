@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	socketio "github.com/googollee/go-socket.io"
+	"github.com/kooinam/fabio/helpers"
 	"github.com/kooinam/fabio/logger"
 )
 
@@ -67,7 +68,7 @@ func (manager *Manager) Serve(port string, httpHandler func()) {
 }
 
 // BroadcastEvent used to broadcast event
-func (manager *Manager) BroadcastEvent(nsp string, room string, eventName string, view interface{}, parameters map[string]interface{}) {
+func (manager *Manager) BroadcastEvent(nsp string, room string, eventName string, view interface{}, parameters helpers.H) {
 	event := makeEvent(nsp, room, eventName, view, parameters)
 
 	event.Broadcast(manager.server)

@@ -23,8 +23,7 @@ func makeControllerHandler(server *socketio.Server, nsp string, controllable Con
 	}
 	handler.actionsHandler = makeActionsHandler(handler)
 
-	handler.controller.RegisterBeforeHooks(handler.hooksHandler)
-	handler.controller.RegisterActions(handler.actionsHandler)
+	handler.controller.RegisterHooksAndActions(handler.hooksHandler, handler.actionsHandler)
 
 	return handler
 }

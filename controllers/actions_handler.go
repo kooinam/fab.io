@@ -5,6 +5,7 @@ import (
 	"runtime/debug"
 
 	socketio "github.com/googollee/go-socket.io"
+	"github.com/kooinam/fabio/helpers"
 	"github.com/kooinam/fabio/logger"
 )
 
@@ -33,36 +34,79 @@ func (handler *ActionsHandler) RegisterAction(actionName string, action Action) 
 	nsp := handler.controllerHandler.nsp
 
 	handler.controllerHandler.server.OnEvent(nsp, actionName, func(conn socketio.Conn, message string) string {
-		logger.Debug("Receiving Event %v#%v", nsp, actionName)
+		return handler.handleAction(nsp, actionName, conn, message)
+	})
+}
 
-		var status int
-		var errorsView *ErrorsView
-		response, err := handler.execute(actionName, conn, message)
+// RegisterConnectedAction used to register connected action
+func (handler *ActionsHandler) RegisterConnectedAction(action Action) {
+	nsp := handler.controllerHandler.nsp
 
-		if err != nil {
-			status = err.Status
+	handler.controllerHandler.server.OnConnect(nsp, func(conn socketio.Conn) error {
+		context := makeContext(conn, helpers.H{})
 
-			errorsView = &ErrorsView{
-				Messages: err.Error,
-			}
-		} else {
-			status = 200
-		}
+		action(context)
 
-		json, _ := json.Marshal(&struct {
-			Status   int
-			Response interface{} `json:"response"`
-			Errors   *ErrorsView
-		}{
-			Status:   status,
-			Response: response,
-			Errors:   errorsView,
+		return nil
+	})
+}
+
+// RegisterDisconnectedAction used to register disconnected action
+func (handler *ActionsHandler) RegisterDisconnectedAction(action Action) {
+	nsp := handler.controllerHandler.nsp
+
+	handler.controllerHandler.server.OnDisconnect(nsp, func(conn socketio.Conn, reason string) {
+		context := makeContext(conn, helpers.H{
+			"reason": reason,
 		})
 
-		logger.Debug("--------------------------------------------")
-
-		return string(json)
+		action(context)
 	})
+}
+
+// RegisterErrorAction used to register error action
+func (handler *ActionsHandler) RegisterErrorAction(action Action) {
+	nsp := handler.controllerHandler.nsp
+
+	handler.controllerHandler.server.OnError(nsp, func(conn socketio.Conn, err error) {
+		context := makeContext(conn, helpers.H{
+			"error": err.Error(),
+		})
+
+		action(context)
+	})
+}
+
+func (handler *ActionsHandler) handleAction(nsp string, actionName string, conn socketio.Conn, message string) string {
+	logger.Debug("Receiving Event %v#%v", nsp, actionName)
+
+	var status int
+	var errorsView *ErrorsView
+	response, err := handler.execute(actionName, conn, message)
+
+	if err != nil {
+		status = err.Status
+
+		errorsView = &ErrorsView{
+			Messages: err.Error,
+		}
+	} else {
+		status = 200
+	}
+
+	json, _ := json.Marshal(&struct {
+		Status   int
+		Response interface{} `json:"response"`
+		Errors   *ErrorsView
+	}{
+		Status:   status,
+		Response: response,
+		Errors:   errorsView,
+	})
+
+	logger.Debug("--------------------------------------------")
+
+	return string(json)
 }
 
 func (handler *ActionsHandler) execute(actionName string, conn socketio.Conn, message string) (response interface{}, networkError *NetworkError) {
@@ -78,7 +122,7 @@ func (handler *ActionsHandler) execute(actionName string, conn socketio.Conn, me
 		}
 	}()
 
-	var params map[string]interface{}
+	var params helpers.H
 	json.Unmarshal([]byte(message), &params)
 
 	context := makeContext(conn, params)

@@ -1,6 +1,7 @@
 package actors
 
 import (
+	"encoding/json"
 	"fmt"
 	"testing"
 	"time"
@@ -82,6 +83,9 @@ func (tester *Tester) RegistorActions() {
 
 	err = tester.manager.Request(actor.Identifier(), "Attack", helpers.H{})
 	expect.Expect(bot.energy).To.Equal(4)
+
+	var params helpers.H
+	json.Unmarshal([]byte(""), &params)
 }
 
 func TestActor(t *testing.T) {

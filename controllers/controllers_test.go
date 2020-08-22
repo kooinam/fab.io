@@ -9,12 +9,23 @@ import (
 type TesterController struct {
 }
 
-// RegisterBeforeHooks used to register before action hooks
-func (controller *TesterController) RegisterBeforeHooks(hooksHandler *HooksHandler) {
+// RegisterHooksAndActions used to register before hooks and actions
+func (controller *TesterController) RegisterHooksAndActions(hooksHandler *HooksHandler, actionsHandler *ActionsHandler) {
+	actionsHandler.RegisterConnectedAction(controller.connected)
+	actionsHandler.RegisterDisconnectedAction(controller.connected)
+	actionsHandler.RegisterErrorAction(controller.error)
 }
 
-// RegisterActions used to add actions
-func (controller *TesterController) RegisterActions(actionsHandler *ActionsHandler) {
+func (controller *TesterController) connected(context *Context) (interface{}, error) {
+	return nil, nil
+}
+
+func (controller *TesterController) disconnected(context *Context) (interface{}, error) {
+	return nil, nil
+}
+
+func (controller *TesterController) error(context *Context) (interface{}, error) {
+	return nil, nil
 }
 
 type Tester struct {
