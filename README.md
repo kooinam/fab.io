@@ -187,7 +187,6 @@ Some of our upcoming key feature(s)/improvement(s) include:
  - Actor Model
 
 ## License
-----
 
 Distributed under the MIT License.
 
