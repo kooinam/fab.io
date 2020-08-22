@@ -98,12 +98,8 @@ import (
 type ChatController struct {
 }
 
-// RegisterBeforeHooks used to register before action hooks
-func (controller *ChatController) RegisterBeforeHooks(hooksHandler *controllers.HooksHandler) {
-}
-
-// RegisterActions used to add actions
-func (controller *ChatController) RegisterActions(actionsHandler *controllers.ActionsHandler) {
+// RegisterHooksAndActions used to register hooks and actions
+func (controller *ChatController) RegisterHooksAndActions(hooksHandler *controllers.HooksHandler, actionsHandler *controllers.ActionsHandler) {
 	actionsHandler.RegisterAction("Join", controller.join)
 	actionsHandler.RegisterAction("Message", controller.message)
 }
