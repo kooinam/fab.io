@@ -35,7 +35,7 @@ func (query *Query) Count() (int64, error) {
 }
 
 // Each used to iterate record in collection with matching criterion
-func (query *Query) Each(handler func(Modellable, error)) error {
+func (query *Query) Each(handler func(Modellable, error) bool) error {
 	err := query.err
 
 	if err != nil {
@@ -52,7 +52,11 @@ func (query *Query) Each(handler func(Modellable, error)) error {
 
 		err2 = cursor.Decode(item)
 
-		handler(item, err2)
+		shouldContinue := handler(item, err2)
+
+		if !shouldContinue {
+			break
+		}
 	}
 
 	return err

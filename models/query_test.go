@@ -85,7 +85,7 @@ func (tester *Tester) QueryCount() {
 
 	i := 0
 
-	err = collection.Query().Each(func(item Modellable, err error) {
+	err = collection.Query().Each(func(item Modellable, err error) bool {
 		expect.Expect(err).To.Equal(nil)
 
 		if err == nil {
@@ -99,6 +99,8 @@ func (tester *Tester) QueryCount() {
 		if i < len(texts)-1 {
 			i++
 		}
+
+		return true
 	})
 
 	count, _ = collection.Query().Where(bson.M{"text": "test1test1"}).Count()
