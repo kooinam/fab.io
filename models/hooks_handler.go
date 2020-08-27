@@ -6,8 +6,9 @@ import (
 
 // HooksHandler used to mange callbacks for models
 type HooksHandler struct {
-	initializeHook  func(*helpers.Dictionary)
-	validationHooks []func() error
+	initializeHook       func(*helpers.Dictionary)
+	afterInstantiateHook func()
+	validationHooks      []func() error
 }
 
 // makeHooksHandler used to instantiate CallbacksHandler
@@ -24,6 +25,11 @@ func (handler *HooksHandler) RegisterInitializeHook(initializeHook func(*helpers
 	handler.initializeHook = initializeHook
 }
 
+// RegisterAfterInstantiateHook used to add after instantiate hook
+func (handler *HooksHandler) RegisterAfterInstantiateHook(afterInstantiateHook func()) {
+	handler.afterInstantiateHook = afterInstantiateHook
+}
+
 // RegisterValidationHook used to add a validation hook
 func (handler *HooksHandler) RegisterValidationHook(validationHook func() error) {
 	handler.validationHooks = append(handler.validationHooks, validationHook)
@@ -33,6 +39,13 @@ func (handler *HooksHandler) RegisterValidationHook(validationHook func() error)
 func (handler *HooksHandler) executeInitializeHook(values *helpers.Dictionary) {
 	if handler.initializeHook != nil {
 		handler.initializeHook(values)
+	}
+}
+
+// executeAfterInstantiateHook used to execute after instantiate hook
+func (handler *HooksHandler) executeAfterInstantiateHook() {
+	if handler.afterInstantiateHook != nil {
+		handler.afterInstantiateHook()
 	}
 }
 

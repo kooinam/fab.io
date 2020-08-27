@@ -18,8 +18,8 @@ type Base struct {
 	UpdatedAt    time.Time          `bson:"updated_at"`
 }
 
-// Instantiate used for setting up base attributes for a mongo record
-func (base *Base) Instantiate(collection *Collection, hooksHandler *HooksHandler, item Modellable) {
+// initialize used for setting up base attributes for a mongo record
+func (base *Base) initialize(collection *Collection, hooksHandler *HooksHandler, item Modellable) {
 	base.collection = collection
 	base.hooksHandler = hooksHandler
 	base.item = item
@@ -30,8 +30,8 @@ func (base *Base) GetCollectionName() string {
 	return base.collection.name
 }
 
-// GetHooksHandler used to retrieve hooks handler
-func (base *Base) GetHooksHandler() *HooksHandler {
+// getHooksHandler used to retrieve hooks handler
+func (base *Base) getHooksHandler() *HooksHandler {
 	return base.hooksHandler
 }
 
