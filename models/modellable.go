@@ -5,6 +5,6 @@ type Modellable interface {
 	Save() error
 	GetID() string
 
-	initialize(*Collection, *HooksHandler, Modellable)
+	_initialize(*Collection, *HooksHandler, Modellable)
 	getHooksHandler() *HooksHandler
 }

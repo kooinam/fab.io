@@ -18,8 +18,8 @@ type Base struct {
 	UpdatedAt    time.Time          `bson:"updated_at"`
 }
 
-// initialize used for setting up base attributes for a mongo record
-func (base *Base) initialize(collection *Collection, hooksHandler *HooksHandler, item Modellable) {
+// _initialize used for setting up base attributes for a mongo record
+func (base *Base) _initialize(collection *Collection, hooksHandler *HooksHandler, item Modellable) {
 	base.collection = collection
 	base.hooksHandler = hooksHandler
 	base.item = item
