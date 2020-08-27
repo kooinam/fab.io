@@ -18,14 +18,14 @@ type Task struct {
 func makeTask(collection *Collection, hooksHandler *HooksHandler) Modellable {
 	task := &Task{}
 
-	hooksHandler.RegisterAfterInitializeHook(task.afterInitialize)
+	hooksHandler.RegisterInitializeHook(task.Initialize)
 
 	hooksHandler.RegisterValidationHook(task.validateTextLength)
 
 	return task
 }
 
-func (task *Task) afterInitialize(dict *helpers.Dictionary) {
+func (task *Task) Initialize(dict *helpers.Dictionary) {
 	task.Text = dict.ValueStr("text")
 }
 

@@ -20,7 +20,7 @@ func (bot *TesterBot) GetID() string {
 	return bot.id
 }
 
-func (bot *TesterBot) RegisterActions(actionsHandler *ActionsHandler) {
+func (bot *TesterBot) RegisterActorActions(actionsHandler *ActionsHandler) {
 	actionsHandler.RegisterAction("Start", bot.start)
 	actionsHandler.RegisterAction("Update", bot.update)
 	actionsHandler.RegisterAction("Attack", bot.attack)

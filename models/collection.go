@@ -35,9 +35,9 @@ func (collection *Collection) New(values helpers.H) Modellable {
 	hooksHandler := makeHooksHandler()
 	item := collection.newHandler(collection, hooksHandler)
 
-	item.Initialize(collection, hooksHandler, item)
+	item.Instantiate(collection, hooksHandler, item)
 
-	item.GetHooksHandler().executeAfterInitializeHook(helpers.MakeDictionary(values))
+	item.GetHooksHandler().executeInitializeHook(helpers.MakeDictionary(values))
 
 	return item
 }

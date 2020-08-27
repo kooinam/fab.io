@@ -19,7 +19,7 @@ func makeActor(nsp string, actable Actable) *Actor {
 		ch:             make(chan Event, 5),
 	}
 
-	actable.RegisterActions(actor.actionsHandler)
+	actable.RegisterActorActions(actor.actionsHandler)
 
 	actor.start()
 
