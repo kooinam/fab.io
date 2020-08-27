@@ -127,7 +127,7 @@ func (handler *ActionsHandler) execute(actionName string, conn socketio.Conn, me
 
 	context := makeContext(conn, params)
 
-	err := handler.controllerHandler.hooksHandler.executeBeforeHooks(actionName, context)
+	err := handler.controllerHandler.hooksHandler.executeBeforeActionHooks(actionName, context)
 
 	if err == nil {
 		action := handler.actions[actionName]

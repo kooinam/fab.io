@@ -5,28 +5,28 @@ type Hook func(string, *Context) error
 
 // HooksHandler used to mange callbacks for controllers
 type HooksHandler struct {
-	beforeHooks []Hook
+	beforeActionHooks []Hook
 }
 
 // makeHooksHandler used to instantiate CallbacksHandler
 func makeHooksHandler() *HooksHandler {
 	hooksHandler := &HooksHandler{
-		beforeHooks: []Hook{},
+		beforeActionHooks: []Hook{},
 	}
 
 	return hooksHandler
 }
 
-// RegisterBeforeHook used to add before hook
-func (handler *HooksHandler) RegisterBeforeHook(beforeHook Hook) {
-	handler.beforeHooks = append(handler.beforeHooks, beforeHook)
+// RegisterBeforeActionHook used to add before hook
+func (handler *HooksHandler) RegisterBeforeActionHook(beforeActionHook Hook) {
+	handler.beforeActionHooks = append(handler.beforeActionHooks, beforeActionHook)
 }
 
-// executeBeforeHooks used to execute before hooks
-func (handler *HooksHandler) executeBeforeHooks(action string, context *Context) error {
+// executeBeforeActionHooks used to execute before action hooks
+func (handler *HooksHandler) executeBeforeActionHooks(action string, context *Context) error {
 	var err error
 
-	for _, hook := range handler.beforeHooks {
+	for _, hook := range handler.beforeActionHooks {
 		err = hook(action, context)
 
 		if err != nil {

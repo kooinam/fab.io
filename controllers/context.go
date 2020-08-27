@@ -1,9 +1,6 @@
 package controllers
 
 import (
-	"fmt"
-	"strconv"
-
 	socketio "github.com/googollee/go-socket.io"
 	"github.com/kooinam/fabio/helpers"
 )
@@ -11,16 +8,16 @@ import (
 // Context used to represent context with properties and params
 type Context struct {
 	conn       socketio.Conn
-	properties helpers.H
-	params     helpers.H
+	properties *helpers.Dictionary
+	params     *helpers.Dictionary
 }
 
 // makeContext use to instantiate controller context instance
 func makeContext(conn socketio.Conn, params helpers.H) *Context {
 	context := &Context{
 		conn:       conn,
-		params:     params,
-		properties: helpers.H{},
+		params:     helpers.MakeDictionary(params),
+		properties: helpers.MakeDictionary(helpers.H{}),
 	}
 
 	return context
@@ -54,76 +51,25 @@ func (context *Context) Rooms() []string {
 
 // SetProperty used to set property that can used across the context
 func (context *Context) SetProperty(key string, value interface{}) {
-	context.properties[key] = value
+	context.properties.Set(key, value)
 }
 
 // Property used to retrieve context property value
 func (context *Context) Property(key string) interface{} {
-	value := context.properties[key]
-
-	return value
-}
-
-// PropertyWithFallback used to retrieve context property value with a fallback
-func (context *Context) PropertyWithFallback(key string, fallback interface{}) interface{} {
-	value := context.properties[key]
-
-	if value != nil {
-		return value
-	}
-
-	return fallback
+	return context.properties.Value(key)
 }
 
 // Params used to retrieve params value
 func (context *Context) Params(key string) interface{} {
-	value := context.params[key]
-
-	return value
+	return context.params.Value(key)
 }
 
 // ParamsStr used to retrieve params value in string
 func (context *Context) ParamsStr(key string) string {
-	value := context.params[key]
-
-	if value == nil {
-		return ""
-	}
-
-	return fmt.Sprintf("%v", value)
+	return context.params.ValueStr(key)
 }
 
 // ParamsInt used to retrieve params value in int
 func (context *Context) ParamsInt(key string, fallback int) int {
-	value := context.params[key]
-
-	if value == nil {
-		return fallback
-	}
-
-	switch value.(type) {
-	case string:
-		i, err := strconv.Atoi(value.(string))
-
-		if err != nil {
-			return fallback
-		}
-
-		return i
-	case float64:
-		return int(value.(float64))
-	}
-
-	return value.(int)
-}
-
-// ParamsWithFallback used to retrieve params value with a fallback
-func (context *Context) ParamsWithFallback(key string, fallback interface{}) interface{} {
-	value := context.params[key]
-
-	if value != nil {
-		return value
-	}
-
-	return fallback
+	return context.params.ValueInt(key, fallback)
 }
