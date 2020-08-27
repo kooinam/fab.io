@@ -3,10 +3,12 @@ package controllers
 import (
 	"fmt"
 	"net/http"
+	"os"
 
 	socketio "github.com/googollee/go-socket.io"
 	"github.com/kooinam/fabio/helpers"
 	"github.com/kooinam/fabio/logger"
+	"github.com/markbates/pkger"
 )
 
 // Manager is singleton manager for controller module
@@ -57,6 +59,19 @@ func (manager *Manager) Serve(port string, httpHandler func()) {
 	logger.Debug("Initializing fab.io...")
 
 	http.Handle("/socket.io/", server)
+
+	pkger.Walk("/stats", func(path string, info os.FileInfo, err error) error {
+		fmt.Println("%v", path)
+
+		return err
+	})
+
+	// tmpl := template.Must(template.ParseFiles("layout.html"))
+	// http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+	// 	data := &struct{}{}
+
+	// 	tmpl.Execute(w, data)
+	// })
 
 	if httpHandler != nil {
 		httpHandler()
