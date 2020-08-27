@@ -121,6 +121,9 @@ func (base *Base) Destroy() error {
 	return err
 }
 
-func (base *Base) Cache() {
-	base.collection.cacher.append(base)
+// Memoize used to add record to memory
+func (base *Base) Memoize() {
+	base.collection.memo.append(base)
+
+	base.getHooksHandler().executeAfterMemoizeHook()
 }

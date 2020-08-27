@@ -13,7 +13,7 @@ type NewHandler func(*Collection, *HooksHandler) Modellable
 // Collection used to contain models
 type Collection struct {
 	manager    *Manager
-	cacher     *CollectionCacher
+	memo       *CollectionMemo
 	name       string
 	newHandler NewHandler
 }
@@ -22,7 +22,7 @@ type Collection struct {
 func makeCollection(manager *Manager, collectionName string, newHandler NewHandler) *Collection {
 	collection := &Collection{
 		manager:    manager,
-		cacher:     makeCollectionCacher(),
+		memo:       makeCollectionMemo(),
 		name:       collectionName,
 		newHandler: newHandler,
 	}
