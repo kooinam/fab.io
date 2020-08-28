@@ -25,17 +25,11 @@ func Times(n int, handler func(int) bool) {
 	}
 }
 
-// Find used to find an element in a slice
-func Find(ls []interface{}, predicate func(interface{}) bool) interface{} {
-	var found interface{}
-
-	for el := range ls {
-		if predicate(el) {
-			found = el
-
-			break
-		}
+// Merge used to merge to map
+func Merge(h1 H, h2 H) H {
+	for k, v := range h2 {
+		h1[k] = v
 	}
 
-	return found
+	return h1
 }

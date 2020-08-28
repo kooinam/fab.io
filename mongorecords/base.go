@@ -38,7 +38,7 @@ func (base *Base) GetHooksHandler() *models.HooksHandler {
 
 // GetID used to retrieve record's ID
 func (base *Base) GetID() string {
-	return base.ID.String()
+	return base.ID.Hex()
 }
 
 // Save used to save record in adapter

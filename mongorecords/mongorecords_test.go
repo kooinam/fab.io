@@ -135,6 +135,33 @@ func (tester *Tester) QueryCount() {
 		task := item.(*Task)
 		expect.Expect(task.Text).To.Equal("changedchanged")
 	}
+
+	item, err = collection.Query().Where(helpers.H{
+		"text": "no",
+	}).First()
+	expect.Expect(item).To.Equal(nil)
+	expect.Expect(err.Error()).To.Equal("mongo: no documents in result")
+
+	item, err = collection.Query().Where(helpers.H{
+		"text": "no",
+	}).FirstOrCreate(helpers.H{})
+	expect.Expect(err.Error()).To.Equal("text must be longer than or equal to 10 characters")
+
+	item, err = collection.Query().Where(helpers.H{
+		"text": "nooooooooooook",
+	}).FirstOrCreate(helpers.H{})
+	expect.Expect(err).To.Equal(nil)
+
+	id := item.GetID()
+	item, err = collection.Query().Where(helpers.H{
+		"text": "nooooooooooook",
+	}).FirstOrCreate(helpers.H{})
+	expect.Expect(err).To.Equal(nil)
+	expect.Expect(item.GetID()).To.Equal(id)
+
+	item, err = collection.Query().Find(id)
+	expect.Expect(err).To.Equal(nil)
+	expect.Expect(item.GetID()).To.Equal(id)
 }
 
 func TestQuery(t *testing.T) {
