@@ -9,7 +9,6 @@ import (
 type Query struct {
 	collection *models.Collection
 	filters    helpers.H
-	err        error
 }
 
 func makeQuery(collection *models.Collection) *Query {
@@ -82,15 +81,15 @@ func (query *Query) First() (models.Modellable, error) {
 }
 
 func (query *Query) FirstOrCreate(values helpers.H) (models.Modellable, error) {
-	err := query.err
+	var err error
 
-	// TODO
+	item, err := query.First()
 
-	return nil, err
+	return item, err
 }
 
 func (query *Query) Find(id string) (models.Modellable, error) {
-	err := query.err
+	var err error
 
 	// TODO
 

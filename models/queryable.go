@@ -8,4 +8,6 @@ type Queryable interface {
 	Count() (int64, error)
 	Each(func(Modellable, error) bool) error
 	First() (Modellable, error)
+	FirstOrCreate(helpers.H) (Modellable, error)
+	Find(string) (Modellable, error)
 }
