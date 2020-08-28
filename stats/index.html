@@ -14,7 +14,7 @@
       <hr />
 
       <h4>
-        {{len .Actors}}
+        {{len .ActorInfos}}
         Actors Running
       </h4>
 
@@ -30,7 +30,7 @@
           {{range .ActorInfos}}
             <tr>
               <td>
-                {{.Identifier()}}
+                {{.Identifier}}
               </td>
             </tr>
           {{end}}

@@ -25,6 +25,7 @@ func Setup() {
 
 	engine.controllerManager.Setup()
 	engine.actorManager.Setup()
+	engine.modelManager.Setup()
 
 	serveStats()
 }
