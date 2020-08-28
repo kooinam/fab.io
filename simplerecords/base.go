@@ -47,7 +47,7 @@ func (base *Base) Save() error {
 
 // Memoize used to add record to memory
 func (base *Base) Memoize() {
-	base.collection.Memo().Add(base.item)
+	base.collection.List().Add(base.item)
 
 	base.GetHooksHandler().ExecuteAfterMemoizeHook()
 }

@@ -10,7 +10,7 @@ type NewHandler func(*Collection, *HooksHandler) Modellable
 // Collection used to contain models
 type Collection struct {
 	adapter    Adaptable
-	memo       *CollectionMemo
+	list       *List
 	name       string
 	newHandler NewHandler
 }
@@ -19,7 +19,7 @@ type Collection struct {
 func makeCollection(adapter Adaptable, collectionName string, newHandler NewHandler) *Collection {
 	collection := &Collection{
 		adapter:    adapter,
-		memo:       makeCollectionMemo(),
+		list:       makeList(),
 		name:       collectionName,
 		newHandler: newHandler,
 	}
@@ -59,6 +59,7 @@ func (collection *Collection) Query() Queryable {
 	return query
 }
 
+// Adapter used to retrieve collection's adapter
 func (collection *Collection) Adapter() Adaptable {
 	adapter := collection.adapter
 
@@ -69,10 +70,12 @@ func (collection *Collection) Adapter() Adaptable {
 	return adapter
 }
 
+// Name used to retrieve collection's name
 func (collection *Collection) Name() string {
 	return collection.name
 }
 
-func (collection *Collection) Memo() *CollectionMemo {
-	return collection.memo
+// List used to retrieve in-memory list
+func (collection *Collection) List() *List {
+	return collection.list
 }
