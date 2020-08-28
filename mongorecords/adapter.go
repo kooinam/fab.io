@@ -1,4 +1,4 @@
-package mongo
+package mongorecords
 
 import (
 	"context"
@@ -17,6 +17,7 @@ type Adapter struct {
 	collections  []*models.Collection
 }
 
+// MakeAdapter used to instantiate mongorecord's adapter
 func MakeAdapter(uri string, databaseName string) (*Adapter, error) {
 	var err error
 	var adapter *Adapter
@@ -44,10 +45,12 @@ func (adapter *Adapter) NewQuery(collection *models.Collection) models.Queryable
 	return query
 }
 
+// RegisterCollection used to register collection with adapter
 func (adapter *Adapter) RegisterCollection(collection *models.Collection) {
 	adapter.collections = append(adapter.collections, collection)
 }
 
+// Collections used to retrieve adapter's registered collections
 func (adapter *Adapter) Collections() []*models.Collection {
 	return adapter.collections
 }

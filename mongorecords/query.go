@@ -1,4 +1,4 @@
-package mongo
+package mongorecords
 
 import (
 	"github.com/kooinam/fabio/helpers"
