@@ -20,13 +20,22 @@ func (manager *Manager) Adapter(clientName string) Adaptable {
 	return manager.adapters[clientName]
 }
 
-// RegisterCollection used to create a collection for models manager
+// RegisterCollection used to create a collection and register with adapter
 func (manager *Manager) RegisterCollection(clientName string, collectionName string, newHandler NewHandler) *Collection {
 	adapter := manager.Adapter(clientName)
 
 	collection := makeCollection(adapter, collectionName, newHandler)
 
 	adapter.RegisterCollection(collection)
+
+	return collection
+}
+
+// CreateCollection used to create a collection without registering
+func (manager *Manager) CreateCollection(clientName string, collectionName string, newHandler NewHandler) *Collection {
+	adapter := manager.Adapter(clientName)
+
+	collection := makeCollection(adapter, collectionName, newHandler)
 
 	return collection
 }
