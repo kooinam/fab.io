@@ -66,6 +66,7 @@ func (memo *CollectionMemo) FindByID(id string) Modellable {
 	return found
 }
 
-func (memo *CollectionMemo) append(item Modellable) {
+// Add used to memoize item
+func (memo *CollectionMemo) Add(item Modellable) {
 	memo.items = append(memo.items, item)
 }

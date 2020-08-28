@@ -25,6 +25,8 @@ func Setup() {
 
 	engine.controllerManager.Setup()
 	engine.actorManager.Setup()
+
+	serveStats()
 }
 
 // ControllerManager used to retrieve controller manager

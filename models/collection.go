@@ -1,10 +1,7 @@
 package models
 
 import (
-	"fmt"
-
 	"github.com/kooinam/fabio/helpers"
-	"go.mongodb.org/mongo-driver/bson"
 )
 
 // NewHandler is alias for func(args ...interface{}) Modellable
@@ -12,16 +9,16 @@ type NewHandler func(*Collection, *HooksHandler) Modellable
 
 // Collection used to contain models
 type Collection struct {
-	manager    *Manager
+	adapter    Adaptable
 	memo       *CollectionMemo
 	name       string
 	newHandler NewHandler
 }
 
 // makeCollection used to instantiate collection instance
-func makeCollection(manager *Manager, collectionName string, newHandler NewHandler) *Collection {
+func makeCollection(adapter Adaptable, collectionName string, newHandler NewHandler) *Collection {
 	collection := &Collection{
-		manager:    manager,
+		adapter:    adapter,
 		memo:       makeCollectionMemo(),
 		name:       collectionName,
 		newHandler: newHandler,
@@ -35,9 +32,9 @@ func (collection *Collection) New(values helpers.H) Modellable {
 	hooksHandler := makeHooksHandler()
 	item := collection.newHandler(collection, hooksHandler)
 
-	item._initialize(collection, hooksHandler, item)
+	item.InitializeBase(collection, hooksHandler, item)
 
-	item.getHooksHandler().executeInitializeHook(helpers.MakeDictionary(values))
+	item.GetHooksHandler().ExecuteInitializeHook(helpers.MakeDictionary(values))
 
 	return item
 }
@@ -54,24 +51,28 @@ func (collection *Collection) Create(values helpers.H) (Modellable, error) {
 }
 
 // Query returns query wrapper for retrieving records in adapter
-func (collection *Collection) Query() *Query {
-	var err error
-	var query *Query
-	adapter := collection.manager.adapter
+func (collection *Collection) Query() Queryable {
+	adapter := collection.Adapter()
 
-	if adapter == nil {
-		err = fmt.Errorf("adapter not registered")
-
-		query = &Query{
-			err: err,
-		}
-	} else {
-		query = &Query{
-			adapter:    adapter,
-			collection: collection,
-			filters:    bson.M{},
-		}
-	}
+	query := adapter.NewQuery(collection)
 
 	return query
+}
+
+func (collection *Collection) Adapter() Adaptable {
+	adapter := collection.adapter
+
+	if adapter == nil {
+		panic("adapter not registered")
+	}
+
+	return adapter
+}
+
+func (collection *Collection) Name() string {
+	return collection.name
+}
+
+func (collection *Collection) Memo() *CollectionMemo {
+	return collection.memo
 }

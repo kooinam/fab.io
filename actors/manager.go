@@ -8,7 +8,7 @@ import (
 )
 
 // Mailboxes is alias for map[string]chan Event
-type Mailboxes map[string]chan Event
+type Mailboxes map[string]*ActorInfo
 
 // Manager is singleton manager for actor module
 type Manager struct {
@@ -31,7 +31,13 @@ func (manager *Manager) RegisterActor(nsp string, actable Actable) *Actor {
 	actor := makeActor(nsp, actable)
 	actorIdentifier := actor.Identifier()
 
-	manager.mailboxes[actorIdentifier] = actor.ch
+	_, exists := manager.mailboxes[actorIdentifier]
+
+	if exists {
+		panic("actor already registered")
+	}
+
+	manager.mailboxes[actorIdentifier] = makeActorInfo(actorIdentifier, actor.ch)
 
 	go func() {
 		manager.Tell(actorIdentifier, "Start", helpers.H{})
@@ -42,7 +48,7 @@ func (manager *Manager) RegisterActor(nsp string, actable Actable) *Actor {
 
 // Tell used to delegating a task to an actor asynchronously
 func (manager *Manager) Tell(actorIdentifier string, eventName string, params map[string]interface{}) {
-	ch := manager.mailboxes[actorIdentifier]
+	ch := manager.mailboxes[actorIdentifier].ch
 	event := makeEvent(eventName, params, nil)
 
 	event.dispatch(ch)
@@ -51,7 +57,7 @@ func (manager *Manager) Tell(actorIdentifier string, eventName string, params ma
 // Request used to delegating a task to an actor synchronously with an response
 func (manager *Manager) Request(actorIdentifier string, eventName string, params map[string]interface{}) error {
 	var err error
-	ch := manager.mailboxes[actorIdentifier]
+	ch := manager.mailboxes[actorIdentifier].ch
 	resCh := make(chan Response)
 	event := makeEvent(eventName, params, resCh)
 
@@ -63,6 +69,17 @@ func (manager *Manager) Request(actorIdentifier string, eventName string, params
 	}
 
 	return err
+}
+
+// GetActorInfos used to return all registered actors
+func (manager *Manager) GetActorInfos() []*ActorInfo {
+	actorInfos := []*ActorInfo{}
+
+	for _, actorInfo := range manager.mailboxes {
+		actorInfos = append(actorInfos, actorInfo)
+	}
+
+	return actorInfos
 }
 
 func (manager *Manager) update() {

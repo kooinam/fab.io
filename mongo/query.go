@@ -1,20 +1,26 @@
-package models
+package mongo
 
 import (
 	"github.com/kooinam/fabio/helpers"
-	"go.mongodb.org/mongo-driver/bson"
+	"github.com/kooinam/fabio/models"
 )
 
 // Query is a wrapper for querying mongo
 type Query struct {
-	adapter    *Adapter
-	collection *Collection
-	filters    bson.M
+	collection *models.Collection
+	filters    helpers.H
 	err        error
 }
 
+func makeQuery(collection *models.Collection) *Query {
+	return &Query{
+		collection: collection,
+		filters:    helpers.H{},
+	}
+}
+
 // Where used to query collection
-func (query *Query) Where(filters bson.M) *Query {
+func (query *Query) Where(filters helpers.H) models.Queryable {
 	query.filters = filters
 
 	return query
@@ -22,28 +28,22 @@ func (query *Query) Where(filters bson.M) *Query {
 
 // Count used to count records in collection with matching criterion
 func (query *Query) Count() (int64, error) {
-	err := query.err
+	adapter := query.collection.Adapter().(*Adapter)
 
-	if err != nil {
-		return 0, err
-	}
-
-	collection := query.adapter.getCollection(query.collection.name)
-	ctx := query.adapter.getTimeoutContext()
+	collection := adapter.getCollection(query.collection.Name())
+	ctx := adapter.getTimeoutContext()
 
 	return collection.CountDocuments(ctx, query.filters)
 }
 
 // Each used to iterate record in collection with matching criterion
-func (query *Query) Each(handler func(Modellable, error) bool) error {
-	err := query.err
+func (query *Query) Each(handler func(models.Modellable, error) bool) error {
+	var err error
 
-	if err != nil {
-		return err
-	}
+	adapter := query.collection.Adapter().(*Adapter)
 
-	collection := query.adapter.getCollection(query.collection.name)
-	ctx := query.adapter.getTimeoutContext()
+	collection := adapter.getCollection(query.collection.Name())
+	ctx := adapter.getTimeoutContext()
 	cursor, err := collection.Find(ctx, query.filters)
 
 	for cursor.Next(ctx) {
@@ -63,11 +63,13 @@ func (query *Query) Each(handler func(Modellable, error) bool) error {
 }
 
 // First used to return first record in collection with matching criterion
-func (query *Query) First() (Modellable, error) {
-	err := query.err
+func (query *Query) First() (models.Modellable, error) {
+	var err error
 
-	collection := query.adapter.getCollection(query.collection.name)
-	ctx := query.adapter.getTimeoutContext()
+	adapter := query.collection.Adapter().(*Adapter)
+
+	collection := adapter.getCollection(query.collection.Name())
+	ctx := adapter.getTimeoutContext()
 	item := query.collection.New(helpers.H{})
 
 	err = collection.FindOne(ctx, query.filters).Decode(item)
@@ -79,7 +81,7 @@ func (query *Query) First() (Modellable, error) {
 	return item, err
 }
 
-func (query *Query) FirstOrCreate(values helpers.H) (Modellable, error) {
+func (query *Query) FirstOrCreate(values helpers.H) (models.Modellable, error) {
 	err := query.err
 
 	// TODO
@@ -87,7 +89,7 @@ func (query *Query) FirstOrCreate(values helpers.H) (Modellable, error) {
 	return nil, err
 }
 
-func (query *Query) Find(id string) (Modellable, error) {
+func (query *Query) Find(id string) (models.Modellable, error) {
 	err := query.err
 
 	// TODO

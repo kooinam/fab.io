@@ -1,9 +1,10 @@
-package models
+package mongo
 
 import (
 	"context"
 	"time"
 
+	"github.com/kooinam/fabio/models"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
@@ -13,9 +14,10 @@ type Adapter struct {
 	client       *mongo.Client
 	uri          string
 	databaseName string
+	collections  []*models.Collection
 }
 
-func makeAdapter(uri string, databaseName string) (*Adapter, error) {
+func MakeAdapter(uri string, databaseName string) (*Adapter, error) {
 	var err error
 	var adapter *Adapter
 	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
@@ -29,9 +31,25 @@ func makeAdapter(uri string, databaseName string) (*Adapter, error) {
 		client:       client,
 		uri:          uri,
 		databaseName: databaseName,
+		collections:  []*models.Collection{},
 	}
 
 	return adapter, err
+}
+
+// NewQuery used to generate query
+func (adapter *Adapter) NewQuery(collection *models.Collection) models.Queryable {
+	query := makeQuery(collection)
+
+	return query
+}
+
+func (adapter *Adapter) RegisterCollection(collection *models.Collection) {
+	adapter.collections = append(adapter.collections, collection)
+}
+
+func (adapter *Adapter) Collections() []*models.Collection {
+	return adapter.collections
 }
 
 func (adapter *Adapter) getCollection(collectionName string) *mongo.Collection {

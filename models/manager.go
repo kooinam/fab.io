@@ -2,34 +2,31 @@ package models
 
 // Manager is a singleton used to manager model's behavior
 type Manager struct {
-	collections []*Collection
-
-	adapter *Adapter
+	adapters map[string]Adaptable
 }
 
 // Setup used to setup manager
 func (manager *Manager) Setup() {
-	manager.collections = []*Collection{}
+	manager.adapters = map[string]Adaptable{}
 }
 
-// CreateCollection used to create a collection for models manager
-func (manager *Manager) CreateCollection(collectionName string, newHandler NewHandler) *Collection {
-	collection := makeCollection(manager, collectionName, newHandler)
+// RegisterAdapter used to register adapter
+func (manager *Manager) RegisterAdapter(clientName string, adapter Adaptable) {
+	manager.adapters[clientName] = adapter
+}
 
-	manager.collections = append(manager.collections, collection)
+// Adapter used to retrieve registered adapter
+func (manager *Manager) Adapter(clientName string) Adaptable {
+	return manager.adapters[clientName]
+}
+
+// RegisterCollection used to create a collection for models manager
+func (manager *Manager) RegisterCollection(clientName string, collectionName string, newHandler NewHandler) *Collection {
+	adapter := manager.Adapter(clientName)
+
+	collection := makeCollection(adapter, collectionName, newHandler)
+
+	adapter.RegisterCollection(collection)
 
 	return collection
-}
-
-func (manager *Manager) RegisterAdapter(uri string, database string) error {
-	var err error
-	adapter, err := makeAdapter(uri, database)
-
-	if err != nil {
-		return err
-	}
-
-	manager.adapter = adapter
-
-	return err
 }

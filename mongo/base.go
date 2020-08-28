@@ -1,25 +1,26 @@
-package models
+package mongo
 
 import (
 	"fmt"
 	"time"
 
+	"github.com/kooinam/fabio/models"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 // Base used to represent base classes for all models
 type Base struct {
-	collection   *Collection
-	hooksHandler *HooksHandler
-	item         Modellable
+	collection   *models.Collection
+	hooksHandler *models.HooksHandler
+	item         models.Modellable
 	ID           primitive.ObjectID `bson:"_id" json:"id"`
 	CreatedAt    time.Time          `bson:"created_at"`
 	UpdatedAt    time.Time          `bson:"updated_at"`
 }
 
-// _initialize used for setting up base attributes for a mongo record
-func (base *Base) _initialize(collection *Collection, hooksHandler *HooksHandler, item Modellable) {
+// InitializeBase used for setting up base attributes for a mongo record
+func (base *Base) InitializeBase(collection *models.Collection, hooksHandler *models.HooksHandler, item models.Modellable) {
 	base.collection = collection
 	base.hooksHandler = hooksHandler
 	base.item = item
@@ -27,11 +28,11 @@ func (base *Base) _initialize(collection *Collection, hooksHandler *HooksHandler
 
 // GetCollectionName used to retrieve collection's name
 func (base *Base) GetCollectionName() string {
-	return base.collection.name
+	return base.collection.Name()
 }
 
-// getHooksHandler used to retrieve hooks handler
-func (base *Base) getHooksHandler() *HooksHandler {
+// GetHooksHandler used to retrieve hooks handler
+func (base *Base) GetHooksHandler() *models.HooksHandler {
 	return base.hooksHandler
 }
 
@@ -44,21 +45,15 @@ func (base *Base) GetID() string {
 func (base *Base) Save() error {
 	var err error
 
-	err = base.hooksHandler.executeValidationHooks()
+	err = base.hooksHandler.ExecuteValidationHooks()
 
 	if err != nil {
 		return err
 	}
 
-	adapter := base.collection.manager.adapter
+	adapter := base.collection.Adapter().(*Adapter)
 
-	if adapter == nil {
-		err = fmt.Errorf("adapter not registered")
-
-		return err
-	}
-
-	collection := base.collection.manager.adapter.getCollection(base.collection.name)
+	collection := adapter.getCollection(base.collection.Name())
 	ctx := adapter.getTimeoutContext()
 
 	if base.IsNewRecord() {
@@ -77,7 +72,6 @@ func (base *Base) Save() error {
 		} else {
 			base.ID = results.InsertedID.(primitive.ObjectID)
 		}
-
 	} else {
 		previousUpdatedAt := base.UpdatedAt
 		base.UpdatedAt = time.Now()
@@ -123,7 +117,7 @@ func (base *Base) Destroy() error {
 
 // Memoize used to add record to memory
 func (base *Base) Memoize() {
-	base.collection.memo.append(base)
+	base.collection.Memo().Add(base.item)
 
-	base.getHooksHandler().executeAfterMemoizeHook()
+	base.GetHooksHandler().ExecuteAfterMemoizeHook()
 }

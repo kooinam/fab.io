@@ -1,4 +1,4 @@
-package models
+package mongo
 
 import (
 	"fmt"
@@ -6,7 +6,7 @@ import (
 
 	"github.com/karlseguin/expect"
 	"github.com/kooinam/fabio/helpers"
-	"go.mongodb.org/mongo-driver/bson"
+	"github.com/kooinam/fabio/models"
 )
 
 type Task struct {
@@ -15,7 +15,7 @@ type Task struct {
 	Completed bool   `bson:"completed"`
 }
 
-func makeTask(collection *Collection, hooksHandler *HooksHandler) Modellable {
+func makeTask(collection *models.Collection, hooksHandler *models.HooksHandler) models.Modellable {
 	task := &Task{}
 
 	hooksHandler.RegisterInitializeHook(task.Initialize)
@@ -40,23 +40,29 @@ func (task *Task) validateTextLength() error {
 }
 
 type Tester struct {
-	manager *Manager
+	manager    *models.Manager
+	clientName string
 }
 
 func (tester *Tester) Each(f func()) {
 	f()
 
-	for _, collection := range tester.manager.collections {
-		ctx := tester.manager.adapter.getTimeoutContext()
-		tester.manager.adapter.getCollection(collection.name).Drop(ctx)
+	adapter := tester.manager.Adapter(tester.clientName).(*Adapter)
+
+	for _, collection := range adapter.Collections() {
+		ctx := adapter.getTimeoutContext()
+
+		adapter.getCollection(collection.Name()).Drop(ctx)
 	}
 }
 
 func (tester *Tester) QueryCount() {
-	err := tester.manager.RegisterAdapter("mongodb://localhost:27017", "tasker")
+	adapter, err := MakeAdapter("mongodb://localhost:27017", "tasker")
 	expect.Expect(err).To.Equal(nil)
 
-	collection := tester.manager.CreateCollection("tasks", makeTask)
+	tester.manager.RegisterAdapter(tester.clientName, adapter)
+
+	collection := tester.manager.RegisterCollection(tester.clientName, "tasks", makeTask)
 
 	count, err := collection.Query().Count()
 	expect.Expect(err).To.Equal(nil)
@@ -85,14 +91,14 @@ func (tester *Tester) QueryCount() {
 
 	i := 0
 
-	err = collection.Query().Each(func(item Modellable, err error) bool {
+	err = collection.Query().Each(func(item models.Modellable, err error) bool {
 		expect.Expect(err).To.Equal(nil)
 
 		if err == nil {
 			task := item.(*Task)
 			expect.Expect(task.Text).To.Equal(texts[i])
 
-			count, _ = collection.Query().Where(bson.M{"_id": task.ID}).Count()
+			count, _ = collection.Query().Where(helpers.H{"_id": task.ID}).Count()
 			expect.Expect(count).To.Equal(int64(1))
 		}
 
@@ -103,7 +109,7 @@ func (tester *Tester) QueryCount() {
 		return true
 	})
 
-	count, _ = collection.Query().Where(bson.M{"text": "test1test1"}).Count()
+	count, _ = collection.Query().Where(helpers.H{"text": "test1test1"}).Count()
 	expect.Expect(count).To.Equal(int64(1))
 
 	item, err := collection.Query().First()
@@ -132,12 +138,12 @@ func (tester *Tester) QueryCount() {
 }
 
 func TestQuery(t *testing.T) {
-	manager := &Manager{}
-
+	manager := &models.Manager{}
 	manager.Setup()
 
 	tester := &Tester{
-		manager: manager,
+		manager:    manager,
+		clientName: "mongo",
 	}
 
 	expect.Expectify(tester, t)

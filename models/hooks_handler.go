@@ -41,15 +41,15 @@ func (handler *HooksHandler) RegisterAfterMemoizeHook(afterMemoizeHook func()) {
 	handler.afterMemoizeHook = afterMemoizeHook
 }
 
-// executeInitializeHook used to execute after initialize hook
-func (handler *HooksHandler) executeInitializeHook(values *helpers.Dictionary) {
+// ExecuteInitializeHook used to execute after initialize hook
+func (handler *HooksHandler) ExecuteInitializeHook(values *helpers.Dictionary) {
 	if handler.initializeHook != nil {
 		handler.initializeHook(values)
 	}
 }
 
-// executeValidationHooks used to execute validation hooks
-func (handler *HooksHandler) executeValidationHooks() error {
+// ExecuteValidationHooks used to execute validation hooks
+func (handler *HooksHandler) ExecuteValidationHooks() error {
 	var err error
 
 	for _, hook := range handler.validationHooks {
@@ -63,15 +63,15 @@ func (handler *HooksHandler) executeValidationHooks() error {
 	return err
 }
 
-// executeAfterInstantiateHook used to execute after instantiate hook
-func (handler *HooksHandler) executeAfterInstantiateHook() {
+// ExecuteAfterInstantiateHook used to execute after instantiate hook
+func (handler *HooksHandler) ExecuteAfterInstantiateHook() {
 	if handler.afterInstantiateHook != nil {
 		handler.afterInstantiateHook()
 	}
 }
 
-// executeAfterMemoizeHook used to execute after memoize hook
-func (handler *HooksHandler) executeAfterMemoizeHook() {
+// ExecuteAfterMemoizeHook used to execute after memoize hook
+func (handler *HooksHandler) ExecuteAfterMemoizeHook() {
 	if handler.afterMemoizeHook != nil {
 		handler.afterMemoizeHook()
 	}

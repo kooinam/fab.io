@@ -1,1 +1,41 @@
-hello
+ <html>
+  <head>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+  </head>
+  <body>
+    <div class="container">
+      <h3>
+        Stats
+      </h3>
+
+      <hr />
+
+      <h4>
+        {{len .Actors}}
+        Actors Running
+      </h4>
+
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th>
+              Actor
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {{range .ActorInfos}}
+            <tr>
+              <td>
+                {{.Identifier()}}
+              </td>
+            </tr>
+          {{end}}
+        </tbody>
+      </table>
+    </div>
+  </body>
+</html>
