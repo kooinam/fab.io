@@ -15,8 +15,8 @@ type Base struct {
 	hooksHandler *models.HooksHandler
 	item         models.Modellable
 	ID           primitive.ObjectID `bson:"_id" json:"id"`
-	CreatedAt    time.Time          `bson:"created_at"`
-	UpdatedAt    time.Time          `bson:"updated_at"`
+	CreatedAt    time.Time          `bson:"created_at" json:"createdAt"`
+	UpdatedAt    time.Time          `bson:"updated_at" json:"updatedAt"`
 }
 
 // InitializeBase used for setting up base attributes for a mongo record

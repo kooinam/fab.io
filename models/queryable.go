@@ -10,4 +10,5 @@ type Queryable interface {
 	First() (Modellable, error)
 	FirstOrCreate(helpers.H) (Modellable, error)
 	Find(string) (Modellable, error)
+	All() ([]Modellable, error)
 }

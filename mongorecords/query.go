@@ -35,6 +35,31 @@ func (query *Query) Count() (int64, error) {
 	return collection.CountDocuments(ctx, query.filters)
 }
 
+// All used to iterate record in collection with matching criterion
+func (query *Query) All() ([]models.Modellable, error) {
+	var err error
+	items := []models.Modellable{}
+
+	adapter := query.collection.Adapter().(*Adapter)
+	collection := adapter.getCollection(query.collection.Name())
+	ctx := adapter.getTimeoutContext()
+	cursor, err := collection.Find(ctx, query.filters)
+
+	for cursor.Next(ctx) {
+		item := query.collection.New(helpers.H{})
+
+		err = cursor.Decode(item)
+
+		if err != nil {
+			break
+		} else {
+			items = append(items, item)
+		}
+	}
+
+	return items, err
+}
+
 // Each used to iterate record in collection with matching criterion
 func (query *Query) Each(handler func(models.Modellable, error) bool) error {
 	var err error
