@@ -27,17 +27,23 @@ func (query *Query) Where(filters helpers.H) models.Queryable {
 }
 
 // Count used to count records in collection with matching criterion
-func (query *Query) Count() (int64, error) {
+func (query *Query) Count() *models.CountResult {
+	result := models.MakeCountResult()
+
 	adapter := query.collection.Adapter().(*Adapter)
 	collection := adapter.getCollection(query.collection.Name())
 	ctx := adapter.getTimeoutContext()
 
-	return collection.CountDocuments(ctx, query.filters)
+	count, err := collection.CountDocuments(ctx, query.filters)
+
+	result.Set(count, err)
+
+	return result
 }
 
 // All used to iterate record in collection with matching criterion
-func (query *Query) All() ([]models.Modellable, error) {
-	var err error
+func (query *Query) All() *models.ListResults {
+	results := models.MakeListResults()
 	items := []models.Modellable{}
 
 	adapter := query.collection.Adapter().(*Adapter)
@@ -48,7 +54,7 @@ func (query *Query) All() ([]models.Modellable, error) {
 	for cursor.Next(ctx) {
 		item := query.collection.New(helpers.H{})
 
-		err = cursor.Decode(item)
+		err := cursor.Decode(item)
 
 		if err != nil {
 			break
@@ -57,7 +63,9 @@ func (query *Query) All() ([]models.Modellable, error) {
 		}
 	}
 
-	return items, err
+	results.Set(items, err)
+
+	return results
 }
 
 // Each used to iterate record in collection with matching criterion
@@ -86,45 +94,41 @@ func (query *Query) Each(handler func(models.Modellable, error) bool) error {
 }
 
 // First used to return first record in collection with matching criterion
-func (query *Query) First() (models.Modellable, error) {
-	var err error
+func (query *Query) First() *models.SingleResult {
+	result := models.MakeSingleResult()
 
 	adapter := query.collection.Adapter().(*Adapter)
 	collection := adapter.getCollection(query.collection.Name())
 	ctx := adapter.getTimeoutContext()
 	item := query.collection.New(helpers.H{})
 
-	err = collection.FindOne(ctx, query.filters).Decode(item)
+	err := collection.FindOne(ctx, query.filters).Decode(item)
 
-	if err != nil {
-		return nil, err
-	}
+	result.Set(item, err, query.haveNotFound(err))
 
-	return item, err
+	return result
 }
 
 // FirstOrCreate used to return first record in collection with matching criterion, create one and return if not found
-func (query *Query) FirstOrCreate(attributes helpers.H) (models.Modellable, error) {
-	var err error
+func (query *Query) FirstOrCreate(attributes helpers.H) *models.SingleResult {
+	result := query.First()
 
-	item, err := query.First()
-
-	if item == nil && err != nil && err.Error() == "mongo: no documents in result" {
+	if result.NotFound() {
 		// not found, create one
-		item, err = query.collection.Create(helpers.Merge(query.filters, attributes))
+		result = query.collection.Create(helpers.Merge(query.filters, attributes))
 	}
 
-	return item, err
+	return result
 }
 
 // Find use to find record by id
-func (query *Query) Find(id string) (models.Modellable, error) {
-	var err error
+func (query *Query) Find(id string) *models.SingleResult {
+	result := models.MakeSingleResult()
 
 	oid, err := primitive.ObjectIDFromHex(id)
 
 	if err != nil {
-		return nil, err
+		result.Set(nil, err, false)
 	}
 
 	adapter := query.collection.Adapter().(*Adapter)
@@ -136,14 +140,24 @@ func (query *Query) Find(id string) (models.Modellable, error) {
 		"_id": oid,
 	})).Decode(item)
 
-	return item, err
+	result.Set(item, err, query.haveNotFound(err))
+
+	return result
 }
 
-// Destroy
+// DestroyAll used to destroy all records in collection with matching criterion
 func (query *Query) DestroyAll() error {
 	var err error
 
 	// TODO
 
 	return err
+}
+
+func (query *Query) haveNotFound(err error) bool {
+	if err != nil && err.Error() == "mongo: no documents in result" {
+		return true
+	}
+
+	return false
 }

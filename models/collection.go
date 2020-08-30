@@ -40,14 +40,16 @@ func (collection *Collection) New(values helpers.H) Modellable {
 }
 
 // Create used to create item
-func (collection *Collection) Create(values helpers.H) (Modellable, error) {
-	var err error
+func (collection *Collection) Create(values helpers.H) *SingleResult {
+	result := MakeSingleResult()
 
 	item := collection.New(values)
 
-	err = item.Save()
+	err := item.Save()
 
-	return item, err
+	result.Set(item, err, false)
+
+	return result
 }
 
 // Query returns query wrapper for retrieving records in adapter

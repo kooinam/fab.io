@@ -64,29 +64,29 @@ func (tester *Tester) QueryCount() {
 
 	collection := tester.manager.RegisterCollection(tester.clientName, "tasks", makeTask)
 
-	count, err := collection.Query().Count()
-	expect.Expect(err).To.Equal(nil)
-	expect.Expect(count).To.Equal(int64(0))
+	counter := collection.Query().Count()
+	expect.Expect(counter.Status()).To.Equal(models.StatusSuccess)
+	expect.Expect(counter.Count()).To.Equal(int64(0))
 
-	_, err = collection.Create(helpers.H{
+	result := collection.Create(helpers.H{
 		"text": "short",
 	})
-	expect.Expect(err.Error()).To.Equal("text must be longer than or equal to 10 characters")
+	expect.Expect(result.ErrorMessage()).To.Equal("text must be longer than or equal to 10 characters")
 
 	texts := []string{"test1test1", "test2test2", "test3test3"}
 
 	for i, text := range texts {
-		item, err := collection.Create(helpers.H{
+		result = collection.Create(helpers.H{
 			"text": text,
 		})
-		expect.Expect(err).To.Equal(nil)
+		expect.Expect(result.Status()).To.Equal(models.StatusSuccess)
 
-		task := item.(*Task)
+		task := result.Item().(*Task)
 		expect.Expect(task.Text).To.Equal(text)
 
-		count, err = collection.Query().Count()
-		expect.Expect(err).To.Equal(nil)
-		expect.Expect(count).To.Equal(int64(i + 1))
+		counter = collection.Query().Count()
+		expect.Expect(counter.Status()).To.Equal(models.StatusSuccess)
+		expect.Expect(counter.Count()).To.Equal(int64(i + 1))
 	}
 
 	i := 0
@@ -98,8 +98,8 @@ func (tester *Tester) QueryCount() {
 			task := item.(*Task)
 			expect.Expect(task.Text).To.Equal(texts[i])
 
-			count, _ = collection.Query().Where(helpers.H{"_id": task.ID}).Count()
-			expect.Expect(count).To.Equal(int64(1))
+			counter = collection.Query().Where(helpers.H{"_id": task.ID}).Count()
+			expect.Expect(counter.Count()).To.Equal(int64(1))
 		}
 
 		if i < len(texts)-1 {
@@ -109,14 +109,14 @@ func (tester *Tester) QueryCount() {
 		return true
 	})
 
-	count, _ = collection.Query().Where(helpers.H{"text": "test1test1"}).Count()
-	expect.Expect(count).To.Equal(int64(1))
+	counter = collection.Query().Where(helpers.H{"text": "test1test1"}).Count()
+	expect.Expect(counter.Count()).To.Equal(int64(1))
 
-	item, err := collection.Query().First()
-	expect.Expect(err).To.Equal(nil)
+	result = collection.Query().First()
+	expect.Expect(result.Status()).To.Equal(models.StatusSuccess)
 
-	if err == nil {
-		task := item.(*Task)
+	if result.Success() {
+		task := result.Item().(*Task)
 		expect.Expect(task.Text).To.Equal("test1test1")
 
 		task.Text = "changed"
@@ -128,40 +128,40 @@ func (tester *Tester) QueryCount() {
 		expect.Expect(err).To.Equal(nil)
 	}
 
-	item, err = collection.Query().First()
-	expect.Expect(err).To.Equal(nil)
+	result = collection.Query().First()
+	expect.Expect(result.Status()).To.Equal(models.StatusSuccess)
 
-	if err == nil {
-		task := item.(*Task)
+	if result.Success() {
+		task := result.Item().(*Task)
 		expect.Expect(task.Text).To.Equal("changedchanged")
 	}
 
-	item, err = collection.Query().Where(helpers.H{
+	result = collection.Query().Where(helpers.H{
 		"text": "no",
 	}).First()
-	expect.Expect(item).To.Equal(nil)
-	expect.Expect(err.Error()).To.Equal("mongo: no documents in result")
+	expect.Expect(result.Status()).To.Equal(models.StatusNotFound)
 
-	item, err = collection.Query().Where(helpers.H{
+	result = collection.Query().Where(helpers.H{
 		"text": "no",
 	}).FirstOrCreate(helpers.H{})
-	expect.Expect(err.Error()).To.Equal("text must be longer than or equal to 10 characters")
+	expect.Expect(result.Status()).To.Equal(models.StatusFailed)
+	expect.Expect(result.ErrorMessage()).To.Equal("text must be longer than or equal to 10 characters")
 
-	item, err = collection.Query().Where(helpers.H{
+	result = collection.Query().Where(helpers.H{
 		"text": "nooooooooooook",
 	}).FirstOrCreate(helpers.H{})
-	expect.Expect(err).To.Equal(nil)
+	expect.Expect(result.Status()).To.Equal(models.StatusSuccess)
 
-	id := item.GetID()
-	item, err = collection.Query().Where(helpers.H{
+	id := result.Item().GetID()
+	result = collection.Query().Where(helpers.H{
 		"text": "nooooooooooook",
 	}).FirstOrCreate(helpers.H{})
-	expect.Expect(err).To.Equal(nil)
-	expect.Expect(item.GetID()).To.Equal(id)
+	expect.Expect(result.Status()).To.Equal(models.StatusSuccess)
+	expect.Expect(result.Item().GetID()).To.Equal(id)
 
-	item, err = collection.Query().Find(id)
-	expect.Expect(err).To.Equal(nil)
-	expect.Expect(item.GetID()).To.Equal(id)
+	result = collection.Query().Find(id)
+	expect.Expect(result.Status()).To.Equal(models.StatusSuccess)
+	expect.Expect(result.Item().GetID()).To.Equal(id)
 }
 
 func TestQuery(t *testing.T) {
