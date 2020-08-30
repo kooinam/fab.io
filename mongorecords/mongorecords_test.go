@@ -115,7 +115,7 @@ func (tester *Tester) QueryCount() {
 	result = collection.Query().First()
 	expect.Expect(result.Status()).To.Equal(models.StatusSuccess)
 
-	if result.Success() {
+	if result.StatusSuccess() {
 		task := result.Item().(*Task)
 		expect.Expect(task.Text).To.Equal("test1test1")
 
@@ -131,7 +131,7 @@ func (tester *Tester) QueryCount() {
 	result = collection.Query().First()
 	expect.Expect(result.Status()).To.Equal(models.StatusSuccess)
 
-	if result.Success() {
+	if result.StatusSuccess() {
 		task := result.Item().(*Task)
 		expect.Expect(task.Text).To.Equal("changedchanged")
 	}
@@ -144,7 +144,7 @@ func (tester *Tester) QueryCount() {
 	result = collection.Query().Where(helpers.H{
 		"text": "no",
 	}).FirstOrCreate(helpers.H{})
-	expect.Expect(result.Status()).To.Equal(models.StatusFailed)
+	expect.Expect(result.Status()).To.Equal(models.StatusError)
 	expect.Expect(result.ErrorMessage()).To.Equal("text must be longer than or equal to 10 characters")
 
 	result = collection.Query().Where(helpers.H{

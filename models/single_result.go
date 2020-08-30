@@ -1,7 +1,7 @@
 package models
 
-// StatusFailed used to represent failed query or operation
-const StatusFailed = "failed"
+// StatusError used to represent errored query or operation
+const StatusError = "error"
 
 // StatusNotFound used to represent not found query
 const StatusNotFound = "notfound"
@@ -23,18 +23,18 @@ func MakeSingleResult() *SingleResult {
 	return result
 }
 
-// Failed used to check if operation is failed
-func (result *SingleResult) Failed() bool {
-	return result.status == StatusFailed
+// StatusError used to check if operation is errored
+func (result *SingleResult) StatusError() bool {
+	return result.status == StatusError
 }
 
-// NotFound used to check if record is not found
-func (result *SingleResult) NotFound() bool {
+// StatusNotFound used to check if record is not found
+func (result *SingleResult) StatusNotFound() bool {
 	return result.status == StatusNotFound
 }
 
-// Success used to check if operation is success
-func (result *SingleResult) Success() bool {
+// StatusSuccess used to check if operation is success
+func (result *SingleResult) StatusSuccess() bool {
 	return result.status == StatusSuccess
 }
 
@@ -55,7 +55,7 @@ func (result *SingleResult) Set(item Modellable, err error, notFound bool) {
 	if notFound {
 		result.status = StatusNotFound
 	} else if err != nil {
-		result.status = StatusFailed
+		result.status = StatusError
 	} else {
 		result.status = StatusSuccess
 	}

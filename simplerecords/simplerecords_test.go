@@ -38,12 +38,12 @@ func (tester *Tester) QueryCount() {
 
 	collection := tester.manager.RegisterCollection(tester.clientName, "tasks", makeTask)
 
-	item, err := collection.Create(helpers.H{
+	result := collection.Create(helpers.H{
 		"text": "test",
 	})
 
-	expect.Expect(err).To.Equal(nil)
-	expect.Expect(item.GetID()).To.Equal("1")
+	expect.Expect(result.Status()).To.Equal(models.StatusSuccess)
+	expect.Expect(result.Item().GetID()).To.Equal("1")
 }
 
 func TestQuery(t *testing.T) {

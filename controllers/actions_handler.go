@@ -9,8 +9,8 @@ import (
 	"github.com/kooinam/fabio/logger"
 )
 
-// Action is handler for func(*Connection) (interface{}, error)
-type Action func(*Context) (interface{}, error)
+// Action is alias for func(*Connection) (interface{}, error)
+type Action func(*Context)
 
 // ActionsHandler used to mange callbacks for controllers
 type ActionsHandler struct {
@@ -80,28 +80,16 @@ func (handler *ActionsHandler) RegisterErrorAction(action Action) {
 func (handler *ActionsHandler) handleAction(nsp string, actionName string, conn socketio.Conn, message string) string {
 	logger.Debug("Receiving Event %v#%v", nsp, actionName)
 
-	var status int
-	var errorsView *ErrorsView
-	response, err := handler.execute(actionName, conn, message)
-
-	if err != nil {
-		status = err.Status
-
-		errorsView = &ErrorsView{
-			Messages: err.Error,
-		}
-	} else {
-		status = 200
-	}
+	result := handler.execute(actionName, conn, message)
 
 	json, _ := json.Marshal(&struct {
-		Status   int
+		Status   string      `json:"string"`
 		Response interface{} `json:"response"`
-		Errors   *ErrorsView
+		Error    string      `json:"error"`
 	}{
-		Status:   status,
-		Response: response,
-		Errors:   errorsView,
+		Status:   result.Status(),
+		Response: result.Content(),
+		Error:    result.ErrorMessage(),
 	})
 
 	logger.Debug("--------------------------------------------")
@@ -109,16 +97,15 @@ func (handler *ActionsHandler) handleAction(nsp string, actionName string, conn 
 	return string(json)
 }
 
-func (handler *ActionsHandler) execute(actionName string, conn socketio.Conn, message string) (response interface{}, networkError *NetworkError) {
+func (handler *ActionsHandler) execute(actionName string, conn socketio.Conn, message string) (result *Result) {
 	defer func() {
 		if r := recover(); r != nil {
 			logger.Debug("%v", r)
 			debug.PrintStack()
 
-			networkError = &NetworkError{
-				Status: 500,
-				Error:  r.(error).Error(),
-			}
+			result := makeResult()
+
+			result.Set(nil, StatusInternalServerError, r.(error))
 		}
 	}()
 
@@ -127,20 +114,17 @@ func (handler *ActionsHandler) execute(actionName string, conn socketio.Conn, me
 
 	context := makeContext(conn, params)
 
-	err := handler.controllerHandler.hooksHandler.executeBeforeActionHooks(actionName, context)
+	handler.controllerHandler.hooksHandler.executeBeforeActionHooks(actionName, context)
 
-	if err == nil {
+	if context.result != nil {
 		action := handler.actions[actionName]
-		response, err = action(context)
-	}
 
-	if err != nil {
-		// Validation failed
-		networkError = &NetworkError{
-			Status: 422,
-			Error:  err.Error(),
+		action(context)
+
+		if context.result == nil {
+			context.SetResult(nil, StatusSuccess, nil)
 		}
 	}
 
-	return response, networkError
+	return context.result
 }

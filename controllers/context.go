@@ -10,6 +10,7 @@ type Context struct {
 	conn       socketio.Conn
 	properties *helpers.Dictionary
 	params     *helpers.Dictionary
+	result     *Result
 }
 
 // makeContext use to instantiate controller context instance
@@ -72,4 +73,11 @@ func (context *Context) ParamsStr(key string) string {
 // ParamsInt used to retrieve params value in int
 func (context *Context) ParamsInt(key string, fallback int) int {
 	return context.params.ValueInt(key, fallback)
+}
+
+// SetResult used to half controller's chain and acknoledge request with content, status and error
+func (context *Context) SetResult(content interface{}, status string, err error) {
+	result := makeResult()
+
+	result.Set(content, status, err)
 }

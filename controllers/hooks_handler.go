@@ -1,7 +1,7 @@
 package controllers
 
 // Hook is alias for Hook
-type Hook func(string, *Context) error
+type Hook func(string, *Context)
 
 // HooksHandler used to mange callbacks for controllers
 type HooksHandler struct {
@@ -23,16 +23,12 @@ func (handler *HooksHandler) RegisterBeforeActionHook(beforeActionHook Hook) {
 }
 
 // executeBeforeActionHooks used to execute before action hooks
-func (handler *HooksHandler) executeBeforeActionHooks(action string, context *Context) error {
-	var err error
-
+func (handler *HooksHandler) executeBeforeActionHooks(action string, context *Context) {
 	for _, hook := range handler.beforeActionHooks {
-		err = hook(action, context)
+		hook(action, context)
 
-		if err != nil {
+		if context.result != nil {
 			break
 		}
 	}
-
-	return err
 }

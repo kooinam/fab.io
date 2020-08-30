@@ -4,10 +4,13 @@ import (
 	"github.com/kooinam/fabio/helpers"
 )
 
+// Validator is alias for func(*Connection) (interface{}, error)
+type Validator func() error
+
 // HooksHandler used to mange callbacks for models
 type HooksHandler struct {
 	initializeHook       func(*helpers.Dictionary)
-	validationHooks      []func() error
+	validationHooks      []Validator
 	afterInstantiateHook func()
 	afterMemoizeHook     func()
 }
@@ -15,7 +18,7 @@ type HooksHandler struct {
 // makeHooksHandler used to instantiate CallbacksHandler
 func makeHooksHandler() *HooksHandler {
 	hooksHandler := &HooksHandler{
-		validationHooks: []func() error{},
+		validationHooks: []Validator{},
 	}
 
 	return hooksHandler
@@ -27,7 +30,7 @@ func (handler *HooksHandler) RegisterInitializeHook(initializeHook func(*helpers
 }
 
 // RegisterValidationHook used to add a validation hook
-func (handler *HooksHandler) RegisterValidationHook(validationHook func() error) {
+func (handler *HooksHandler) RegisterValidationHook(validationHook Validator) {
 	handler.validationHooks = append(handler.validationHooks, validationHook)
 }
 

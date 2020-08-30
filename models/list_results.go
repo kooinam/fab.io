@@ -14,13 +14,13 @@ func MakeListResults() *ListResults {
 	return results
 }
 
-// Failed used to check if operation is failed
-func (results *ListResults) Failed() bool {
-	return results.status == StatusFailed
+// StatusError used to check if operation is errored
+func (results *ListResults) StatusError() bool {
+	return results.status == StatusError
 }
 
-// Success used to check if operation is success
-func (results *ListResults) Success() bool {
+// StatusSuccess used to check if operation is success
+func (results *ListResults) StatusSuccess() bool {
 	return results.status == StatusSuccess
 }
 
@@ -35,7 +35,7 @@ func (results *ListResults) Set(items []Modellable, err error) {
 	results.err = err
 
 	if err != nil {
-		results.status = StatusFailed
+		results.status = StatusError
 	} else {
 		results.status = StatusSuccess
 	}

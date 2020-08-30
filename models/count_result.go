@@ -14,13 +14,13 @@ func MakeCountResult() *CountResult {
 	return result
 }
 
-// Failed used to check if operation is failed
-func (result *CountResult) Failed() bool {
-	return result.status == StatusFailed
+// StatusError used to check if operation is errored
+func (result *CountResult) StatusError() bool {
+	return result.status == StatusError
 }
 
-// Success used to check if operation is success
-func (result *CountResult) Success() bool {
+// StatusSuccess used to check if operation is success
+func (result *CountResult) StatusSuccess() bool {
 	return result.status == StatusSuccess
 }
 
@@ -35,7 +35,7 @@ func (result *CountResult) Set(count int64, err error) {
 	result.err = err
 
 	if err != nil {
-		result.status = StatusFailed
+		result.status = StatusError
 	} else {
 		result.status = StatusSuccess
 	}

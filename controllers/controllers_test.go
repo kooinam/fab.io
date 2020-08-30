@@ -16,16 +16,13 @@ func (controller *TesterController) RegisterHooksAndActions(hooksHandler *HooksH
 	actionsHandler.RegisterErrorAction(controller.error)
 }
 
-func (controller *TesterController) connected(context *Context) (interface{}, error) {
-	return nil, nil
+func (controller *TesterController) connected(context *Context) {
 }
 
-func (controller *TesterController) disconnected(context *Context) (interface{}, error) {
-	return nil, nil
+func (controller *TesterController) disconnected(context *Context) {
 }
 
-func (controller *TesterController) error(context *Context) (interface{}, error) {
-	return nil, nil
+func (controller *TesterController) error(context *Context) {
 }
 
 type Tester struct {
