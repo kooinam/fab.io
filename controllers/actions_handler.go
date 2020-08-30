@@ -83,7 +83,7 @@ func (handler *ActionsHandler) handleAction(nsp string, actionName string, conn 
 	result := handler.execute(actionName, conn, message)
 
 	json, _ := json.Marshal(&struct {
-		Status   string      `json:"string"`
+		Status   string      `json:"status"`
 		Response interface{} `json:"response"`
 		Error    string      `json:"error"`
 	}{
