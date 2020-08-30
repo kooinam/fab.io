@@ -75,9 +75,16 @@ func (context *Context) ParamsInt(key string, fallback int) int {
 	return context.params.ValueInt(key, fallback)
 }
 
-// SetResult used to half controller's chain and acknowledge request with content, status and error
-func (context *Context) SetResult(content interface{}, status string, err error) {
+// SetSuccessResult used to halt controller's chain and acknowledge request with content
+func (context *Context) SetSuccessResult(content interface{}) {
 	context.result = makeResult()
 
-	context.result.Set(content, status, err)
+	context.result.Set(content, StatusSuccess, nil)
+}
+
+// SetErrorResult used to halt controller's chain and acknowledge request with status and error
+func (context *Context) SetErrorResult(status string, err error) {
+	context.result = makeResult()
+
+	context.result.Set(nil, status, err)
 }

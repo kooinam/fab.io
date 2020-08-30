@@ -122,7 +122,7 @@ func (handler *ActionsHandler) execute(actionName string, conn socketio.Conn, me
 		action(context)
 
 		if context.result == nil {
-			context.SetResult(nil, StatusSuccess, nil)
+			context.SetSuccessResult(nil)
 		}
 	}
 
