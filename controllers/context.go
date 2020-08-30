@@ -77,7 +77,7 @@ func (context *Context) ParamsInt(key string, fallback int) int {
 
 // SetResult used to half controller's chain and acknoledge request with content, status and error
 func (context *Context) SetResult(content interface{}, status string, err error) {
-	result := makeResult()
+	context.result = makeResult()
 
-	result.Set(content, status, err)
+	context.result.Set(content, status, err)
 }

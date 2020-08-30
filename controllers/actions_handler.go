@@ -116,7 +116,7 @@ func (handler *ActionsHandler) execute(actionName string, conn socketio.Conn, me
 
 	handler.controllerHandler.hooksHandler.executeBeforeActionHooks(actionName, context)
 
-	if context.result != nil {
+	if context.result == nil {
 		action := handler.actions[actionName]
 
 		action(context)
