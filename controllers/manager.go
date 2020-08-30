@@ -62,7 +62,7 @@ func (manager *Manager) Serve(port string, httpHandler func()) {
 		httpHandler()
 	}
 
-	logger.Debug("Starting Socket Server...")
+	logger.Debug("Starting Socket Server @ %v...", port)
 
 	http.ListenAndServe(fmt.Sprintf(":%v", port), nil)
 }

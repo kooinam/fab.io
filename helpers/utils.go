@@ -1,5 +1,9 @@
 package helpers
 
+import (
+	"fmt"
+)
+
 // H is alias for map[string]interface{}
 type H map[string]interface{}
 
@@ -32,4 +36,9 @@ func Merge(h1 H, h2 H) H {
 	}
 
 	return h1
+}
+
+// NotFoundError used to generate error for not round record
+func NotFoundError(itemName string) error {
+	return fmt.Errorf("%v not found", itemName)
 }
