@@ -40,3 +40,7 @@ func (results *ListResults) Set(items []Modellable, err error) {
 		results.status = StatusSuccess
 	}
 }
+
+func (results *ListResults) Error() error {
+	return results.err
+}
