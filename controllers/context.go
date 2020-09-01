@@ -75,6 +75,11 @@ func (context *Context) ParamsInt(key string, fallback int) int {
 	return context.params.ValueInt(key, fallback)
 }
 
+// ParamsFloat64 used to retrieve params value in float64
+func (context *Context) ParamsFloat64(key string, fallback float64) float64 {
+	return context.params.ValueFloat64(key, fallback)
+}
+
 // SetSuccessResult used to halt controller's chain and acknowledge request with content
 func (context *Context) SetSuccessResult(content interface{}) {
 	context.result = makeResult()

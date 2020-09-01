@@ -20,8 +20,16 @@ func (manager *Manager) Setup() {
 	manager.mailboxes = make(Mailboxes)
 
 	go func() {
+		t1 := time.Now()
+
 		for {
-			manager.update()
+			time.Sleep(1 * time.Second)
+
+			t2 := time.Now()
+			dt := t2.Sub(t1)
+			t1 = t2
+
+			manager.update(dt.Seconds())
 		}
 	}()
 }
@@ -82,10 +90,10 @@ func (manager *Manager) GetActorInfos() []*ActorInfo {
 	return actorInfos
 }
 
-func (manager *Manager) update() {
-	time.Sleep(1 * time.Second)
-
+func (manager *Manager) update(dt float64) {
 	for actorIdentifier := range manager.mailboxes {
-		manager.Tell(actorIdentifier, "Update", helpers.H{})
+		manager.Tell(actorIdentifier, "Update", helpers.H{
+			"dt": dt,
+		})
 	}
 }

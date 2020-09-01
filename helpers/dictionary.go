@@ -59,6 +59,28 @@ func (dict *Dictionary) ValueInt(key string, fallback int) int {
 	return value.(int)
 }
 
+// ValueFloat64 used to retrieve params value in float64
+func (dict *Dictionary) ValueFloat64(key string, fallback float64) float64 {
+	value := dict.properties[key]
+
+	if value == nil {
+		return fallback
+	}
+
+	switch value.(type) {
+	case string:
+		f, err := strconv.ParseFloat(value.(string), 64)
+
+		if err != nil {
+			return fallback
+		}
+
+		return f
+	}
+
+	return value.(float64)
+}
+
 // Set used to set property
 func (dict *Dictionary) Set(key string, value interface{}) {
 	dict.properties[key] = value
