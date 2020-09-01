@@ -2,6 +2,7 @@ package actors
 
 import (
 	"fmt"
+	"sync"
 	"time"
 
 	"github.com/kooinam/fabio/helpers"
@@ -13,11 +14,13 @@ type Mailboxes map[string]*ActorInfo
 // Manager is singleton manager for actor module
 type Manager struct {
 	mailboxes Mailboxes
+	mutex     *sync.RWMutex
 }
 
 // Setup used to setup actor manager
 func (manager *Manager) Setup() {
 	manager.mailboxes = make(Mailboxes)
+	manager.mutex = &sync.RWMutex{}
 
 	go func() {
 		t1 := time.Now()
@@ -45,7 +48,8 @@ func (manager *Manager) RegisterActor(nsp string, actable Actable) *Actor {
 		panic("actor already registered")
 	}
 
-	manager.mailboxes[actorIdentifier] = makeActorInfo(actorIdentifier, actor.ch)
+	actorInfo := makeActorInfo(actorIdentifier, actor.ch)
+	manager.setActorInfo(actorIdentifier, actorInfo)
 
 	go func() {
 		manager.Tell(actorIdentifier, "Start", helpers.H{})
@@ -56,7 +60,8 @@ func (manager *Manager) RegisterActor(nsp string, actable Actable) *Actor {
 
 // Tell used to delegating a task to an actor asynchronously
 func (manager *Manager) Tell(actorIdentifier string, eventName string, params map[string]interface{}) {
-	ch := manager.mailboxes[actorIdentifier].ch
+	actorInfo := manager.getActorInfo(actorIdentifier)
+	ch := actorInfo.ch
 	event := makeEvent(eventName, params, nil)
 
 	event.dispatch(ch)
@@ -65,7 +70,9 @@ func (manager *Manager) Tell(actorIdentifier string, eventName string, params ma
 // Request used to delegating a task to an actor synchronously with an response
 func (manager *Manager) Request(actorIdentifier string, eventName string, params map[string]interface{}) error {
 	var err error
-	ch := manager.mailboxes[actorIdentifier].ch
+
+	actorInfo := manager.getActorInfo(actorIdentifier)
+	ch := actorInfo.ch
 	resCh := make(chan Response)
 	event := makeEvent(eventName, params, resCh)
 
@@ -81,6 +88,9 @@ func (manager *Manager) Request(actorIdentifier string, eventName string, params
 
 // GetActorInfos used to return all registered actors
 func (manager *Manager) GetActorInfos() []*ActorInfo {
+	manager.mutex.RLock()
+	defer manager.mutex.RUnlock()
+
 	actorInfos := []*ActorInfo{}
 
 	for _, actorInfo := range manager.mailboxes {
@@ -91,9 +101,26 @@ func (manager *Manager) GetActorInfos() []*ActorInfo {
 }
 
 func (manager *Manager) update(dt float64) {
+	manager.mutex.RLock()
+	defer manager.mutex.RUnlock()
+
 	for actorIdentifier := range manager.mailboxes {
 		manager.Tell(actorIdentifier, "Update", helpers.H{
 			"dt": dt,
 		})
 	}
+}
+
+func (manager *Manager) getActorInfo(actorIdentifier string) *ActorInfo {
+	manager.mutex.RLock()
+	defer manager.mutex.RUnlock()
+
+	return manager.mailboxes[actorIdentifier]
+}
+
+func (manager *Manager) setActorInfo(actorIdentifier string, actorInfo *ActorInfo) {
+	manager.mutex.Lock()
+	defer manager.mutex.Unlock()
+
+	manager.mailboxes[actorIdentifier] = actorInfo
 }
