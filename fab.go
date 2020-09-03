@@ -43,15 +43,15 @@ func Setup() {
 func ConfigureAndServe(initializer Intializer) {
 	Setup()
 
-	initializer.RegisterAdapters(ModelManager())
-	initializer.RegisterCollections(ModelManager())
-
-	initializer.RegisterControllers(ControllerManager())
-
-	initializer.RegisterViews(ViewManager())
-
 	engine.configuration = &Configuration{}
 	initializer.Configure(engine.configuration)
+
+	initializer.RegisterAdapters(ModelManager())
+	initializer.RegisterCollections(ModelManager())
+	initializer.RegisterControllers(ControllerManager())
+	initializer.RegisterViews(ViewManager())
+
+	initializer.BeforeServe()
 
 	ControllerManager().Serve(engine.configuration.port, engine.configuration.httpHandler)
 }

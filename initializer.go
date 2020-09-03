@@ -7,9 +7,18 @@ import (
 )
 
 type Intializer interface {
-	RegisterAdapters(*models.Manager)
-	RegisterCollections(*models.Manager)
-	RegisterControllers(*controllers.Manager)
-	RegisterViews(*views.Manager)
+	// Configure used to configure configurations like port and httphandler
 	Configure(*Configuration)
+
+	// RegisterAdapters used to register adapters
+	RegisterAdapters(*models.Manager)
+	// RegisterCollections used to register collections
+	RegisterCollections(*models.Manager)
+	// RegisterControllers used to register controllers
+	RegisterControllers(*controllers.Manager)
+	// RegisterViews used to register views
+	RegisterViews(*views.Manager)
+
+	//BeforeServe used for custom initializers after fab.io initializes and before serving
+	BeforeServe()
 }
