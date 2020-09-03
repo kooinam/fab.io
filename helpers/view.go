@@ -11,3 +11,15 @@ func IncludeRootInJSON(json interface{}, includeRoot bool, root string) interfac
 
 	return jsonWithRoot
 }
+
+// BuildJSON used to build json with parameters like root key
+func BuildJSON(json interface{}, includeRoot bool, root string) interface{} {
+	if includeRoot == false {
+		return json
+	}
+
+	jsonWithRoot := make(map[string]interface{})
+	jsonWithRoot[root] = json
+
+	return jsonWithRoot
+}

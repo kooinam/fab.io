@@ -42,3 +42,14 @@ func Merge(h1 H, h2 H) H {
 func NotFoundError(itemName string) error {
 	return fmt.Errorf("%v not found", itemName)
 }
+
+// MakeHashes used to build list of hashes
+func MakeHashes(items []interface{}, f func(interface{}) H) []H {
+	hashes := make([]H, len(items))
+
+	for i, item := range items {
+		hashes[i] = f(item)
+	}
+
+	return hashes
+}

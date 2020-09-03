@@ -50,17 +50,17 @@ func (manager *Manager) RegisterController(nsp string, controllable Controllable
 
 // Serve used to serve
 func (manager *Manager) Serve(port string, httpHandler func()) {
-	server := manager.server
-
-	go server.Serve()
-
 	logger.Debug("Initializing fab.io...")
+
+	server := manager.server
 
 	http.Handle("/socket.io/", server)
 
 	if httpHandler != nil {
 		httpHandler()
 	}
+
+	go server.Serve()
 
 	logger.Debug("Starting Socket Server @ %v...", port)
 

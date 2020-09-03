@@ -1,8 +1,13 @@
 package actors
 
+import (
+	"github.com/kooinam/fabio/helpers"
+)
+
 type ActorInfo struct {
 	identifier string
 	ch         chan Event
+	properties *helpers.Dictionary
 }
 
 func makeActorInfo(identifier string, ch chan Event) *ActorInfo {
