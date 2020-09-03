@@ -6,14 +6,14 @@ import (
 
 // Adapter is adapter for simeplerecords
 type Adapter struct {
-	collections []*models.Collection
+	collections map[string]*models.Collection
 	counter     int
 }
 
 // MakeAdapter used to instantiate simplerecord's adapter
 func MakeAdapter() *Adapter {
 	adapter := &Adapter{
-		collections: []*models.Collection{},
+		collections: make(map[string]*models.Collection),
 	}
 
 	return adapter
@@ -25,13 +25,24 @@ func (adapter *Adapter) NewQuery(collection *models.Collection) models.Queryable
 }
 
 // RegisterCollection used to register collection with adapter
-func (adapter *Adapter) RegisterCollection(collection *models.Collection) {
-	adapter.collections = append(adapter.collections, collection)
+func (adapter *Adapter) RegisterCollection(collectionName string, collection *models.Collection) {
+	adapter.collections[collectionName] = collection
 }
 
-// Collections used to retrieve adapter's registered collections
+// Collection used to retrieve registered collection
+func (adapter *Adapter) Collection(collectionName string) *models.Collection {
+	return adapter.collections[collectionName]
+}
+
+// Collections used to retrieve registered collections
 func (adapter *Adapter) Collections() []*models.Collection {
-	return adapter.collections
+	collections := []*models.Collection{}
+
+	for _, collection := range adapter.collections {
+		collections = append(collections, collection)
+	}
+
+	return collections
 }
 
 func (adapter *Adapter) incrcounter() int {

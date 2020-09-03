@@ -26,7 +26,7 @@ func (manager *Manager) RegisterCollection(clientName string, collectionName str
 
 	collection := makeCollection(adapter, collectionName, newHandler)
 
-	adapter.RegisterCollection(collection)
+	adapter.RegisterCollection(collectionName, collection)
 
 	return collection
 }
@@ -38,4 +38,9 @@ func (manager *Manager) CreateCollection(clientName string, collectionName strin
 	collection := makeCollection(adapter, collectionName, newHandler)
 
 	return collection
+}
+
+// Collection used to retrieve registered collection
+func (manager *Manager) Collection(clientName string, collectionName string) *Collection {
+	return manager.Adapter(clientName).Collection(collectionName)
 }

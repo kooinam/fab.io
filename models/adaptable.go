@@ -2,6 +2,7 @@ package models
 
 type Adaptable interface {
 	NewQuery(*Collection) Queryable
-	RegisterCollection(*Collection)
+	RegisterCollection(string, *Collection)
+	Collection(string) *Collection
 	Collections() []*Collection
 }
