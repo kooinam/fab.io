@@ -19,6 +19,6 @@ type Intializer interface {
 	// RegisterViews used to register views
 	RegisterViews(*views.Manager)
 
-	//BeforeServe used for custom initializers after fab.io initializes and before serving
+	//BeforeServe used for custom initializations after fab.io initializes and before serving like loading some seed application data
 	BeforeServe()
 }

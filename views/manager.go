@@ -28,7 +28,7 @@ func (manager *Manager) RenderView(viewName string, properties helpers.H, rootKe
 	return helpers.BuildJSON(v, true, rootKey)
 }
 
-// RenderViewWithoutRootKey used to render view with root key
+// RenderViewWithoutRootKey used to render view without root key
 func (manager *Manager) RenderViewWithoutRootKey(viewName string, properties helpers.H) interface{} {
 	viewHandler := manager.viewHandlers[viewName]
 
@@ -46,6 +46,13 @@ func (manager *Manager) RenderViewWithoutRootKey(viewName string, properties hel
 
 // RenderViews used to render collection of views
 func (manager *Manager) RenderViews(viewName string, propertiesList []helpers.H, rootKey string) interface{} {
+	vs := manager.RenderViewsWithoutRootKey(viewName, propertiesList)
+
+	return helpers.BuildJSON(vs, true, rootKey)
+}
+
+// RenderViewsWithoutRootKey used to render collection of views without root key
+func (manager *Manager) RenderViewsWithoutRootKey(viewName string, propertiesList []helpers.H) interface{} {
 	viewHandler := manager.viewHandlers[viewName]
 
 	if viewHandler == nil {
@@ -63,5 +70,5 @@ func (manager *Manager) RenderViews(viewName string, propertiesList []helpers.H,
 		vs[i] = v
 	}
 
-	return helpers.BuildJSON(vs, true, rootKey)
+	return vs
 }
