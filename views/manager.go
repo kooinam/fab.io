@@ -52,7 +52,7 @@ func (manager *Manager) RenderViews(viewName string, propertiesList []helpers.H,
 }
 
 // RenderViewsWithoutRootKey used to render collection of views without root key
-func (manager *Manager) RenderViewsWithoutRootKey(viewName string, propertiesList []helpers.H) interface{} {
+func (manager *Manager) RenderViewsWithoutRootKey(viewName string, propertiesList []helpers.H) []interface{} {
 	viewHandler := manager.viewHandlers[viewName]
 
 	if viewHandler == nil {
