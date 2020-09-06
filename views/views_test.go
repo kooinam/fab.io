@@ -7,7 +7,6 @@ import (
 	"github.com/kooinam/fabio/models"
 
 	"github.com/karlseguin/expect"
-	"github.com/kooinam/fabio/helpers"
 	"github.com/kooinam/fabio/simplerecords"
 )
 
@@ -47,9 +46,9 @@ func (tester *Tester) RegisterViews() {
 	}
 	players := models.MakeList(player1, player2)
 
-	view1 := tester.manager.RenderSingleView("player", player1, helpers.H{}, "player")
-	view2 := tester.manager.RenderSingleViewWithoutRootKey("player", player1, helpers.H{})
-	views := tester.manager.RenderListView("player", players, helpers.H{}, "players")
+	view1 := tester.manager.RenderSingleView("player", player1, Options().WithRootKey("player"))
+	view2 := tester.manager.RenderSingleView("player", player1, Options())
+	views := tester.manager.RenderListView("player", players, Options().WithRootKey("players"))
 
 	json1, _ := json.Marshal(view1)
 	json2, _ := json.Marshal(view2)

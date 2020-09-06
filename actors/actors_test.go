@@ -17,7 +17,7 @@ type TesterBot struct {
 	energy            int
 }
 
-func (bot *TesterBot) GetID() string {
+func (bot *TesterBot) GetActorIdentifier() string {
 	return bot.id
 }
 
@@ -75,7 +75,7 @@ func (tester *Tester) RegistorActions() {
 		tester: tester,
 	}
 
-	actor := tester.manager.RegisterActor("bot", bot)
+	actor := tester.manager.RegisterActor(bot)
 
 	time.Sleep(1 * time.Second)
 

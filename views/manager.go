@@ -23,14 +23,7 @@ func (manager *Manager) RegisterView(viewName string, handler func() Viewable) {
 }
 
 // RenderView used to render view
-func (manager *Manager) RenderView(viewName string, params helpers.H, rootKey string) interface{} {
-	view := manager.RenderViewWithoutRootKey(viewName, params)
-
-	return helpers.BuildJSON(view, true, rootKey)
-}
-
-// RenderViewWithoutRootKey used to render view without root key
-func (manager *Manager) RenderViewWithoutRootKey(viewName string, params helpers.H) interface{} {
+func (manager *Manager) RenderView(viewName string, params helpers.H) interface{} {
 	viewHandler := manager.viewHandlers[viewName]
 
 	if viewHandler == nil {
@@ -45,15 +38,8 @@ func (manager *Manager) RenderViewWithoutRootKey(viewName string, params helpers
 	return view
 }
 
-// RenderSingleView used to render single item's view
-func (manager *Manager) RenderSingleView(viewName string, item models.Modellable, params helpers.H, rootKey string) interface{} {
-	view := manager.RenderSingleViewWithoutRootKey(viewName, item, params)
-
-	return helpers.BuildJSON(view, true, rootKey)
-}
-
-// RenderSingleViewWithoutRootKey used to render single item's view without root key
-func (manager *Manager) RenderSingleViewWithoutRootKey(viewName string, item models.Modellable, params helpers.H) interface{} {
+// RenderSingleView used to render single item's view with options
+func (manager *Manager) RenderSingleView(viewName string, item models.Modellable, options *options) interface{} {
 	viewHandler := manager.viewHandlers[viewName]
 
 	if viewHandler == nil {
@@ -61,23 +47,16 @@ func (manager *Manager) RenderSingleViewWithoutRootKey(viewName string, item mod
 	}
 
 	renderer := viewHandler.newHandler()
-	context := makeContext(params)
+	context := makeContext(options.params)
 	context.setItem(item)
 
 	view := renderer.Render(context)
 
-	return view
+	return helpers.BuildJSON(view, options.shouldIncludeRootKey, options.rootKey)
 }
 
-// RenderListView used to render list view
-func (manager *Manager) RenderListView(viewName string, list *models.List, params helpers.H, rootKey string) interface{} {
-	view := manager.RenderListViewWithoutRootKey(viewName, list, params)
-
-	return helpers.BuildJSON(view, true, rootKey)
-}
-
-// RenderListViewWithoutRootKey used to render list view without root key
-func (manager *Manager) RenderListViewWithoutRootKey(viewName string, list *models.List, params helpers.H) []interface{} {
+// RenderListView used to render list view with options
+func (manager *Manager) RenderListView(viewName string, list *models.List, options *options) interface{} {
 	viewHandler := manager.viewHandlers[viewName]
 
 	if viewHandler == nil {
@@ -85,7 +64,8 @@ func (manager *Manager) RenderListViewWithoutRootKey(viewName string, list *mode
 	}
 
 	views := make([]interface{}, list.Count())
-	context := makeContext(params)
+	context := makeContext(options.params)
+
 	for i, item := range list.Items() {
 		renderer := viewHandler.newHandler()
 		context.setItem(item)
@@ -94,5 +74,5 @@ func (manager *Manager) RenderListViewWithoutRootKey(viewName string, list *mode
 		views[i] = view
 	}
 
-	return views
+	return helpers.BuildJSON(views, options.shouldIncludeRootKey, options.rootKey)
 }

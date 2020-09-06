@@ -38,8 +38,8 @@ func (manager *Manager) Setup() {
 }
 
 // RegisterActor used to creating an actor instance for model
-func (manager *Manager) RegisterActor(nsp string, actable Actable) *Actor {
-	actor := makeActor(nsp, actable)
+func (manager *Manager) RegisterActor(actable Actable) *Actor {
+	actor := makeActor(actable)
 	actorIdentifier := actor.Identifier()
 
 	_, exists := manager.mailboxes[actorIdentifier]

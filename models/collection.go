@@ -9,10 +9,11 @@ type NewHandler func(*Collection, *HooksHandler) Modellable
 
 // Collection used to contain models
 type Collection struct {
-	adapter    Adaptable
-	list       *List
-	name       string
-	newHandler NewHandler
+	adapter     Adaptable
+	list        *List
+	name        string
+	newHandler  NewHandler
+	actorizable bool
 }
 
 // makeCollection used to instantiate collection instance
