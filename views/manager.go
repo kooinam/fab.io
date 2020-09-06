@@ -77,7 +77,7 @@ func (manager *Manager) RenderListView(viewName string, list *models.List, param
 }
 
 // RenderListViewWithoutRootKey used to render list view without root key
-func (manager *Manager) RenderListViewWithoutRootKey(viewName string, list *models.List, params helpers.H) interface{} {
+func (manager *Manager) RenderListViewWithoutRootKey(viewName string, list *models.List, params helpers.H) []interface{} {
 	viewHandler := manager.viewHandlers[viewName]
 
 	if viewHandler == nil {
