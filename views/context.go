@@ -40,6 +40,11 @@ func (context *Context) ParamsFloat64(key string, fallback float64) float64 {
 	return context.params.ValueFloat64(key, fallback)
 }
 
+// ParamsBool used to retrieve params value in bool
+func (context *Context) ParamsBool(key string) bool {
+	return context.params.ValueBool(key)
+}
+
 // Item used to retrieve itme in context
 func (context *Context) Item() models.Modellable {
 	return context.item

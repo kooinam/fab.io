@@ -11,8 +11,8 @@ import (
 )
 
 type Player struct {
-	simplerecords.Base "json:\"-\""
-	Name               string "json:\"name\""
+	simplerecords.Base `json:"-"`
+	Name               string `json:"name"`
 }
 
 type PlayerView struct {

@@ -81,6 +81,17 @@ func (dict *Dictionary) ValueFloat64(key string, fallback float64) float64 {
 	return value.(float64)
 }
 
+// ValueBool used to retrieve params value in boolean
+func (dict *Dictionary) ValueBool(key string) bool {
+	value := dict.properties[key]
+
+	if value == nil {
+		return false
+	}
+
+	return value.(bool)
+}
+
 // Set used to set property
 func (dict *Dictionary) Set(key string, value interface{}) {
 	dict.properties[key] = value
