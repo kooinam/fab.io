@@ -1,11 +1,13 @@
-package actors
+package views
 
 import (
 	"github.com/kooinam/fabio/helpers"
+	"github.com/kooinam/fabio/models"
 )
 
-// Context used to represent actor execution context with data
+// Context used to represent view rendering context with data
 type Context struct {
+	item   models.Modellable
 	params *helpers.Dictionary
 }
 
@@ -36,4 +38,13 @@ func (context *Context) ParamsInt(key string, fallback int) int {
 // ParamsFloat64 used to retrieve params value in float64
 func (context *Context) ParamsFloat64(key string, fallback float64) float64 {
 	return context.params.ValueFloat64(key, fallback)
+}
+
+// Item used to retrieve itme in context
+func (context *Context) Item() models.Modellable {
+	return context.item
+}
+
+func (context *Context) setItem(item models.Modellable) {
+	context.item = item
 }

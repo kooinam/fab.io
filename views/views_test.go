@@ -4,12 +4,16 @@ import (
 	"encoding/json"
 	"testing"
 
+	"github.com/kooinam/fabio/models"
+
 	"github.com/karlseguin/expect"
 	"github.com/kooinam/fabio/helpers"
+	"github.com/kooinam/fabio/simplerecords"
 )
 
 type Player struct {
-	Name string "json:\"name\""
+	simplerecords.Base "json:\"-\""
+	Name               string "json:\"name\""
 }
 
 type PlayerView struct {
@@ -22,8 +26,8 @@ func makePlayerView() Viewable {
 	return playerView
 }
 
-func (view *PlayerView) Render(properties *helpers.Dictionary) interface{} {
-	view.Player = properties.Value("player").(*Player)
+func (view *PlayerView) Render(context *Context) interface{} {
+	view.Player = context.Item().(*Player)
 
 	return view
 }
@@ -41,22 +45,11 @@ func (tester *Tester) RegisterViews() {
 	player2 := &Player{
 		Name: "player2",
 	}
-	players := []interface{}{
-		player1,
-		player2,
-	}
+	players := models.MakeList(player1, player2)
 
-	view1 := tester.manager.RenderView("player", helpers.H{
-		"player": player1,
-	}, "player")
-	view2 := tester.manager.RenderViewWithoutRootKey("player", helpers.H{
-		"player": player1,
-	})
-	views := tester.manager.RenderViews("player", helpers.MakeHashes(players, func(item interface{}) helpers.H {
-		return helpers.H{
-			"player": item,
-		}
-	}), "players")
+	view1 := tester.manager.RenderSingleView("player", player1, helpers.H{}, "player")
+	view2 := tester.manager.RenderSingleViewWithoutRootKey("player", player1, helpers.H{})
+	views := tester.manager.RenderListView("player", players, helpers.H{}, "players")
 
 	json1, _ := json.Marshal(view1)
 	json2, _ := json.Marshal(view2)

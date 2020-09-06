@@ -115,9 +115,12 @@ func (base *Base) Destroy() error {
 	return err
 }
 
-// Memoize used to add record to memory
-func (base *Base) Memoize() {
+// Store used to add record to list
+func (base *Base) Store() {
 	base.collection.List().Add(base.item)
+}
 
-	base.GetHooksHandler().ExecuteAfterMemoizeHook()
+// StoreInList used to add record to selected list
+func (base *Base) StoreInList(list *models.List) {
+	list.Add(base.item)
 }

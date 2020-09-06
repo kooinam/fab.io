@@ -12,7 +12,6 @@ type HooksHandler struct {
 	initializeHook       func(*helpers.Dictionary)
 	validationHooks      []Validator
 	afterInstantiateHook func()
-	afterMemoizeHook     func()
 }
 
 // makeHooksHandler used to instantiate CallbacksHandler
@@ -37,11 +36,6 @@ func (handler *HooksHandler) RegisterValidationHook(validationHook Validator) {
 // RegisterAfterInstantiateHook used to add after instantiate hook
 func (handler *HooksHandler) RegisterAfterInstantiateHook(afterInstantiateHook func()) {
 	handler.afterInstantiateHook = afterInstantiateHook
-}
-
-// RegisterAfterMemoizeHook used to add after memoize hook
-func (handler *HooksHandler) RegisterAfterMemoizeHook(afterMemoizeHook func()) {
-	handler.afterMemoizeHook = afterMemoizeHook
 }
 
 // ExecuteInitializeHook used to execute after initialize hook
@@ -70,12 +64,5 @@ func (handler *HooksHandler) ExecuteValidationHooks() error {
 func (handler *HooksHandler) ExecuteAfterInstantiateHook() {
 	if handler.afterInstantiateHook != nil {
 		handler.afterInstantiateHook()
-	}
-}
-
-// ExecuteAfterMemoizeHook used to execute after memoize hook
-func (handler *HooksHandler) ExecuteAfterMemoizeHook() {
-	if handler.afterMemoizeHook != nil {
-		handler.afterMemoizeHook()
 	}
 }

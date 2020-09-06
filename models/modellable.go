@@ -5,6 +5,7 @@ type Modellable interface {
 	InitializeBase(*Collection, *HooksHandler, Modellable)
 	GetID() string
 	Save() error
-	Memoize()
 	GetHooksHandler() *HooksHandler
+	Store()
+	StoreInList(*List)
 }

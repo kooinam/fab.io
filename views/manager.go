@@ -2,6 +2,7 @@ package views
 
 import (
 	"github.com/kooinam/fabio/helpers"
+	"github.com/kooinam/fabio/models"
 )
 
 // Manager is singleton manager for view module
@@ -22,53 +23,76 @@ func (manager *Manager) RegisterView(viewName string, handler func() Viewable) {
 }
 
 // RenderView used to render view
-func (manager *Manager) RenderView(viewName string, properties helpers.H, rootKey string) interface{} {
-	v := manager.RenderViewWithoutRootKey(viewName, properties)
+func (manager *Manager) RenderView(viewName string, params helpers.H, rootKey string) interface{} {
+	view := manager.RenderViewWithoutRootKey(viewName, params)
 
-	return helpers.BuildJSON(v, true, rootKey)
+	return helpers.BuildJSON(view, true, rootKey)
 }
 
 // RenderViewWithoutRootKey used to render view without root key
-func (manager *Manager) RenderViewWithoutRootKey(viewName string, properties helpers.H) interface{} {
+func (manager *Manager) RenderViewWithoutRootKey(viewName string, params helpers.H) interface{} {
 	viewHandler := manager.viewHandlers[viewName]
 
 	if viewHandler == nil {
 		return nil
 	}
 
-	dict := helpers.MakeDictionary(properties)
+	renderer := viewHandler.newHandler()
+	context := makeContext(params)
 
-	view := viewHandler.newHandler()
-	v := view.Render(dict)
+	view := renderer.Render(context)
 
-	return v
+	return view
 }
 
-// RenderViews used to render collection of views
-func (manager *Manager) RenderViews(viewName string, propertiesList []helpers.H, rootKey string) interface{} {
-	vs := manager.RenderViewsWithoutRootKey(viewName, propertiesList)
+// RenderSingleView used to render single item's view
+func (manager *Manager) RenderSingleView(viewName string, item models.Modellable, params helpers.H, rootKey string) interface{} {
+	view := manager.RenderSingleViewWithoutRootKey(viewName, item, params)
 
-	return helpers.BuildJSON(vs, true, rootKey)
+	return helpers.BuildJSON(view, true, rootKey)
 }
 
-// RenderViewsWithoutRootKey used to render collection of views without root key
-func (manager *Manager) RenderViewsWithoutRootKey(viewName string, propertiesList []helpers.H) []interface{} {
+// RenderSingleViewWithoutRootKey used to render single item's view without root key
+func (manager *Manager) RenderSingleViewWithoutRootKey(viewName string, item models.Modellable, params helpers.H) interface{} {
 	viewHandler := manager.viewHandlers[viewName]
 
 	if viewHandler == nil {
 		return nil
 	}
 
-	vs := make([]interface{}, len(propertiesList))
+	renderer := viewHandler.newHandler()
+	context := makeContext(params)
+	context.setItem(item)
 
-	for i, properties := range propertiesList {
-		dict := helpers.MakeDictionary(properties)
+	view := renderer.Render(context)
 
-		view := viewHandler.newHandler()
-		v := view.Render(dict)
+	return view
+}
 
-		vs[i] = v
+// RenderListView used to render list view
+func (manager *Manager) RenderListView(viewName string, list *models.List, params helpers.H, rootKey string) interface{} {
+	view := manager.RenderListViewWithoutRootKey(viewName, list, params)
+
+	return helpers.BuildJSON(view, true, rootKey)
+}
+
+// RenderListViewWithoutRootKey used to render list view without root key
+func (manager *Manager) RenderListViewWithoutRootKey(viewName string, list *models.List, params helpers.H) interface{} {
+	viewHandler := manager.viewHandlers[viewName]
+
+	if viewHandler == nil {
+		return nil
 	}
 
-	return vs
+	views := make([]interface{}, list.Count())
+	context := makeContext(params)
+	for i, item := range list.Items() {
+		renderer := viewHandler.newHandler()
+		context.setItem(item)
+
+		view := renderer.Render(context)
+		views[i] = view
+	}
+
+	return views
 }

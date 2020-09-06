@@ -5,12 +5,19 @@ type FindPredicate func(Modellable) bool
 
 // List is an in-memory storage of items
 type List struct {
-	items []Modellable
+	items      []Modellable
+	newHandler NewHandler
 }
 
-// makeList used to instantiate list instance
-func makeList() *List {
-	list := &List{}
+// MakeList used to instantiate list instance
+func MakeList(items ...Modellable) *List {
+	list := &List{
+		items: []Modellable{},
+	}
+
+	for _, item := range items {
+		list.Add(item)
+	}
 
 	return list
 }
@@ -67,7 +74,7 @@ func (list *List) FindByID(id string) Modellable {
 	return found
 }
 
-// Add used to memoize item
+// Add used to store item to list
 func (list *List) Add(item Modellable) {
 	list.items = append(list.items, item)
 }

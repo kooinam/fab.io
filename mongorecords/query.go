@@ -41,10 +41,10 @@ func (query *Query) Count() *models.CountResult {
 	return result
 }
 
-// All used to iterate record in collection with matching criterion
-func (query *Query) All() *models.ListResults {
+// ToList used to iterate record in collection with matching criterion
+func (query *Query) ToList() *models.ListResults {
 	results := models.MakeListResults()
-	items := []models.Modellable{}
+	list := models.MakeList()
 
 	adapter := query.collection.Adapter().(*Adapter)
 	collection := adapter.getCollection(query.collection.Name())
@@ -59,11 +59,11 @@ func (query *Query) All() *models.ListResults {
 		if err != nil {
 			break
 		} else {
-			items = append(items, item)
+			list.Add(item)
 		}
 	}
 
-	results.Set(items, err)
+	results.Set(list, err)
 
 	return results
 }

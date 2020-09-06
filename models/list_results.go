@@ -2,7 +2,7 @@ package models
 
 // ListResults used to wrap multiple record results from query
 type ListResults struct {
-	items  []Modellable
+	list   *List
 	err    error
 	status string
 }
@@ -24,14 +24,14 @@ func (results *ListResults) StatusSuccess() bool {
 	return results.status == StatusSuccess
 }
 
-// Items used to retrieve result's all items
-func (results *ListResults) Items() []Modellable {
-	return results.items
+// List used to retrieve result's list
+func (results *ListResults) List() *List {
+	return results.list
 }
 
-// Set used to set result's items and err
-func (results *ListResults) Set(items []Modellable, err error) {
-	results.items = items
+// Set used to set result's list and err
+func (results *ListResults) Set(list *List, err error) {
+	results.list = list
 	results.err = err
 
 	if err != nil {

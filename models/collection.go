@@ -19,7 +19,7 @@ type Collection struct {
 func makeCollection(adapter Adaptable, collectionName string, newHandler NewHandler) *Collection {
 	collection := &Collection{
 		adapter:    adapter,
-		list:       makeList(),
+		list:       MakeList(),
 		name:       collectionName,
 		newHandler: newHandler,
 	}

@@ -10,5 +10,5 @@ type Queryable interface {
 	First() *SingleResult
 	FirstOrCreate(helpers.H) *SingleResult
 	Find(string) *SingleResult
-	All() *ListResults
+	ToList() *ListResults
 }
