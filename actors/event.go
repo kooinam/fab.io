@@ -1,24 +1,25 @@
 package actors
 
-type Event struct {
-	name       string
-	parameters []string
-	params     map[string]interface{}
-	resCh      chan Response
+type event struct {
+	actorIdentifier string
+	name            string
+	params          map[string]interface{}
+	resCh           chan Response
 }
 
-func makeEvent(eventName string, params map[string]interface{}, resCh chan Response) *Event {
-	event := &Event{
-		name:   eventName,
-		params: params,
-		resCh:  resCh,
+func makeEvent(actorIdentifier string, eventName string, params map[string]interface{}, resCh chan Response) *event {
+	event := &event{
+		actorIdentifier: actorIdentifier,
+		name:            eventName,
+		params:          params,
+		resCh:           resCh,
 	}
 
 	return event
 }
 
 // dispatch used to send event to channel without blocking. if channel's buffer is full, error response will be returned
-func (event *Event) dispatch(ch chan Event) {
+func (event *event) dispatch(ch chan event) {
 	select {
 	case ch <- *event:
 	default:
@@ -26,7 +27,7 @@ func (event *Event) dispatch(ch chan Event) {
 	}
 }
 
-func (event *Event) ack() {
+func (event *event) ack() {
 	if event.resCh != nil {
 		response := makeResponse(0, "ok")
 
@@ -34,7 +35,7 @@ func (event *Event) ack() {
 	}
 }
 
-func (event *Event) nak(message string) {
+func (event *event) nak(message string) {
 	if event.resCh != nil {
 		response := makeResponse(1, message)
 

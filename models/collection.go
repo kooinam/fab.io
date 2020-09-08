@@ -9,11 +9,11 @@ type NewHandler func(*Collection, *HooksHandler) Modellable
 
 // Collection used to contain models
 type Collection struct {
-	adapter     Adaptable
-	list        *List
-	name        string
-	newHandler  NewHandler
-	actorizable bool
+	adapter    Adaptable
+	list       *List
+	name       string
+	newHandler NewHandler
+	options    *collectionoptions
 }
 
 // makeCollection used to instantiate collection instance
@@ -23,6 +23,7 @@ func makeCollection(adapter Adaptable, collectionName string, newHandler NewHand
 		list:       MakeList(),
 		name:       collectionName,
 		newHandler: newHandler,
+		options:    makeCollectionOptions(),
 	}
 
 	return collection
@@ -81,4 +82,11 @@ func (collection *Collection) Name() string {
 // List used to retrieve in-memory list
 func (collection *Collection) List() *List {
 	return collection.list
+}
+
+// WithActorizable used to configure options actorizable
+func (collection *Collection) WithActorizable(actorizable bool) *Collection {
+	collection.options.actorizable = actorizable
+
+	return collection
 }

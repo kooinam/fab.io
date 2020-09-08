@@ -1,27 +1,41 @@
 package actors
 
-import (
-	"fmt"
-)
-
 // Actor is the base representation of actor in actor model
 type Actor struct {
-	identifier     string
-	actionsHandler *ActionsHandler
-	ch             chan Event
+	identifier      string
+	root            *Actor
+	actionsHandler  *ActionsHandler
+	actionsHandlers []*ActionsHandler
+	ch              chan event
 }
 
-// makeActor used to instantiate runner instance
-func makeActor(actable Actable) *Actor {
+// makeRootActor used to instantiate root actor
+func makeRootActor(actable Actable) *Actor {
+	identifier := actable.GetActorIdentifier()
+
 	actor := &Actor{
-		identifier:     fmt.Sprintf(actable.GetActorIdentifier()),
-		actionsHandler: makeActionsHandler(),
-		ch:             make(chan Event, 5),
+		identifier:      identifier,
+		actionsHandler:  makeActionsHandler(identifier),
+		actionsHandlers: []*ActionsHandler{},
+		ch:              make(chan event),
 	}
 
-	actable.RegisterActorActions(actor.actionsHandler)
+	actor.root = actor
 
-	actor.start()
+	return actor
+}
+
+// makeActor used to instantiate actor instance
+func makeActor(actable Actable, parent *Actor) *Actor {
+	root := parent.root
+	identifier := actable.GetActorIdentifier()
+
+	actor := &Actor{
+		identifier:     identifier,
+		root:           root,
+		actionsHandler: makeActionsHandler(identifier),
+		ch:             root.ch,
+	}
 
 	return actor
 }
@@ -31,10 +45,28 @@ func (actor *Actor) Identifier() string {
 	return actor.identifier
 }
 
+func (actor *Actor) handleRegistered() {
+	actor.root.actionsHandlers = append(actor.root.actionsHandlers, actor.actionsHandler)
+}
+
 func (actor *Actor) start() {
+	actor.ch = make(chan event, 5)
+
 	go func() {
 		for event := range actor.ch {
-			actor.actionsHandler.handleEvent(event)
+			handled := false
+
+			for _, actionsHandler := range actor.actionsHandlers {
+				if actionsHandler.identifier == event.actorIdentifier {
+					handled = true
+
+					actionsHandler.handleEvent(event)
+				}
+			}
+
+			if !handled {
+				event.nak("no registered actor for action")
+			}
 		}
 	}()
 }

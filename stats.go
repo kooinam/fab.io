@@ -18,9 +18,9 @@ func serveStats() {
 
 	http.HandleFunc("/stats/index.html", func(w http.ResponseWriter, r *http.Request) {
 		data := &struct {
-			ActorInfos []*actors.ActorInfo
+			Actors []*actors.Actor
 		}{
-			ActorInfos: ActorManager().GetActorInfos(),
+			Actors: ActorManager().GetActors(),
 		}
 
 		tmpl.Execute(w, data)
