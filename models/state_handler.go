@@ -4,7 +4,7 @@ package models
 type StateHandler struct {
 	name      string
 	enterHook func(string)
-	runHook   func()
+	runHook   func(float64)
 	exitHook  func()
 }
 
@@ -24,7 +24,7 @@ func (handler *StateHandler) WithEnterHook(hook func(string)) *StateHandler {
 }
 
 // WithRunHook used to register state handler's run hook
-func (handler *StateHandler) WithRunHook(hook func()) *StateHandler {
+func (handler *StateHandler) WithRunHook(hook func(float64)) *StateHandler {
 	handler.runHook = hook
 
 	return handler
