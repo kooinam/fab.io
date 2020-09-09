@@ -22,14 +22,12 @@ func MakeFiniteStateMachine(defaultStateName string) *FiniteStateMachine {
 	return fsm
 }
 
-// AddStateHandler used to add handler for fsm's state
-func (fsm *FiniteStateMachine) AddStateHandler(
-	stateName string,
-	enterHandler func(string),
-	runHandler func(),
-	exitHandler func(),
-) {
-	fsm.handlers[stateName] = makeHandler(enterHandler, runHandler, exitHandler)
+// RegisterState used to add handler for fsm's state
+func (fsm *FiniteStateMachine) RegisterState(stateName string) *StateHandler {
+	stateHandler := makeStateHandler(stateName)
+	fsm.handlers[stateName] = stateHandler
+
+	return stateHandler
 }
 
 // GoTo used for fsm's state transition
@@ -37,16 +35,16 @@ func (fsm *FiniteStateMachine) GoTo(stateName string, item Modellable) {
 	previousState := fsm.state
 	previousStateHandler := fsm.getStateHandler()
 
-	if previousStateHandler.exitHandler != nil {
-		previousStateHandler.exitHandler()
+	if previousStateHandler.exitHook != nil {
+		previousStateHandler.exitHook()
 	}
 
 	fsm.state = stateName
 
 	currentStateHandler := fsm.getStateHandler()
 
-	if currentStateHandler.enterHandler != nil {
-		currentStateHandler.enterHandler(previousState)
+	if currentStateHandler.enterHook != nil {
+		currentStateHandler.enterHook(previousState)
 	}
 }
 
@@ -64,8 +62,8 @@ func (fsm *FiniteStateMachine) GetName() string {
 func (fsm *FiniteStateMachine) Run(item Modellable) {
 	handler := fsm.getStateHandler()
 
-	if handler.runHandler != nil {
-		handler.runHandler()
+	if handler.runHook != nil {
+		handler.runHook()
 	}
 }
 
@@ -92,25 +90,4 @@ func (fsm *FiniteStateMachine) GetActiveAgent() interface{} {
 
 func (fsm *FiniteStateMachine) getStateHandler() *StateHandler {
 	return fsm.handlers[fsm.state]
-}
-
-// StateHandler used to
-type StateHandler struct {
-	enterHandler func(string)
-	runHandler   func()
-	exitHandler  func()
-}
-
-func makeHandler(
-	enterHandler func(string),
-	runHandler func(),
-	exitHandler func(),
-) *StateHandler {
-	handler := &StateHandler{
-		enterHandler: enterHandler,
-		runHandler:   runHandler,
-		exitHandler:  exitHandler,
-	}
-
-	return handler
 }
