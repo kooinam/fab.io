@@ -9,9 +9,10 @@ import (
 // Base used to represent base classes for all models
 type Base struct {
 	collection   *models.Collection
+	list         *models.List
 	hooksHandler *models.HooksHandler
 	item         models.Modellable
-	ID           string
+	ID           string `json:"id"`
 }
 
 // InitializeBase used for setting up base attributes for a mongo record
@@ -42,6 +43,16 @@ func (base *Base) GetID() string {
 func (base *Base) Save() error {
 	var err error
 
+	err = base.hooksHandler.ExecuteValidationHooks()
+
+	if err != nil {
+		return err
+	}
+
+	if base.list != nil {
+		base.Store()
+	}
+
 	return err
 }
 
@@ -53,4 +64,8 @@ func (base *Base) Store() {
 // StoreInList used to add record to selected list
 func (base *Base) StoreInList(list *models.List) {
 	list.Add(base.item)
+}
+
+func (base *Base) SetList(list *models.List) {
+	base.list = list
 }

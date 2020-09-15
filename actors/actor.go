@@ -45,6 +45,14 @@ func (actor *Actor) Identifier() string {
 	return actor.identifier
 }
 
+func (actor *Actor) Ch() chan event {
+	return actor.ch
+}
+
+func (actor *Actor) Root() string {
+	return actor.root.Identifier()
+}
+
 func (actor *Actor) handleRegistered() {
 	actor.root.actionsHandlers = append(actor.root.actionsHandlers, actor.actionsHandler)
 }

@@ -54,7 +54,7 @@ func (manager *Manager) Serve(port string, httpHandler func()) {
 
 	server := manager.server
 
-	http.Handle("/socket.io/", server)
+	http.Handle("/socket.io/", corsMiddleware(server))
 
 	if httpHandler != nil {
 		httpHandler()
@@ -72,4 +72,19 @@ func (manager *Manager) BroadcastEvent(nsp string, room string, eventName string
 	event := makeEvent(nsp, room, eventName, view, parameters)
 
 	event.Broadcast(manager.server)
+}
+
+func corsMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		allowHeaders := "Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization"
+
+		w.Header().Set("Content-Type", "application/json")
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Access-Control-Allow-Methods", "POST, PUT, PATCH, GET, DELETE")
+		w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
+		w.Header().Set("Access-Control-Allow-Credentials", "true")
+		w.Header().Set("Access-Control-Allow-Headers", allowHeaders)
+
+		next.ServeHTTP(w, r)
+	})
 }

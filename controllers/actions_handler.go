@@ -78,14 +78,14 @@ func (handler *ActionsHandler) RegisterErrorAction(action Action) {
 }
 
 func (handler *ActionsHandler) handleAction(nsp string, actionName string, conn socketio.Conn, message string) string {
-	logger.Debug("Receiving Event %v#%v", nsp, actionName)
+	logger.Debug("Receiving Event: %v#%v Message: %v", nsp, actionName, message)
 
 	result := handler.execute(actionName, conn, message)
 
 	json, _ := json.Marshal(&struct {
 		Status   string      `json:"status"`
-		Response interface{} `json:"response"`
-		Error    string      `json:"error"`
+		Response interface{} `json:"response,omitempty"`
+		Error    string      `json:"error,omitempty"`
 	}{
 		Status:   result.Status(),
 		Response: result.Content(),
