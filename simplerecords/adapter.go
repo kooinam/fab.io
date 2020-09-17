@@ -21,7 +21,9 @@ func MakeAdapter() *Adapter {
 
 // NewQuery used to generate query
 func (adapter *Adapter) NewQuery(collection *models.Collection) models.Queryable {
-	panic("simplerecords does not support query")
+	query := makeQuery(collection)
+
+	return query
 }
 
 // RegisterCollection used to register collection with adapter

@@ -8,20 +8,22 @@ import (
 
 // Base used to represent base classes for all models
 type Base struct {
-	collection   *models.Collection
-	list         *models.List
-	hooksHandler *models.HooksHandler
-	item         models.Modellable
-	ID           string `json:"id"`
+	collection          *models.Collection
+	list                *models.List
+	hooksHandler        *models.HooksHandler
+	associationsHandler *models.AssociationsHandler
+	item                models.Modellable
+	ID                  string `json:"id"`
 }
 
 // InitializeBase used for setting up base attributes for a mongo record
-func (base *Base) InitializeBase(collection *models.Collection, hooksHandler *models.HooksHandler, item models.Modellable) {
-	base.collection = collection
-	base.hooksHandler = hooksHandler
-	base.item = item
+func (base *Base) InitializeBase(context *models.Context) {
+	base.collection = context.Collection()
+	base.hooksHandler = context.HooksHandler()
+	base.associationsHandler = context.AssociationsHandler()
+	base.item = context.Item()
 
-	base.ID = fmt.Sprintf("%v", collection.Adapter().(*Adapter).incrcounter())
+	base.ID = fmt.Sprintf("%v", base.collection.Adapter().(*Adapter).incrcounter())
 }
 
 // GetCollectionName used to retrieve collection's name
@@ -66,6 +68,7 @@ func (base *Base) StoreInList(list *models.List) {
 	list.Add(base.item)
 }
 
+// SetList used to set record's list. Record will be added to list automatically after saved
 func (base *Base) SetList(list *models.List) {
 	base.list = list
 }

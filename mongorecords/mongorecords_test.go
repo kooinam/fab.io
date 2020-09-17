@@ -15,14 +15,13 @@ type Task struct {
 	Completed bool   `bson:"completed"`
 }
 
-func makeTask(collection *models.Collection, hooksHandler *models.HooksHandler) models.Modellable {
+func makeTask(context *models.Context) {
 	task := &Task{}
+	context.SetItem(task)
 
-	hooksHandler.RegisterInitializeHook(task.Initialize)
+	context.HooksHandler().RegisterInitializeHook(task.Initialize)
 
-	hooksHandler.RegisterValidationHook(task.validateTextLength)
-
-	return task
+	context.HooksHandler().RegisterValidationHook(task.validateTextLength)
 }
 
 func (task *Task) Initialize(dict *helpers.Dictionary) {

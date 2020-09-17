@@ -1,11 +1,13 @@
 package models
 
 import (
+	"fmt"
+
 	"github.com/kooinam/fabio/helpers"
 )
 
-// NewHandler is alias for func(args ...interface{}) Modellable
-type NewHandler func(*Collection, *HooksHandler) Modellable
+// NewHandler is alias for func(*Context)
+type NewHandler func(*Context)
 
 // Collection used to contain models
 type Collection struct {
@@ -31,12 +33,18 @@ func makeCollection(adapter Adaptable, collectionName string, newHandler NewHand
 
 // New used to initialize item
 func (collection *Collection) New(values helpers.H) Modellable {
-	hooksHandler := makeHooksHandler()
-	item := collection.newHandler(collection, hooksHandler)
+	attributes := helpers.MakeDictionary(values)
+	context := makeContext(collection, attributes)
+	collection.newHandler(context)
 
-	item.InitializeBase(collection, hooksHandler, item)
+	if context.Item() == nil {
+		panic(fmt.Sprintf("{0}'s new handler does not set item"))
+	}
 
-	item.GetHooksHandler().ExecuteInitializeHook(helpers.MakeDictionary(values))
+	item := context.Item()
+
+	item.InitializeBase(context)
+	item.GetHooksHandler().ExecuteInitializeHook(attributes)
 
 	return item
 }

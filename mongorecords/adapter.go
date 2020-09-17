@@ -80,11 +80,9 @@ func (adapter *Adapter) getTimeoutContext() context.Context {
 
 func (adapter *Adapter) save(base *Base) error {
 	var err error
-	context, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	_, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 
 	defer cancel()
-
-	_ = context
 
 	return err
 }

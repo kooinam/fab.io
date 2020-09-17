@@ -20,10 +20,10 @@ type Base struct {
 }
 
 // InitializeBase used for setting up base attributes for a mongo record
-func (base *Base) InitializeBase(collection *models.Collection, hooksHandler *models.HooksHandler, item models.Modellable) {
-	base.collection = collection
-	base.hooksHandler = hooksHandler
-	base.item = item
+func (base *Base) InitializeBase(context *models.Context) {
+	base.collection = context.Collection()
+	base.hooksHandler = context.HooksHandler()
+	base.item = context.Item()
 }
 
 // GetCollectionName used to retrieve collection's name
