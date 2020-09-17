@@ -62,6 +62,29 @@ func (collection *Collection) Create(values helpers.H) *SingleResult {
 	return result
 }
 
+// CreateWithOptions used to create item with options
+func (collection *Collection) CreateWithOptions(values helpers.H, options *options) *SingleResult {
+	result := MakeSingleResult()
+
+	item := collection.New(values)
+
+	err := item.Save()
+
+	result.Set(item, err, false)
+
+	if err == nil {
+		if options.shouldStore {
+			if options.list == nil {
+				item.Store()
+			} else {
+				item.StoreInList(options.list)
+			}
+		}
+	}
+
+	return result
+}
+
 // Query returns query wrapper for retrieving records in adapter
 func (collection *Collection) Query() Queryable {
 	adapter := collection.Adapter()

@@ -18,8 +18,6 @@ func makePerson(context *models.Context) {
 	context.SetItem(person)
 
 	context.HooksHandler().RegisterInitializeHook(person.initialize)
-
-	person.SetList(context.Collection().List())
 }
 
 func (person *Person) initialize(attributes *helpers.Dictionary) {
@@ -59,18 +57,18 @@ func (tester *Tester) QueryCount() {
 	tester.manager.RegisterAdapter(tester.clientName, adapter)
 
 	collection1 := tester.manager.RegisterCollection(tester.clientName, "people", makePerson)
-	result := collection1.Create(helpers.H{
+	result := collection1.CreateWithOptions(helpers.H{
 		"name": "tester1",
-	})
+	}, models.Options().WithShouldStore(true))
 	expect.Expect(result.Status()).To.Equal(models.StatusSuccess)
 	expect.Expect(result.Item().GetID()).To.Equal("1")
 
 	collection2 := tester.manager.RegisterCollection(tester.clientName, "tasks", makeTask)
-	result = collection2.Create(helpers.H{
+	result = collection2.CreateWithOptions(helpers.H{
 		"text":       "test",
 		"collection": collection1,
 		"ownerID":    "1",
-	})
+	}, models.Options().WithShouldStore(true))
 	expect.Expect(result.Status()).To.Equal(models.StatusSuccess)
 	expect.Expect(result.Item().GetID()).To.Equal("2")
 

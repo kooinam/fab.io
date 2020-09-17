@@ -9,7 +9,6 @@ import (
 // Base used to represent base classes for all models
 type Base struct {
 	collection          *models.Collection
-	list                *models.List
 	hooksHandler        *models.HooksHandler
 	associationsHandler *models.AssociationsHandler
 	item                models.Modellable
@@ -51,10 +50,6 @@ func (base *Base) Save() error {
 		return err
 	}
 
-	if base.list != nil {
-		base.Store()
-	}
-
 	return err
 }
 
@@ -66,9 +61,4 @@ func (base *Base) Store() {
 // StoreInList used to add record to selected list
 func (base *Base) StoreInList(list *models.List) {
 	list.Add(base.item)
-}
-
-// SetList used to set record's list. Record will be added to list automatically after saved
-func (base *Base) SetList(list *models.List) {
-	base.list = list
 }
