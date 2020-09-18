@@ -59,20 +59,20 @@ func (collection *Collection) Create(values helpers.H) *SingleResult {
 
 	result.Set(item, err, false)
 
+	if result.StatusSuccess() {
+		item.GetHooksHandler().ExecuteAfterCreateHook()
+	}
+
 	return result
 }
 
 // CreateWithOptions used to create item with options
 func (collection *Collection) CreateWithOptions(values helpers.H, options *options) *SingleResult {
-	result := MakeSingleResult()
+	result := collection.Create(values)
 
-	item := collection.New(values)
+	if result.StatusSuccess() {
+		item := result.Item()
 
-	err := item.Save()
-
-	result.Set(item, err, false)
-
-	if err == nil {
 		if options.shouldStore {
 			if options.list == nil {
 				item.Store()
