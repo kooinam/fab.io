@@ -6,6 +6,7 @@ import (
 
 // ControllerHandler used to handle controller
 type ControllerHandler struct {
+	manager        *Manager
 	server         *socketio.Server
 	nsp            string
 	controller     Controllable
@@ -14,14 +15,15 @@ type ControllerHandler struct {
 }
 
 // makeControllerHandler used to instantiate controller handler
-func makeControllerHandler(server *socketio.Server, nsp string, controllable Controllable) *ControllerHandler {
+func makeControllerHandler(manager *Manager, server *socketio.Server, nsp string, controllable Controllable) *ControllerHandler {
 	handler := &ControllerHandler{
+		manager:      manager,
 		server:       server,
 		nsp:          nsp,
 		controller:   controllable,
 		hooksHandler: makeHooksHandler(),
 	}
-	handler.actionsHandler = makeActionsHandler(handler)
+	handler.actionsHandler = makeActionsHandler(manager, handler)
 
 	handler.controller.RegisterHooksAndActions(handler.hooksHandler, handler.actionsHandler)
 

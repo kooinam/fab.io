@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/kooinam/fabio/views"
+
 	socketio "github.com/googollee/go-socket.io"
 	"github.com/kooinam/fabio/helpers"
 	"github.com/kooinam/fabio/logger"
@@ -11,12 +13,14 @@ import (
 
 // Manager is singleton manager for controller module
 type Manager struct {
+	viewsManager       *views.Manager
 	server             *socketio.Server
 	controllerHandlers map[string]*ControllerHandler
 }
 
 // Setup used to setup cotroller manager
-func (manager *Manager) Setup() {
+func (manager *Manager) Setup(viewsManager *views.Manager) {
+	manager.viewsManager = viewsManager
 	manager.controllerHandlers = make(map[string]*ControllerHandler)
 
 	server, err := socketio.NewServer(nil)
@@ -41,7 +45,7 @@ func (manager *Manager) Setup() {
 // RegisterController used to register controller
 func (manager *Manager) RegisterController(nsp string, controllable Controllable) {
 	formattedNsp := fmt.Sprintf("/%v", nsp)
-	manager.controllerHandlers[formattedNsp] = makeControllerHandler(manager.server, formattedNsp, controllable)
+	manager.controllerHandlers[formattedNsp] = makeControllerHandler(manager, manager.server, formattedNsp, controllable)
 
 	manager.server.OnError(formattedNsp, func(conn socketio.Conn, e error) {
 		logger.Debug("%v", e)

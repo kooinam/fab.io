@@ -7,14 +7,16 @@ import (
 
 // Context used to represent view rendering context with data
 type Context struct {
-	item   models.Modellable
-	params *helpers.Dictionary
+	manager *Manager
+	item    models.Modellable
+	params  *helpers.Dictionary
 }
 
 // makeContext use to instantiate controller context instance
-func makeContext(params helpers.H) *Context {
+func makeContext(manager *Manager, params helpers.H) *Context {
 	context := &Context{
-		params: helpers.MakeDictionary(params),
+		manager: manager,
+		params:  helpers.MakeDictionary(params),
 	}
 
 	return context
@@ -48,6 +50,10 @@ func (context *Context) ParamsBool(key string) bool {
 // Item used to retrieve itme in context
 func (context *Context) Item() models.Modellable {
 	return context.item
+}
+
+func (context *Context) PrepareRender(viewName string) *Renderer {
+	return context.manager.PrepareRender(viewName)
 }
 
 func (context *Context) setItem(item models.Modellable) {

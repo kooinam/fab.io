@@ -26,3 +26,15 @@ func GetFieldNamesByKey(s interface{}, key string) []string {
 
 	return fieldNames
 }
+
+func GetFieldValueByName(s interface{}, name string) interface{} {
+	rt := reflect.ValueOf(s).Elem()
+
+	if rt.Kind() != reflect.Struct {
+		panic(fmt.Sprintf("bad type - %v", rt.Kind()))
+	}
+
+	field := rt.FieldByName(name)
+
+	return field.Interface()
+}

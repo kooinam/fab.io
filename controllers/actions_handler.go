@@ -14,13 +14,15 @@ type Action func(*Context)
 
 // ActionsHandler used to mange callbacks for controllers
 type ActionsHandler struct {
+	manager           *Manager
 	controllerHandler *ControllerHandler
 	actions           map[string]Action
 }
 
 // makeActionsHandler used to instantiate ActionsHandler
-func makeActionsHandler(controllerHandler *ControllerHandler) *ActionsHandler {
+func makeActionsHandler(manager *Manager, controllerHandler *ControllerHandler) *ActionsHandler {
 	actionsHandler := &ActionsHandler{
+		manager:           manager,
 		controllerHandler: controllerHandler,
 		actions:           make(map[string]Action),
 	}
@@ -43,7 +45,7 @@ func (handler *ActionsHandler) RegisterConnectedAction(action Action) {
 	nsp := handler.controllerHandler.nsp
 
 	handler.controllerHandler.server.OnConnect(nsp, func(conn socketio.Conn) error {
-		context := makeContext(conn, helpers.H{})
+		context := makeContext(handler.manager.viewsManager, conn, helpers.H{})
 
 		action(context)
 
@@ -56,7 +58,7 @@ func (handler *ActionsHandler) RegisterDisconnectedAction(action Action) {
 	nsp := handler.controllerHandler.nsp
 
 	handler.controllerHandler.server.OnDisconnect(nsp, func(conn socketio.Conn, reason string) {
-		context := makeContext(conn, helpers.H{
+		context := makeContext(handler.manager.viewsManager, conn, helpers.H{
 			"reason": reason,
 		})
 
@@ -69,7 +71,7 @@ func (handler *ActionsHandler) RegisterErrorAction(action Action) {
 	nsp := handler.controllerHandler.nsp
 
 	handler.controllerHandler.server.OnError(nsp, func(conn socketio.Conn, err error) {
-		context := makeContext(conn, helpers.H{
+		context := makeContext(handler.manager.viewsManager, conn, helpers.H{
 			"error": err.Error(),
 		})
 
@@ -112,7 +114,7 @@ func (handler *ActionsHandler) execute(actionName string, conn socketio.Conn, me
 	var params helpers.H
 	json.Unmarshal([]byte(message), &params)
 
-	context := makeContext(conn, params)
+	context := makeContext(handler.manager.viewsManager, conn, params)
 
 	handler.controllerHandler.hooksHandler.executeBeforeActionHooks(actionName, context)
 

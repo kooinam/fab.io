@@ -75,6 +75,20 @@ func (tester *Tester) QueryCount() {
 	task := result.Item().(*Task)
 	person := task.Owner.Item().(*Person)
 	expect.Expect(person.Name).To.Equal("tester1")
+
+	result = collection1.CreateWithOptions(helpers.H{
+		"name": "tester2",
+	}, models.Options().WithShouldStore(true))
+	result = collection1.CreateWithOptions(helpers.H{
+		"name": "tester3",
+	}, models.Options().WithShouldStore(true))
+	result = collection1.Query().Where(helpers.H{
+		"Name": "tester2",
+	}).First()
+	found := result.Item().(*Person)
+	expect.Expect(collection1.Query().Count().Count()).To.Equal(int64(3))
+	expect.Expect(result.StatusSuccess()).To.Equal(true)
+	expect.Expect(found.Name).To.Equal("tester2")
 }
 
 func TestQuery(t *testing.T) {

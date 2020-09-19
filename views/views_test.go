@@ -46,9 +46,9 @@ func (tester *Tester) RegisterViews() {
 	}
 	players := models.MakeList(player1, player2)
 
-	view1 := tester.manager.RenderSingleView("player", player1, Options().WithRootKey("player"))
-	view2 := tester.manager.RenderSingleView("player", player1, Options())
-	views := tester.manager.RenderListView("player", players, Options().WithRootKey("players"))
+	view1 := tester.manager.PrepareRender("player").WithRootKey("player").RenderSingle(player1)
+	view2 := tester.manager.PrepareRender("player").RenderSingle(player1)
+	views := tester.manager.PrepareRender("player").WithRootKey("players").RenderList(players)
 
 	json1, _ := json.Marshal(view1)
 	json2, _ := json.Marshal(view2)

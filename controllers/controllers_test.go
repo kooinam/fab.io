@@ -40,7 +40,7 @@ func (tester *Tester) RegistorActions() {
 func TestController(t *testing.T) {
 	manager := &Manager{}
 
-	manager.Setup()
+	manager.Setup(nil)
 
 	tester := &Tester{
 		manager: manager,

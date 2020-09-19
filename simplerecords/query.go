@@ -1,12 +1,15 @@
 package simplerecords
 
 import (
+	"fmt"
+
 	"github.com/kooinam/fabio/helpers"
 	"github.com/kooinam/fabio/models"
 )
 
 type Query struct {
 	collection *models.Collection
+	filters    helpers.H
 }
 
 func makeQuery(collection *models.Collection) *Query {
@@ -19,7 +22,9 @@ func makeQuery(collection *models.Collection) *Query {
 
 // Where used to query collection
 func (query *Query) Where(filters helpers.H) models.Queryable {
-	panic("simplerecords does not supports Where")
+	query.filters = filters
+
+	return query
 }
 
 // Count used to count records in collection with matching criterion
@@ -45,7 +50,29 @@ func (query *Query) Each(handler func(models.Modellable, error) bool) error {
 
 // First used to return first record in collection with matching criterion
 func (query *Query) First() *models.SingleResult {
-	panic("simplerecords does not supports First")
+	result := models.MakeSingleResult()
+
+	list := query.collection.List()
+
+	found := list.Find(func(item models.Modellable) bool {
+		matched := true
+
+		for key, value := range query.filters {
+			if helpers.GetFieldValueByName(item, key) != value {
+				matched = false
+			}
+		}
+
+		return matched
+	})
+
+	if found != nil {
+		result.Set(found, nil, false)
+	} else {
+		result.Set(found, fmt.Errorf("item not found"), true)
+	}
+
+	return result
 }
 
 // FirstOrCreate used to return first record in collection with matching criterion, create one and return if not found

@@ -3,22 +3,25 @@ package controllers
 import (
 	socketio "github.com/googollee/go-socket.io"
 	"github.com/kooinam/fabio/helpers"
+	"github.com/kooinam/fabio/views"
 )
 
 // Context used to represent context with properties and params
 type Context struct {
-	conn       socketio.Conn
-	properties *helpers.Dictionary
-	params     *helpers.Dictionary
-	result     *Result
+	viewsManager *views.Manager
+	conn         socketio.Conn
+	properties   *helpers.Dictionary
+	params       *helpers.Dictionary
+	result       *Result
 }
 
 // makeContext use to instantiate controller context instance
-func makeContext(conn socketio.Conn, params helpers.H) *Context {
+func makeContext(viewsManager *views.Manager, conn socketio.Conn, params helpers.H) *Context {
 	context := &Context{
-		conn:       conn,
-		params:     helpers.MakeDictionary(params),
-		properties: helpers.MakeDictionary(helpers.H{}),
+		viewsManager: viewsManager,
+		conn:         conn,
+		params:       helpers.MakeDictionary(params),
+		properties:   helpers.MakeDictionary(helpers.H{}),
 	}
 
 	return context
@@ -97,4 +100,8 @@ func (context *Context) SetErrorResult(status string, err error) {
 	context.result = makeResult()
 
 	context.result.Set(nil, status, err)
+}
+
+func (context *Context) PrepareRender(viewName string) *views.Renderer {
+	return context.viewsManager.PrepareRender(viewName)
 }

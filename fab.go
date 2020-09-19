@@ -28,8 +28,8 @@ func Setup() {
 	}
 
 	engine.modelManager.Setup()
-	engine.controllerManager.Setup()
 	engine.viewManager.Setup()
+	engine.controllerManager.Setup(ViewManager())
 	engine.actorManager.Setup()
 
 	serveStats()
