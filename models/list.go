@@ -5,8 +5,7 @@ type FindPredicate func(Modellable) bool
 
 // List is an in-memory storage of items
 type List struct {
-	items      []Modellable
-	newHandler NewHandler
+	items []Modellable
 }
 
 // MakeList used to instantiate list instance

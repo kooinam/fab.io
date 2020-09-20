@@ -2,6 +2,7 @@ package views
 
 import (
 	"github.com/kooinam/fabio/helpers"
+	"github.com/kooinam/fabio/logger"
 	"github.com/kooinam/fabio/models"
 )
 
@@ -40,6 +41,8 @@ func (renderer *Renderer) RenderSingle(item models.Modellable) interface{} {
 	viewHandler := renderer.manager.viewHandlers[renderer.viewName]
 
 	if viewHandler == nil {
+		logger.Debug("%v view not found", renderer.viewName)
+
 		return nil
 	}
 
@@ -57,6 +60,8 @@ func (renderer *Renderer) RenderList(list *models.List) interface{} {
 	viewHandler := renderer.manager.viewHandlers[renderer.viewName]
 
 	if viewHandler == nil {
+		logger.Debug("%v view not found", renderer.viewName)
+
 		return nil
 	}
 

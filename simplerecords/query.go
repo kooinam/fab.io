@@ -45,7 +45,19 @@ func (query *Query) ToList() *models.ListResults {
 
 // Each used to iterate record in collection with matching criterion
 func (query *Query) Each(handler func(models.Modellable, error) bool) error {
-	panic("simplerecords does not supports Each")
+	var err error
+
+	items := query.collection.List().Items()
+
+	for _, item := range items {
+		shouldContinue := handler(item, nil)
+
+		if !shouldContinue {
+			break
+		}
+	}
+
+	return err
 }
 
 // First used to return first record in collection with matching criterion
@@ -58,7 +70,9 @@ func (query *Query) First() *models.SingleResult {
 		matched := true
 
 		for key, value := range query.filters {
-			if helpers.GetFieldValueByName(item, key) != value {
+			fieldValue := helpers.GetFieldValueByName(item, key)
+
+			if fieldValue != value {
 				matched = false
 			}
 		}

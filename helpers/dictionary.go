@@ -92,6 +92,16 @@ func (dict *Dictionary) ValueBool(key string) bool {
 	return value.(bool)
 }
 
+func (dict *Dictionary) ValueList(key string) []interface{} {
+	value := dict.properties[key]
+
+	if value == nil {
+		return []interface{}{}
+	}
+
+	return value.([]interface{})
+}
+
 // Set used to set property
 func (dict *Dictionary) Set(key string, value interface{}) {
 	dict.properties[key] = value

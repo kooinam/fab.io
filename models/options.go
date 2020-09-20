@@ -1,7 +1,8 @@
 package models
 
 type options struct {
-	shouldStore bool
+	storable    bool
+	actorizable bool
 	list        *List
 }
 
@@ -11,8 +12,20 @@ func Options() *options {
 	return options
 }
 
-func (options *options) WithShouldStore(shouldStore bool) *options {
-	options.shouldStore = true
+func (options *options) WithStorable(storable bool) *options {
+	options.storable = storable
+
+	return options
+}
+
+func (options *options) WithShouldStore(storable bool) *options {
+	options.storable = storable
+
+	return options
+}
+
+func (options *options) WithActoriazable(actorizable bool) *options {
+	options.actorizable = actorizable
 
 	return options
 }

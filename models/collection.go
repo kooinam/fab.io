@@ -15,7 +15,6 @@ type Collection struct {
 	list       *List
 	name       string
 	newHandler NewHandler
-	options    *collectionoptions
 }
 
 // makeCollection used to instantiate collection instance
@@ -25,7 +24,6 @@ func makeCollection(adapter Adaptable, collectionName string, newHandler NewHand
 		list:       MakeList(),
 		name:       collectionName,
 		newHandler: newHandler,
-		options:    makeCollectionOptions(),
 	}
 
 	return collection
@@ -73,7 +71,7 @@ func (collection *Collection) CreateWithOptions(values helpers.H, options *optio
 	if result.StatusSuccess() {
 		item := result.Item()
 
-		if options.shouldStore {
+		if options.storable {
 			if options.list == nil {
 				item.Store()
 			} else {
@@ -115,9 +113,9 @@ func (collection *Collection) List() *List {
 	return collection.list
 }
 
-// WithActorizable used to configure options actorizable
-func (collection *Collection) WithActorizable(actorizable bool) *Collection {
-	collection.options.actorizable = actorizable
+// // WithActorizable used to configure options actorizable
+// func (collection *Collection) WithActorizable(actorizable bool) *Collection {
+// 	collection.options`.actorizable = actorizable
 
-	return collection
-}
+// 	return collection
+// }
