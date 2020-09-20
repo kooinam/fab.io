@@ -37,6 +37,10 @@ func (belongsTo *BelongsTo) SetKey(key string) {
 	}
 }
 
+func (belongsTo *BelongsTo) Key() string {
+	return belongsTo.key
+}
+
 func (belongsTo *BelongsTo) Item() Modellable {
 	if belongsTo.result == nil {
 		return nil
