@@ -60,28 +60,28 @@ import (
 ### Example - (Simple JavaScript Chatroom App):
 In our first example, we start by creating an simple JavaScript chatroom application which will be connecting to backend services using Fab.io.
 #### Setting up your workspace:
-1. Create an empty directory. In this example we shall use `fab.io-chat-demo`:
+1. Create an empty directory. In this example we shall use `fabio-chat-demo`:
 ```sh
-$ mkdir fab.io-chat-demo
-$ cd fab.io-chat-demo
+$ mkdir fabio-chat-demo
+$ cd fabio-chat-demo
 ```
-2. Create an empty directory `demo` inside `fab.io-chat-demo` to hold our Javascript application codes.
+2. Create an empty directory `demo` inside `fabio-chat-demo` to hold our Javascript application codes.
 ```sh
 $ mkdir demo
 ```
-3. Create an HTML file `chat.html` in the `demo` folder and copy the [snippet content](https://raw.githubusercontent.com/kooinam/fab.io-chat-demo/master/demo/chat.html) over into `chat.html`.
+3. Create an HTML file `chat.html` in the `demo` folder and copy the [snippet content](https://raw.githubusercontent.com/kooinam/fabio-chat-demo/master/demo/chat.html) over into `chat.html`.
 
 #### Setting up backend services:
 Now, let's proceed to setup our backend services.
 1. Use the `go mod` command to manage our package dependencies. Let's go ahead and initialize our package dependencies:
 ```sh
-$ go mod init fab.io-chat-demo
+$ go mod init fabio-chat-demo
 ```
 2. Install Fab.io.
 ```sh
 $ go get -u github.com/kooinam/fab.io
 ```
-3. Create an empty directory `controllers` inside `fab.io-chat-demo` to hold our controllers. A controller is responsible for handling any request and producing the appropriate output. Every controller should implement two functions `RegisterBeforeHooks` and `RegisterActions`.
+3. Create an empty directory `controllers` inside `fabio-chat-demo` to hold our controllers. A controller is responsible for handling any request and producing the appropriate output. Every controller should implement two functions `RegisterBeforeHooks` and `RegisterActions`.
 ```sh
 $ mkdir controllers
 ```
@@ -129,7 +129,7 @@ func (controller *ChatController) message(context *controllers.Context) {
 package main
 
 import (
-	"fab.io-chat-demo/controllers"
+	"fabio-chat-demo/controllers"
 	"net/http"
 
 	fab "github.com/kooinam/fab.io"
@@ -160,8 +160,8 @@ Expore more example use cases by reading our [Wiki](https://github.com/kooinam/f
 
 ## Resources
 - [Wiki](https://github.com/kooinam/fab.io/wiki)
-- https://github.com/kooinam/fab.io-chat-demo - An simple chatroom demo with demonstrations of using routings and controllers.
-- https://github.com/kooinam/fab.io-demo - An simple tic-tac-toe demo with demonstrations of an MVC pattern architecture.
+- https://github.com/kooinam/fabio-chat-demo - An simple chatroom demo with demonstrations of using routings and controllers.
+- https://github.com/kooinam/fabio-demo - An simple tic-tac-toe demo with demonstrations of an MVC pattern architecture.
 
 ## Dependencies
 | Package | Link |
