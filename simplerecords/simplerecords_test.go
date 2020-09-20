@@ -4,8 +4,8 @@ import (
 	"testing"
 
 	"github.com/karlseguin/expect"
-	"github.com/kooinam/fabio/helpers"
-	"github.com/kooinam/fabio/models"
+	"github.com/kooinam/fab.io/helpers"
+	"github.com/kooinam/fab.io/models"
 )
 
 type Person struct {

@@ -1,7 +1,7 @@
 package actors
 
 import (
-	"github.com/kooinam/fabio/helpers"
+	"github.com/kooinam/fab.io/helpers"
 )
 
 // Context used to represent actor execution context with data

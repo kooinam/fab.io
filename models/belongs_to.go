@@ -1,6 +1,6 @@
 package models
 
-import "github.com/kooinam/fabio/helpers"
+import "github.com/kooinam/fab.io/helpers"
 
 type BelongsTo struct {
 	collection *Collection

@@ -1,7 +1,7 @@
 package views
 
 import (
-	"github.com/kooinam/fabio/helpers"
+	"github.com/kooinam/fab.io/helpers"
 )
 
 // Manager is singleton manager for view module

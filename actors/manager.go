@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/kooinam/fabio/helpers"
+	"github.com/kooinam/fab.io/helpers"
 )
 
 // Manager is singleton manager for actor module

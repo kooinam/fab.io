@@ -1,8 +1,8 @@
 package views
 
 import (
-	"github.com/kooinam/fabio/helpers"
-	"github.com/kooinam/fabio/models"
+	"github.com/kooinam/fab.io/helpers"
+	"github.com/kooinam/fab.io/models"
 )
 
 // Context used to represent view rendering context with data

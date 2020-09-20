@@ -1,10 +1,10 @@
 package fab
 
 import (
-	"github.com/kooinam/fabio/actors"
-	"github.com/kooinam/fabio/controllers"
-	"github.com/kooinam/fabio/models"
-	"github.com/kooinam/fabio/views"
+	"github.com/kooinam/fab.io/actors"
+	"github.com/kooinam/fab.io/controllers"
+	"github.com/kooinam/fab.io/models"
+	"github.com/kooinam/fab.io/views"
 )
 
 var engine *Engine

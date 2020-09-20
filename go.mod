@@ -1,4 +1,4 @@
-module github.com/kooinam/fabio
+module github.com/kooinam/fab.io
 
 go 1.14
 

@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"sync"
 
-	"github.com/kooinam/fabio/helpers"
+	"github.com/kooinam/fab.io/helpers"
 )
 
 // Addresses is alias for map[string]*Actor

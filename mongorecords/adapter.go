@@ -4,7 +4,7 @@ import (
 	"context"
 	"time"
 
-	"github.com/kooinam/fabio/models"
+	"github.com/kooinam/fab.io/models"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )

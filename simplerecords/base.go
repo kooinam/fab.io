@@ -3,7 +3,7 @@ package simplerecords
 import (
 	"fmt"
 
-	"github.com/kooinam/fabio/models"
+	"github.com/kooinam/fab.io/models"
 )
 
 // Base used to represent base classes for all models

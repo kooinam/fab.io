@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/karlseguin/expect"
-	"github.com/kooinam/fabio/helpers"
+	"github.com/kooinam/fab.io/helpers"
 )
 
 type ChildBot struct {

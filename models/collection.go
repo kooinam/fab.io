@@ -3,7 +3,7 @@ package models
 import (
 	"fmt"
 
-	"github.com/kooinam/fabio/helpers"
+	"github.com/kooinam/fab.io/helpers"
 )
 
 // NewHandler is alias for func(*Context)

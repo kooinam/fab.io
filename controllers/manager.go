@@ -4,11 +4,11 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/kooinam/fabio/views"
+	"github.com/kooinam/fab.io/views"
 
 	socketio "github.com/googollee/go-socket.io"
-	"github.com/kooinam/fabio/helpers"
-	"github.com/kooinam/fabio/logger"
+	"github.com/kooinam/fab.io/helpers"
+	"github.com/kooinam/fab.io/logger"
 )
 
 // Manager is singleton manager for controller module

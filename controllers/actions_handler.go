@@ -5,8 +5,8 @@ import (
 	"runtime/debug"
 
 	socketio "github.com/googollee/go-socket.io"
-	"github.com/kooinam/fabio/helpers"
-	"github.com/kooinam/fabio/logger"
+	"github.com/kooinam/fab.io/helpers"
+	"github.com/kooinam/fab.io/logger"
 )
 
 // Action is alias for func(*Connection) (interface{}, error)

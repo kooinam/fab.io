@@ -7,22 +7,22 @@
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
-[contributors-shield]: https://img.shields.io/github/contributors/kooinam/fabio.svg?style=flat-square
-[contributors-url]: https://github.com/kooinam/fabio/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/kooinam/fabio.svg?style=flat-square
-[forks-url]: https://github.com/kooinam/fabio/network/members
-[stars-shield]: https://img.shields.io/github/stars/kooinam/fabio.svg?style=flat-square
-[stars-url]: https://github.com/kooinam/fabio/stargazers
-[issues-shield]: https://img.shields.io/github/issues/kooinam/fabio.svg?style=flat-square
-[issues-url]: https://github.com/kooinam/fabio/issues
-[license-shield]: https://img.shields.io/github/license/kooinam/fabio.svg?style=flat-square
-[license-url]: https://github.com/kooinam/fabio/blob/master/LICENSE.txt
+[contributors-shield]: https://img.shields.io/github/contributors/kooinam/fab.io.svg?style=flat-square
+[contributors-url]: https://github.com/kooinam/fab.io/graphs/contributors
+[forks-shield]: https://img.shields.io/github/forks/kooinam/fab.io.svg?style=flat-square
+[forks-url]: https://github.com/kooinam/fab.io/network/members
+[stars-shield]: https://img.shields.io/github/stars/kooinam/fab.io.svg?style=flat-square
+[stars-url]: https://github.com/kooinam/fab.io/stargazers
+[issues-shield]: https://img.shields.io/github/issues/kooinam/fab.io.svg?style=flat-square
+[issues-url]: https://github.com/kooinam/fab.io/issues
+[license-shield]: https://img.shields.io/github/license/kooinam/fab.io.svg?style=flat-square
+[license-url]: https://github.com/kooinam/fab.io/blob/master/LICENSE.txt
 
 # Fab.io
 Fab.io is a lightweight real-time game backend framework written in Go (Golang).
 
-  - [MVC Pattern](https://github.com/kooinam/fabio/wiki)
-  - [Synchronized Loop Based Actor Model](https://github.com/kooinam/fabio/wiki/2.-Actor-Model)
+  - [MVC Pattern](https://github.com/kooinam/fab.io/wiki)
+  - [Synchronized Loop Based Actor Model](https://github.com/kooinam/fab.io/wiki/2.-Actor-Model)
   - Powered by socket.io
 
 ## Table of Contents
@@ -47,12 +47,12 @@ To install Fab.io package, you will need to:
 
 1. Install Fab.io
 ```sh
-$ go get -u github.com/kooinam/fabio
+$ go get -u github.com/kooinam/fab.io
 ```
 2. Import it in your code:
 ```go
 import (
-	fab "github.com/kooinam/fabio"
+	fab "github.com/kooinam/fab.io"
 )
 ```
 
@@ -60,28 +60,28 @@ import (
 ### Example - (Simple JavaScript Chatroom App):
 In our first example, we start by creating an simple JavaScript chatroom application which will be connecting to backend services using Fab.io.
 #### Setting up your workspace:
-1. Create an empty directory. In this example we shall use `fabio-chat-demo`:
+1. Create an empty directory. In this example we shall use `fab.io-chat-demo`:
 ```sh
-$ mkdir fabio-chat-demo
-$ cd fabio-chat-demo
+$ mkdir fab.io-chat-demo
+$ cd fab.io-chat-demo
 ```
-2. Create an empty directory `demo` inside `fabio-chat-demo` to hold our Javascript application codes.
+2. Create an empty directory `demo` inside `fab.io-chat-demo` to hold our Javascript application codes.
 ```sh
 $ mkdir demo
 ```
-3. Create an HTML file `chat.html` in the `demo` folder and copy the [snippet content](https://raw.githubusercontent.com/kooinam/fabio-chat-demo/master/demo/chat.html) over into `chat.html`.
+3. Create an HTML file `chat.html` in the `demo` folder and copy the [snippet content](https://raw.githubusercontent.com/kooinam/fab.io-chat-demo/master/demo/chat.html) over into `chat.html`.
 
 #### Setting up backend services:
 Now, let's proceed to setup our backend services.
 1. Use the `go mod` command to manage our package dependencies. Let's go ahead and initialize our package dependencies:
 ```sh
-$ go mod init fabio-chat-demo
+$ go mod init fab.io-chat-demo
 ```
 2. Install Fab.io.
 ```sh
-$ go get -u github.com/kooinam/fabio
+$ go get -u github.com/kooinam/fab.io
 ```
-3. Create an empty directory `controllers` inside `fabio-chat-demo` to hold our controllers. A controller is responsible for handling any request and producing the appropriate output. Every controller should implement two functions `RegisterBeforeHooks` and `RegisterActions`.
+3. Create an empty directory `controllers` inside `fab.io-chat-demo` to hold our controllers. A controller is responsible for handling any request and producing the appropriate output. Every controller should implement two functions `RegisterBeforeHooks` and `RegisterActions`.
 ```sh
 $ mkdir controllers
 ```
@@ -90,9 +90,9 @@ $ mkdir controllers
 package controllers
 
 import (
-	fab "github.com/kooinam/fabio"
-	"github.com/kooinam/fabio/controllers"
-	"github.com/kooinam/fabio/helpers"
+	fab "github.com/kooinam/fab.io"
+	"github.com/kooinam/fab.io/controllers"
+	"github.com/kooinam/fab.io/helpers"
 )
 
 // ChatController used for chat purposes
@@ -129,10 +129,10 @@ func (controller *ChatController) message(context *controllers.Context) {
 package main
 
 import (
-	"fabio-chat-demo/controllers"
+	"fab.io-chat-demo/controllers"
 	"net/http"
 
-	fab "github.com/kooinam/fabio"
+	fab "github.com/kooinam/fab.io"
 )
 
 func main() {
@@ -156,12 +156,12 @@ go run main.go
 2. Navigate to `http://localhost:8000/demo/chat.html` on your browser to see your chatroom application in action!
 
 #### Interested on other use cases?
-Expore more example use cases by reading our [Wiki](https://github.com/kooinam/fabio/wiki)!
+Expore more example use cases by reading our [Wiki](https://github.com/kooinam/fab.io/wiki)!
 
 ## Resources
-- [Wiki](https://github.com/kooinam/fabio/wiki)
-- https://github.com/kooinam/fabio-chat-demo - An simple chatroom demo with demonstrations of using routings and controllers.
-- https://github.com/kooinam/fabio-demo - An simple tic-tac-toe demo with demonstrations of an MVC pattern architecture.
+- [Wiki](https://github.com/kooinam/fab.io/wiki)
+- https://github.com/kooinam/fab.io-chat-demo - An simple chatroom demo with demonstrations of using routings and controllers.
+- https://github.com/kooinam/fab.io-demo - An simple tic-tac-toe demo with demonstrations of an MVC pattern architecture.
 
 ## Dependencies
 | Package | Link |

@@ -2,8 +2,8 @@ package controllers
 
 import (
 	socketio "github.com/googollee/go-socket.io"
-	"github.com/kooinam/fabio/helpers"
-	"github.com/kooinam/fabio/views"
+	"github.com/kooinam/fab.io/helpers"
+	"github.com/kooinam/fab.io/views"
 )
 
 // Context used to represent context with properties and params

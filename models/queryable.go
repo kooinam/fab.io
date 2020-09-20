@@ -1,6 +1,6 @@
 package models
 
-import "github.com/kooinam/fabio/helpers"
+import "github.com/kooinam/fab.io/helpers"
 
 // Queryable is the interface for all query adapter implementing query's functionalities
 type Queryable interface {

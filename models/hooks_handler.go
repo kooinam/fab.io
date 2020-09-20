@@ -1,7 +1,7 @@
 package models
 
 import (
-	"github.com/kooinam/fabio/helpers"
+	"github.com/kooinam/fab.io/helpers"
 )
 
 // Validator is alias for func(*Connection) (interface{}, error)

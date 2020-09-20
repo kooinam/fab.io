@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/kooinam/fabio/models"
+	"github.com/kooinam/fab.io/models"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )

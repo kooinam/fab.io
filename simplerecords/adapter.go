@@ -1,7 +1,7 @@
 package simplerecords
 
 import (
-	"github.com/kooinam/fabio/models"
+	"github.com/kooinam/fab.io/models"
 )
 
 // Adapter is adapter for simeplerecords

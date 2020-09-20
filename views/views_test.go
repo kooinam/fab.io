@@ -4,10 +4,10 @@ import (
 	"encoding/json"
 	"testing"
 
-	"github.com/kooinam/fabio/models"
+	"github.com/kooinam/fab.io/models"
 
 	"github.com/karlseguin/expect"
-	"github.com/kooinam/fabio/simplerecords"
+	"github.com/kooinam/fab.io/simplerecords"
 )
 
 type Player struct {
