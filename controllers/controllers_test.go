@@ -9,8 +9,8 @@ import (
 type TesterController struct {
 }
 
-// RegisterHooksAndActions used to register before hooks and actions
-func (controller *TesterController) RegisterHooksAndActions(hooksHandler *HooksHandler, actionsHandler *ActionsHandler) {
+// RegisterActions used to register actions
+func (controller *TesterController) RegisterActions(actionsHandler *ActionsHandler) {
 	actionsHandler.RegisterConnectedAction(controller.connected)
 	actionsHandler.RegisterDisconnectedAction(controller.connected)
 	actionsHandler.RegisterErrorAction(controller.error)

@@ -49,6 +49,7 @@ type TesterBot struct {
 	replenishInterval float64
 	energy            int
 	children          []*ChildBot
+	dirty             bool
 }
 
 func (bot *TesterBot) GetActorIdentifier() string {
@@ -56,9 +57,22 @@ func (bot *TesterBot) GetActorIdentifier() string {
 }
 
 func (bot *TesterBot) RegisterActorActions(actionsHandler *ActionsHandler) {
+	actionsHandler.RegisterBeforeActionHook(bot.before)
+	actionsHandler.RegisterAfterActionHook(bot.after)
+
 	actionsHandler.RegisterAction("Start", bot.start)
 	actionsHandler.RegisterAction("Update", bot.update)
 	actionsHandler.RegisterAction("Attack", bot.attack)
+}
+
+func (bot *TesterBot) before(actionName string, context *Context) {
+	context.SetProperty("dirty", false)
+}
+
+func (bot *TesterBot) after(actionName string, context *Context) {
+	if context.PropertyBool("dirty") {
+		bot.dirty = true
+	}
 }
 
 func (bot *TesterBot) start(context *Context) error {
@@ -102,6 +116,9 @@ func (bot *TesterBot) update(context *Context) error {
 
 		bot.energy++
 	}
+
+	expect.Expect(context.PropertyBool("dirty")).To.Equal(false)
+	context.SetProperty("dirty", true)
 
 	return err
 }
@@ -151,6 +168,7 @@ func (tester *Tester) RegistorActions() {
 
 	expect.Expect(bot.energy).To.Equal(0)
 	expect.Expect(bot.replenishInterval).To.Equal(float64(2))
+	expect.Expect(bot.dirty).To.Equal(true)
 
 	time.Sleep(4 * time.Second)
 

@@ -9,6 +9,9 @@ import (
 	"github.com/kooinam/fab.io/logger"
 )
 
+// Hook is alias for func(string, *Context)
+type Hook func(string, *Context)
+
 // Action is alias for func(*Connection) (interface{}, error)
 type Action func(*Context)
 
@@ -16,6 +19,7 @@ type Action func(*Context)
 type ActionsHandler struct {
 	manager           *Manager
 	controllerHandler *ControllerHandler
+	beforeActionHooks []Hook
 	actions           map[string]Action
 }
 
@@ -24,10 +28,16 @@ func makeActionsHandler(manager *Manager, controllerHandler *ControllerHandler) 
 	actionsHandler := &ActionsHandler{
 		manager:           manager,
 		controllerHandler: controllerHandler,
+		beforeActionHooks: []Hook{},
 		actions:           make(map[string]Action),
 	}
 
 	return actionsHandler
+}
+
+// RegisterBeforeActionHook used to add before hook
+func (handler *ActionsHandler) RegisterBeforeActionHook(beforeActionHook Hook) {
+	handler.beforeActionHooks = append(handler.beforeActionHooks, beforeActionHook)
 }
 
 // RegisterAction used to register action
@@ -79,6 +89,17 @@ func (handler *ActionsHandler) RegisterErrorAction(action Action) {
 	})
 }
 
+// executeBeforeActionHooks used to execute before action hooks
+func (handler *ActionsHandler) executeBeforeActionHooks(action string, context *Context) {
+	for _, hook := range handler.beforeActionHooks {
+		hook(action, context)
+
+		if context.result != nil {
+			break
+		}
+	}
+}
+
 func (handler *ActionsHandler) handleAction(nsp string, actionName string, conn socketio.Conn, message string) string {
 	logger.Debug("Receiving Event: %v#%v Message: %v", nsp, actionName, message)
 
@@ -116,7 +137,7 @@ func (handler *ActionsHandler) execute(actionName string, conn socketio.Conn, me
 
 	context := makeContext(handler.manager.viewsManager, conn, params)
 
-	handler.controllerHandler.hooksHandler.executeBeforeActionHooks(actionName, context)
+	handler.executeBeforeActionHooks(actionName, context)
 
 	if context.result == nil {
 		action := handler.actions[actionName]
