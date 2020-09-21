@@ -40,13 +40,14 @@ func (event *Event) Broadcast(server *socketio.Server) {
 }
 
 func (event *Event) render() string {
-	parameters := event.parameters
+	view := make(map[string]interface{})
+	view["response"] = event.view
 
+	parameters := event.parameters
 	if parameters == nil {
 		parameters = make(map[string]interface{})
 	}
-
-	view := &struct {
+	view["event"] = &struct {
 		CreatedAt  int64                  `json:"createdAt"`
 		Name       string                 `json:"name"`
 		Parameters map[string]interface{} `json:"parameters"`
@@ -56,7 +57,7 @@ func (event *Event) render() string {
 		Parameters: parameters,
 	}
 
-	json, _ := json.Marshal(view)
+	json, _ := json.Marshal(response)
 
 	return string(json)
 }
