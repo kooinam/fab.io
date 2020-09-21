@@ -57,7 +57,7 @@ func (event *Event) render() string {
 		Parameters: parameters,
 	}
 
-	json, _ := json.Marshal(response)
+	json, _ := json.Marshal(view)
 
 	return string(json)
 }
