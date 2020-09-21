@@ -2,6 +2,7 @@ package actors
 
 // Actor is the base representation of actor in actor model
 type Actor struct {
+	manager         *Manager
 	identifier      string
 	root            *Actor
 	actionsHandler  *ActionsHandler
@@ -10,12 +11,12 @@ type Actor struct {
 }
 
 // makeRootActor used to instantiate root actor
-func makeRootActor(actable Actable) *Actor {
+func makeRootActor(manager *Manager, actable Actable) *Actor {
 	identifier := actable.GetActorIdentifier()
 
 	actor := &Actor{
 		identifier:      identifier,
-		actionsHandler:  makeActionsHandler(identifier),
+		actionsHandler:  makeActionsHandler(manager, identifier),
 		actionsHandlers: []*ActionsHandler{},
 		ch:              make(chan event),
 	}
@@ -26,14 +27,14 @@ func makeRootActor(actable Actable) *Actor {
 }
 
 // makeActor used to instantiate actor instance
-func makeActor(actable Actable, parent *Actor) *Actor {
+func makeActor(manager *Manager, actable Actable, parent *Actor) *Actor {
 	root := parent.root
 	identifier := actable.GetActorIdentifier()
 
 	actor := &Actor{
 		identifier:     identifier,
 		root:           root,
-		actionsHandler: makeActionsHandler(identifier),
+		actionsHandler: makeActionsHandler(manager, identifier),
 		ch:             root.ch,
 	}
 

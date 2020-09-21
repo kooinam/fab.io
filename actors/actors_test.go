@@ -143,7 +143,7 @@ type Tester struct {
 
 func (tester *Tester) Each(f func()) {
 	manager := &Manager{}
-	manager.Setup()
+	manager.Setup(nil)
 
 	tester.manager = manager
 
@@ -168,10 +168,10 @@ func (tester *Tester) RegistorActions() {
 
 	expect.Expect(bot.energy).To.Equal(0)
 	expect.Expect(bot.replenishInterval).To.Equal(float64(2))
-	expect.Expect(bot.dirty).To.Equal(true)
 
 	time.Sleep(4 * time.Second)
 
+	expect.Expect(bot.dirty).To.Equal(true)
 	expect.Expect(bot.energy).To.Equal(2)
 
 	err = tester.manager.Request(bot.GetActorIdentifier(), "attack", helpers.H{})

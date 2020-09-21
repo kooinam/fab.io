@@ -30,7 +30,7 @@ func Setup() {
 	engine.modelManager.Setup()
 	engine.viewManager.Setup()
 	engine.controllerManager.Setup(ViewManager())
-	engine.actorManager.Setup()
+	engine.actorManager.Setup(ViewManager())
 
 	serveStats()
 }

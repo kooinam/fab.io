@@ -5,15 +5,18 @@ import (
 	"time"
 
 	"github.com/kooinam/fab.io/helpers"
+	"github.com/kooinam/fab.io/views"
 )
 
 // Manager is singleton manager for actor module
 type Manager struct {
+	viewsManager *views.Manager
 	*Mailbox
 }
 
 // Setup used to setup actor manager
-func (manager *Manager) Setup() {
+func (manager *Manager) Setup(viewsManager *views.Manager) {
+	manager.viewsManager = viewsManager
 	manager.Mailbox = makeMailbox(manager)
 
 	go func() {

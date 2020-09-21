@@ -2,19 +2,22 @@ package actors
 
 import (
 	"github.com/kooinam/fab.io/helpers"
+	"github.com/kooinam/fab.io/views"
 )
 
 // Context used to represent actor execution context with data
 type Context struct {
-	params     *helpers.Dictionary
-	properties *helpers.Dictionary
+	viewsManager *views.Manager
+	params       *helpers.Dictionary
+	properties   *helpers.Dictionary
 }
 
 // makeContext use to instantiate controller context instance
-func makeContext(params helpers.H) *Context {
+func makeContext(viewsManager *views.Manager, params helpers.H) *Context {
 	context := &Context{
-		params:     helpers.MakeDictionary(params),
-		properties: helpers.MakeDictionary(helpers.H{}),
+		viewsManager: viewsManager,
+		params:       helpers.MakeDictionary(params),
+		properties:   helpers.MakeDictionary(helpers.H{}),
 	}
 
 	return context
@@ -73,4 +76,8 @@ func (context *Context) PropertyFloat64(key string, fallback float64) float64 {
 // PropertyBool used to retrieve params value in bool
 func (context *Context) PropertyBool(key string) bool {
 	return context.properties.ValueBool(key)
+}
+
+func (context *Context) PrepareRender(viewName string) *views.Renderer {
+	return context.viewsManager.PrepareRender(viewName)
 }

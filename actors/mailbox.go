@@ -31,7 +31,7 @@ func (mailbox *Mailbox) registerActor(actable Actable) error {
 	var err error
 
 	actorIdentifier := actable.GetActorIdentifier()
-	actor := makeRootActor(actable)
+	actor := makeRootActor(mailbox.manager, actable)
 
 	err = mailbox.setActor(actorIdentifier, actor)
 
@@ -64,7 +64,7 @@ func (mailbox *Mailbox) registerChildActor(actable Actable, parent Actable) erro
 	}
 
 	actorIdentifier := actable.GetActorIdentifier()
-	actor := makeActor(actable, parentActor)
+	actor := makeActor(mailbox.manager, actable, parentActor)
 
 	err = mailbox.setActor(actorIdentifier, actor)
 
