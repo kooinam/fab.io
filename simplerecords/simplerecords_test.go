@@ -28,7 +28,8 @@ type Task struct {
 	Base
 	Text      string
 	Completed bool
-	Owner     *models.BelongsTo
+	OwnerID   string
+	Owner     *models.BelongsTo `fab:"foreignKey:OwnerID"`
 }
 
 func makeTask(context *models.Context) {
@@ -70,11 +71,13 @@ func (tester *Tester) QueryCount() {
 		"ownerID":    "1",
 	}, models.Options().WithShouldStore(true))
 	expect.Expect(result.Status()).To.Equal(models.StatusSuccess)
-	expect.Expect(result.Item().GetID()).To.Equal("2")
 
 	task := result.Item().(*Task)
+	expect.Expect(task.GetID()).To.Equal("2")
+
 	person := task.Owner.Item().(*Person)
 	expect.Expect(person.Name).To.Equal("tester1")
+	expect.Expect(task.OwnerID).To.Equal(person.GetID())
 
 	result = collection1.CreateWithOptions(helpers.H{
 		"name": "tester2",

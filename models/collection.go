@@ -41,6 +41,18 @@ func (collection *Collection) New(values helpers.H) Modellable {
 
 	item := context.Item()
 
+	fieldsDetails := helpers.GetFieldsDetailsByTag(item, "foreginKey")
+	for _, fieldDetails := range fieldsDetails {
+		fieldName := fieldDetails.ValueStr("name")
+		tagValue := fieldDetails.ValueStr("value")
+
+		value := helpers.GetFieldValueByName(item, fieldName)
+
+		belongsTo := value.(*BelongsTo)
+		belongsTo.item = item
+		belongsTo.foreignKey = tagValue
+	}
+
 	item.InitializeBase(context)
 	item.GetHooksHandler().ExecuteInitializeHook(attributes)
 

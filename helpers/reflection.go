@@ -3,10 +3,11 @@ package helpers
 import (
 	"fmt"
 	"reflect"
+	"strings"
 )
 
-func GetFieldNamesByKey(s interface{}, key string) []string {
-	fieldNames := []string{}
+func GetFieldsDetailsByTag(s interface{}, tag string) []*Dictionary {
+	fieldsDetails := []*Dictionary{}
 	rt := reflect.TypeOf(s).Elem()
 
 	if rt.Kind() != reflect.Struct {
@@ -15,16 +16,18 @@ func GetFieldNamesByKey(s interface{}, key string) []string {
 
 	for i := 0; i < rt.NumField(); i++ {
 		field := rt.Field(i)
-		tag := field.Tag.Get(key)
+		tagValue := strings.Split(field.Tag.Get("fab"), ",")[0]
 
-		fmt.Printf("%v - %v\n", field.Name, tag)
-
-		if len(tag) > 0 {
-			fieldNames = append(fieldNames, field.Name)
+		if len(tagValue) > 0 {
+			fieldDetails := MakeDictionary(H{
+				"name":  field.Name,
+				"value": strings.Split(tagValue, ":")[1],
+			})
+			fieldsDetails = append(fieldsDetails, fieldDetails)
 		}
 	}
 
-	return fieldNames
+	return fieldsDetails
 }
 
 func GetFieldValueByName(s interface{}, name string) interface{} {
@@ -37,4 +40,11 @@ func GetFieldValueByName(s interface{}, name string) interface{} {
 	field := rt.FieldByName(name)
 
 	return field.Interface()
+}
+
+func SetFieldValueByNameStr(s interface{}, name string, value string) {
+	rt := reflect.ValueOf(s).Elem()
+	field := rt.FieldByName(name)
+
+	field.SetString(value)
 }

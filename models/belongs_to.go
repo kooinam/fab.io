@@ -4,37 +4,57 @@ import "github.com/kooinam/fab.io/helpers"
 
 type BelongsTo struct {
 	collection *Collection
+	item       Modellable
 	key        string
 	result     *SingleResult
 	foreignKey string
+	primaryKey string
 }
 
 func makeBelongsTo(collection *Collection) *BelongsTo {
 	belongsTo := &BelongsTo{
 		collection: collection,
-		foreignKey: "ID",
+		primaryKey: "ID",
 	}
 
 	return belongsTo
 }
 
+// WithPrimaryKey used to set belongs_to primary key
+func (belongsTo *BelongsTo) WithPrimaryKey(primaryKey string) *BelongsTo {
+	belongsTo.primaryKey = primaryKey
+
+	return belongsTo
+}
+
+// WithForeignKey used to set belongs_to foreign key
 func (belongsTo *BelongsTo) WithForeignKey(foreignKey string) *BelongsTo {
 	belongsTo.foreignKey = foreignKey
 
 	return belongsTo
 }
 
-func (belongsTo *BelongsTo) SetKey(key string) {
+func (belongsTo *BelongsTo) SetKey(key string) error {
+	var err error
+
 	belongsTo.key = key
 
-	if belongsTo.foreignKey == "ID" {
+	if belongsTo.item != nil && len(belongsTo.foreignKey) > 0 {
+		helpers.SetFieldValueByNameStr(belongsTo.item, belongsTo.foreignKey, belongsTo.key)
+	}
+
+	if belongsTo.primaryKey == "ID" {
 		belongsTo.result = belongsTo.collection.Query().Find(belongsTo.key)
 	} else {
 		filters := helpers.H{}
-		filters[belongsTo.foreignKey] = belongsTo.key
+		filters[belongsTo.primaryKey] = belongsTo.key
 
 		belongsTo.result = belongsTo.collection.Query().Where(filters).First()
 	}
+
+	err = belongsTo.result.Error()
+
+	return err
 }
 
 func (belongsTo *BelongsTo) Key() string {
