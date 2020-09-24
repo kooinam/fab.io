@@ -37,7 +37,8 @@ func (list *List) Items() []Modellable {
 }
 
 // FindAll used to find items in collection
-func (list *List) FindAll(predicate FindPredicate) []Modellable {
+func (list *List) FindAll(predicate FindPredicate) *List {
+	newList := MakeList()
 	founds := []Modellable{}
 
 	for _, el := range list.items {
@@ -46,7 +47,9 @@ func (list *List) FindAll(predicate FindPredicate) []Modellable {
 		}
 	}
 
-	return founds
+	newList.items = founds
+
+	return newList
 }
 
 // Find used to find item in collection, return nil if not found

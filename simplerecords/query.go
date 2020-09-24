@@ -30,7 +30,7 @@ func (query *Query) Where(filters helpers.H) models.Queryable {
 // Count used to count records in collection with matching criterion
 func (query *Query) Count() *models.CountResult {
 	result := models.MakeCountResult()
-	result.Set(int64(query.collection.List().Count()), nil)
+	result.Set(int64(query.ToList().List().Count()), nil)
 
 	return result
 }
@@ -38,7 +38,23 @@ func (query *Query) Count() *models.CountResult {
 // ToList used to iterate record in collection with matching criterion
 func (query *Query) ToList() *models.ListResults {
 	results := models.MakeListResults()
-	results.Set(query.collection.List(), nil)
+	list := query.collection.List()
+
+	newList := list.FindAll(func(item models.Modellable) bool {
+		matched := true
+
+		for key, value := range query.filters {
+			fieldValue := helpers.GetFieldValueByName(item, key)
+
+			if fieldValue != value {
+				matched = false
+			}
+		}
+
+		return matched
+	})
+
+	results.Set(newList, nil)
 
 	return results
 }
