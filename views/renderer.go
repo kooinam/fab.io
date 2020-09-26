@@ -46,6 +46,10 @@ func (renderer *Renderer) RenderSingle(item models.Modellable) interface{} {
 		return nil
 	}
 
+	if item == nil {
+		return nil
+	}
+
 	viewRenderer := viewHandler.newHandler()
 	context := makeContext(renderer.manager, renderer.params)
 	context.setItem(item)
