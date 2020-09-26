@@ -73,6 +73,13 @@ func (context *Context) ParamsStr(key string) string {
 	return context.params.ValueStr(key)
 }
 
+// QueryStr used to retrieve params value in string
+func (context *Context) QueryStr(key string) string {
+	url := context.conn.URL()
+
+	return url.Query().Get(key)
+}
+
 // ParamsInt used to retrieve params value in int
 func (context *Context) ParamsInt(key string, fallback int) int {
 	return context.params.ValueInt(key, fallback)
