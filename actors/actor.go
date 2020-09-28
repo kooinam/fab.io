@@ -1,11 +1,5 @@
 package actors
 
-import (
-	"strings"
-
-	"github.com/kooinam/fab.io/logger"
-)
-
 // Actor is the base representation of actor in actor model
 type Actor struct {
 	manager        *Manager
@@ -76,13 +70,7 @@ func (actor *Actor) start() {
 
 	go func() {
 		for event := range actor.ch {
-			if strings.Contains(actor.Identifier(), "player") {
-				logger.Debug("start...")
-			}
 			handled := actor.handleEvent(event)
-			if strings.Contains(actor.Identifier(), "player") {
-				logger.Debug("end...")
-			}
 
 			if !handled {
 				event.nak("no registered actor for action")
