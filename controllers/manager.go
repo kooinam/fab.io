@@ -32,7 +32,7 @@ func (manager *Manager) Setup(viewsManager *views.Manager) {
 	manager.server = server
 
 	server.OnConnect("/", func(conn socketio.Conn) error {
-		logger.Debug("connected: %v - %v", conn.Namespace(), conn.ID())
+		logger.Debug("connected: %v%v - %v", conn.URL().Path, conn.URL().RawQuery, conn.ID())
 
 		return nil
 	})

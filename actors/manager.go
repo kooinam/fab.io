@@ -41,6 +41,13 @@ func (manager *Manager) RegisterActor(actable Actable) error {
 	return err
 }
 
+// RegisterActorWithOptions used for registering an actor with options
+func (manager *Manager) RegisterActorWithOptions(actable Actable) error {
+	err := manager.registerActor(actable)
+
+	return err
+}
+
 // RegisterChildActor used to creating an actor instance for model
 func (manager *Manager) RegisterChildActor(parent Actable, actable Actable) error {
 	var err error
@@ -58,10 +65,7 @@ func (manager *Manager) Tell(actorIdentifier string, eventName string, params ma
 		panic(fmt.Sprintf("%v not registered", actorIdentifier))
 	}
 
-	ch := actor.ch
-	event := makeEvent(actorIdentifier, eventName, params, nil)
-
-	event.dispatch(ch)
+	manager.tell(actor, eventName, params, false)
 }
 
 // Request used to delegating a task to an actor synchronously with an response
@@ -71,7 +75,7 @@ func (manager *Manager) Request(actorIdentifier string, eventName string, params
 	child := manager.getActor(actorIdentifier)
 	ch := child.ch
 	resCh := make(chan Response)
-	event := makeEvent(actorIdentifier, eventName, params, resCh)
+	event := makeEvent(actorIdentifier, eventName, params, resCh, false)
 
 	event.dispatch(ch)
 	res := <-resCh
@@ -101,9 +105,19 @@ func (manager *Manager) update(dt float64) {
 	manager.mutex.RLock()
 	defer manager.mutex.RUnlock()
 
-	for actorIdentifier := range manager.addresses {
-		manager.Tell(actorIdentifier, "Update", helpers.H{
-			"dt": dt,
-		})
+	for _, actor := range manager.addresses {
+		if actor.isRoot {
+			manager.tell(actor, "Update", helpers.H{
+				"dt": dt,
+			}, true)
+		}
 	}
+}
+
+// tell used to delegating a task to an actor asynchronously
+func (manager *Manager) tell(actor *Actor, eventName string, params map[string]interface{}, cascade bool) {
+	ch := actor.ch
+	event := makeEvent(actor.Identifier(), eventName, params, nil, cascade)
+
+	event.dispatch(ch)
 }

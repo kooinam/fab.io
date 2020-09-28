@@ -9,18 +9,16 @@ type Action func(context *Context) error
 // ActionsHandler used to mange callbacks for controllers
 type ActionsHandler struct {
 	manager           *Manager
-	identifier        string
 	beforeActionHooks []Hook
 	afterActionHooks  []Hook
 	actions           map[string]Action
 }
 
 // makeActionsHandler used to instantiate EventsHandler
-func makeActionsHandler(manager *Manager, identifier string) *ActionsHandler {
+func makeActionsHandler(manager *Manager) *ActionsHandler {
 	actionsHandler := &ActionsHandler{
-		manager:    manager,
-		identifier: identifier,
-		actions:    make(map[string]Action),
+		manager: manager,
+		actions: make(map[string]Action),
 	}
 
 	return actionsHandler

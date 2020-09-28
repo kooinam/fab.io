@@ -34,6 +34,15 @@ func (belongsTo *BelongsTo) WithForeignKey(foreignKey string) *BelongsTo {
 	return belongsTo
 }
 
+func (belongsTo *BelongsTo) ClearKey(key string) error {
+	var err error
+
+	belongsTo.key = ""
+	belongsTo.result = nil
+
+	return err
+}
+
 func (belongsTo *BelongsTo) SetKey(key string) error {
 	var err error
 

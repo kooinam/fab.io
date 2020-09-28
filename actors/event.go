@@ -5,14 +5,16 @@ type event struct {
 	name            string
 	params          map[string]interface{}
 	resCh           chan Response
+	cascade         bool
 }
 
-func makeEvent(actorIdentifier string, eventName string, params map[string]interface{}, resCh chan Response) *event {
+func makeEvent(actorIdentifier string, eventName string, params map[string]interface{}, resCh chan Response, cascade bool) *event {
 	event := &event{
 		actorIdentifier: actorIdentifier,
 		name:            eventName,
 		params:          params,
 		resCh:           resCh,
+		cascade:         cascade,
 	}
 
 	return event
