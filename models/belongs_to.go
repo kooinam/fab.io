@@ -38,6 +38,10 @@ func (belongsTo *BelongsTo) ClearKey() error {
 	var err error
 
 	belongsTo.key = ""
+	if belongsTo.item != nil && len(belongsTo.foreignKey) > 0 {
+		helpers.SetFieldValueByNameStr(belongsTo.item, belongsTo.foreignKey, "")
+	}
+
 	belongsTo.result = nil
 
 	return err
@@ -47,7 +51,6 @@ func (belongsTo *BelongsTo) SetKey(key string) error {
 	var err error
 
 	belongsTo.key = key
-
 	if belongsTo.item != nil && len(belongsTo.foreignKey) > 0 {
 		helpers.SetFieldValueByNameStr(belongsTo.item, belongsTo.foreignKey, belongsTo.key)
 	}
