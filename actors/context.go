@@ -81,3 +81,11 @@ func (context *Context) PropertyBool(key string) bool {
 func (context *Context) PrepareRender(viewName string) *views.Renderer {
 	return context.viewsManager.PrepareRender(viewName)
 }
+
+// Tell used to delegating a task to an actor asynchronously
+func (context *Context) Tell(actor *Actor, eventName string, params map[string]interface{}, cascade bool) {
+	ch := actor.ch
+	event := makeEvent(actor.Identifier(), eventName, params, nil, cascade)
+
+	event.dispatch(ch)
+}

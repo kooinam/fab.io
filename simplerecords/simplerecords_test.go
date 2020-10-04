@@ -2,6 +2,7 @@ package simplerecords
 
 import (
 	"testing"
+	"time"
 
 	"github.com/karlseguin/expect"
 	"github.com/kooinam/fab.io/helpers"
@@ -11,6 +12,7 @@ import (
 type Person struct {
 	Base
 	Name string
+	T    time.Time
 }
 
 func makePerson(context *models.Context) {
@@ -22,6 +24,7 @@ func makePerson(context *models.Context) {
 
 func (person *Person) initialize(attributes *helpers.Dictionary) {
 	person.Name = attributes.ValueStr("name")
+	person.T = time.Now()
 }
 
 type Task struct {
@@ -92,6 +95,11 @@ func (tester *Tester) QueryCount() {
 	expect.Expect(collection1.Query().Count().Count()).To.Equal(int64(3))
 	expect.Expect(result.StatusSuccess()).To.Equal(true)
 	expect.Expect(found.Name).To.Equal("tester2")
+
+	count := collection1.Query().Sort("T", true).Count()
+	expect.Expect(count.Count()).To.Equal(int64(3))
+
+	expect.Expect(collection1.Query().Sort("T", false).ToList().List().Items()[0].(*Person).Name).To.Equal("tester3")
 }
 
 func TestQuery(t *testing.T) {

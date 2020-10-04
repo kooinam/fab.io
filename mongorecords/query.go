@@ -10,6 +10,7 @@ import (
 type Query struct {
 	collection *models.Collection
 	filters    helpers.H
+	sorts      helpers.H
 }
 
 func makeQuery(collection *models.Collection) *Query {
@@ -152,6 +153,12 @@ func (query *Query) DestroyAll() error {
 	// TODO
 
 	return err
+}
+
+// Sort used to sort collection
+func (query *Query) Sort(field string, asc bool) models.Queryable {
+
+	return query
 }
 
 func (query *Query) haveNotFound(err error) bool {

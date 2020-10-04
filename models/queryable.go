@@ -11,4 +11,5 @@ type Queryable interface {
 	FirstOrCreate(helpers.H) *SingleResult
 	Find(string) *SingleResult
 	ToList() *ListResults
+	Sort(string, bool) Queryable
 }

@@ -1,7 +1,14 @@
 package models
 
+import (
+	"sort"
+)
+
 // FindPredicate is alias for func(Modellable) bool
 type FindPredicate func(Modellable) bool
+
+// SortPredictate is alias for func(int, int) bool
+type SortPredictate func(int, int) bool
 
 // List is an in-memory storage of items
 type List struct {
@@ -48,6 +55,21 @@ func (list *List) FindAll(predicate FindPredicate) *List {
 	}
 
 	newList.items = founds
+
+	return newList
+}
+
+// Sort used to sort items in collection
+func (list *List) Sort(predicate SortPredictate) *List {
+	newList := MakeList()
+	sorted := []Modellable{}
+
+	for _, el := range list.items {
+		sorted = append(sorted, el)
+	}
+	sort.Slice(sorted, predicate)
+
+	newList.items = sorted
 
 	return newList
 }

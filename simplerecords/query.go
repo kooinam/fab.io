@@ -2,6 +2,7 @@ package simplerecords
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/kooinam/fab.io/helpers"
 	"github.com/kooinam/fab.io/models"
@@ -10,6 +11,7 @@ import (
 type Query struct {
 	collection *models.Collection
 	filters    helpers.H
+	sorts      helpers.H
 }
 
 func makeQuery(collection *models.Collection) *Query {
@@ -23,6 +25,16 @@ func makeQuery(collection *models.Collection) *Query {
 // Where used to query collection
 func (query *Query) Where(filters helpers.H) models.Queryable {
 	query.filters = filters
+
+	return query
+}
+
+// Sort used to sort collection
+func (query *Query) Sort(field string, asc bool) models.Queryable {
+	query.sorts = helpers.H{
+		"field": field,
+		"asc":   asc,
+	}
 
 	return query
 }
@@ -53,6 +65,35 @@ func (query *Query) ToList() *models.ListResults {
 
 		return matched
 	})
+
+	if query.sorts != nil {
+		sortField := query.sorts["field"].(string)
+		sortAsc := query.sorts["asc"].(bool)
+
+		newList = newList.Sort(func(i int, j int) bool {
+			s := true
+			item1 := newList.Items()[i]
+			item2 := newList.Items()[j]
+
+			fieldValue1 := helpers.GetFieldValueByName(item1, sortField)
+			fieldValue2 := helpers.GetFieldValueByName(item2, sortField)
+
+			switch fieldValue1.(type) {
+			case time.Time:
+				t1 := fieldValue1.(time.Time)
+				t2 := fieldValue2.(time.Time)
+
+				if sortAsc {
+					s = t1.Before(t2)
+				} else {
+					s = t2.Before(t1)
+				}
+			default:
+			}
+
+			return s
+		})
+	}
 
 	results.Set(newList, nil)
 
