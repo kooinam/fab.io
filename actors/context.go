@@ -23,6 +23,10 @@ func makeContext(viewsManager *views.Manager, params helpers.H) *Context {
 	return context
 }
 
+func (context *Context) ParamsDict() *helpers.Dictionary {
+	return context.params
+}
+
 // Params used to retrieve params value
 func (context *Context) Params(key string) interface{} {
 	return context.params.Value(key)
