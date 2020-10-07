@@ -72,8 +72,13 @@ func (manager *Manager) Tell(actorIdentifier string, eventName string, params ma
 func (manager *Manager) Request(actorIdentifier string, eventName string, params map[string]interface{}) error {
 	var err error
 
-	child := manager.getActor(actorIdentifier)
-	ch := child.ch
+	actor := manager.getActor(actorIdentifier)
+
+	if actor == nil {
+		panic(fmt.Sprintf("%v not registered", actorIdentifier))
+	}
+
+	ch := actor.ch
 	resCh := make(chan Response)
 	event := makeEvent(actorIdentifier, eventName, params, resCh, false)
 

@@ -102,3 +102,19 @@ func (list *List) FindByID(id string) Modellable {
 func (list *List) Add(item Modellable) {
 	list.items = append(list.items, item)
 }
+
+func (list *List) Each(handler func(Modellable) bool) error {
+	var err error
+
+	items := list.Items()
+
+	for _, item := range items {
+		shouldContinue := handler(item)
+
+		if !shouldContinue {
+			break
+		}
+	}
+
+	return err
+}
