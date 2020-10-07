@@ -2,6 +2,8 @@ package models
 
 import (
 	"sort"
+
+	"github.com/kooinam/fab.io/helpers"
 )
 
 // FindPredicate is alias for func(Modellable) bool
@@ -12,13 +14,28 @@ type SortPredictate func(int, int) bool
 
 // List is an in-memory storage of items
 type List struct {
-	items []Modellable
+	collection *Collection
+	items      []Modellable
 }
 
 // MakeList used to instantiate list instance
 func MakeList(items ...Modellable) *List {
 	list := &List{
 		items: []Modellable{},
+	}
+
+	for _, item := range items {
+		list.Add(item)
+	}
+
+	return list
+}
+
+// MakeListWithCollection used to instantiate list instance with collection
+func MakeListWithCollection(collection *Collection, items ...Modellable) *List {
+	list := &List{
+		collection: collection,
+		items:      []Modellable{},
 	}
 
 	for _, item := range items {
@@ -117,4 +134,39 @@ func (list *List) Each(handler func(Modellable) bool) error {
 	}
 
 	return err
+}
+
+// FirstOrCreate used to return first item in collection or create one
+func (list *List) FirstOrCreate(filters helpers.H) Modellable {
+	found := list.Find(func(item Modellable) bool {
+		matched := true
+
+		for key, value := range filters {
+			fieldValue := helpers.GetFieldValueByName(item, key)
+
+			if fieldValue != value {
+				matched = false
+			}
+		}
+
+		return matched
+	})
+
+	if found == nil {
+		found = list.Create(filters)
+	}
+
+	return found
+}
+
+// Create used to create one instance
+func (list *List) Create(attributes helpers.H) Modellable {
+	result := list.collection.CreateWithOptions(
+		attributes,
+		Options().WithShouldStore(true).WithList(list),
+	)
+
+	found := result.Item()
+
+	return found
 }
