@@ -39,6 +39,10 @@ func GetFieldValueByName(s interface{}, name string) interface{} {
 
 	field := rt.FieldByName(name)
 
+	if !field.IsValid() {
+		return nil
+	}
+
 	return field.Interface()
 }
 
