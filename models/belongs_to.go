@@ -1,6 +1,9 @@
 package models
 
-import "github.com/kooinam/fab.io/helpers"
+import (
+	"github.com/kooinam/fab.io/helpers"
+	"github.com/kooinam/fab.io/logger"
+)
 
 type BelongsTo struct {
 	collection *Collection
@@ -75,6 +78,8 @@ func (belongsTo *BelongsTo) Key() string {
 
 func (belongsTo *BelongsTo) Item() Modellable {
 	if belongsTo.result == nil {
+		logger.Debug("belongs_to not found - %v:%v", belongsTo.collection.Name(), belongsTo.key)
+
 		return nil
 	}
 
