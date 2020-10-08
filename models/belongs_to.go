@@ -69,10 +69,6 @@ func (belongsTo *BelongsTo) SetKey(key string) error {
 
 	err = belongsTo.result.Error()
 
-	if err != nil {
-		logger.Debug("belongs_to error - %v:%v%v", belongsTo.collection.Name(), belongsTo.key, belongsTo.result.Error())
-	}
-
 	return err
 }
 
@@ -82,7 +78,11 @@ func (belongsTo *BelongsTo) Key() string {
 
 func (belongsTo *BelongsTo) Item() Modellable {
 	if belongsTo.result == nil {
-		logger.Debug("belongs_to not found - %v:%v", belongsTo.collection.Name(), belongsTo.key)
+		return nil
+	}
+
+	if belongsTo.result.Item() == nil {
+		logger.Debug("belongs_to not found - %v:%v:%v", belongsTo.collection.Name(), belongsTo.key, belongsTo.result.Error())
 
 		return nil
 	}
