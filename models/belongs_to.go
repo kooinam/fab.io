@@ -69,6 +69,10 @@ func (belongsTo *BelongsTo) SetKey(key string) error {
 
 	err = belongsTo.result.Error()
 
+	if err != nil {
+		logger.Debug("belongs_to error - %v:%v%v", belongsTo.collection.Name(), belongsTo.key, belongsTo.result.Error())
+	}
+
 	return err
 }
 
