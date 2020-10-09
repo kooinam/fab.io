@@ -104,7 +104,7 @@ func (dict *Dictionary) ValueList(key string) []interface{} {
 
 func (dict *Dictionary) ValueDicts(key string) []*Dictionary {
 	slice := dict.ValueList(key)
-	dicts := []*Dictionary{}
+	dicts := make([]*Dictionary, len(slice))
 
 	for i := 0; i < len(slice); i++ {
 		dicts[i] = MakeDictionary(slice[i].(map[string]interface{}))
