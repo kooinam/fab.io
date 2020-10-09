@@ -107,7 +107,7 @@ func (dict *Dictionary) ValueDicts(key string) []*Dictionary {
 	dicts := []*Dictionary{}
 
 	for i := 0; i < len(slice); i++ {
-		dicts[i] = MakeDictionary(slice[i].(H))
+		dicts[i] = MakeDictionary(slice[i].(map[string]interface{}))
 	}
 
 	return dicts
