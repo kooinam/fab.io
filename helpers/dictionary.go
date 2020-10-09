@@ -102,6 +102,17 @@ func (dict *Dictionary) ValueList(key string) []interface{} {
 	return value.([]interface{})
 }
 
+func (dict *Dictionary) ValueDicts(key string) []*Dictionary {
+	slice := dict.ValueList(key)
+	dicts := []*Dictionary{}
+
+	for i := 0; i < len(slice); i++ {
+		dicts[i] = MakeDictionary(slice[i].(H))
+	}
+
+	return dicts
+}
+
 // Set used to set property
 func (dict *Dictionary) Set(key string, value interface{}) {
 	dict.properties[key] = value
