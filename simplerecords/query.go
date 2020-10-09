@@ -104,7 +104,21 @@ func (query *Query) ToList() *models.ListResults {
 func (query *Query) Each(handler func(models.Modellable, error) bool) error {
 	var err error
 
-	items := query.collection.List().Items()
+	newList := query.collection.List().FindAll(func(item models.Modellable) bool {
+		matched := true
+
+		for key, value := range query.filters {
+			fieldValue := helpers.GetFieldValueByName(item, key)
+
+			if fieldValue != value {
+				matched = false
+			}
+		}
+
+		return matched
+	})
+
+	items := newList.Items()
 
 	for _, item := range items {
 		shouldContinue := handler(item, nil)
