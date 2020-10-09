@@ -2,6 +2,7 @@ package helpers
 
 import (
 	"fmt"
+	"reflect"
 )
 
 // H is alias for map[string]interface{}
@@ -43,10 +44,20 @@ func NotFoundError(itemName string) error {
 	return fmt.Errorf("%v not found", itemName)
 }
 
-func MapValues(ss []interface{}, field string) []interface{} {
+func MapValues(ss interface{}, field string) []interface{} {
 	values := []interface{}{}
+	s := reflect.ValueOf(ss)
+	if s.Kind() != reflect.Slice {
+		panic("InterfaceSlice() given a non-slice type")
+	}
 
-	for s := range ss {
+	slice := make([]interface{}, s.Len())
+
+	for i := 0; i < s.Len(); i++ {
+		slice[i] = s.Index(i).Interface()
+	}
+
+	for s := range slice {
 		values = append(values, GetFieldValueByName(s, field))
 	}
 
