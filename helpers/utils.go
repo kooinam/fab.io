@@ -57,7 +57,7 @@ func MapValues(ss interface{}, field string) []interface{} {
 		slice[i] = s.Index(i).Interface()
 	}
 
-	for s := range slice {
+	for _, s := range slice {
 		values = append(values, GetFieldValueByName(s, field))
 	}
 
