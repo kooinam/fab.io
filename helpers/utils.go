@@ -2,6 +2,7 @@ package helpers
 
 import (
 	"fmt"
+	"math/rand"
 	"reflect"
 )
 
@@ -62,4 +63,8 @@ func MapValues(ss interface{}, field string) []interface{} {
 	}
 
 	return values
+}
+
+func RandRange(min int, max int) int {
+	return rand.Intn(max-min) + min
 }
