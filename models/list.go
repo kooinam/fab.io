@@ -170,3 +170,30 @@ func (list *List) Create(attributes helpers.H) Modellable {
 
 	return found
 }
+
+func (list *List) FindIndex(id string) int {
+	index := -1
+
+	for i, item := range list.Items() {
+		if item.GetID() == id {
+			index = i
+
+			break
+		}
+	}
+
+	return index
+}
+
+// Destroy used to remove item from list
+func (list *List) Destroy(id string) bool {
+	hasDestroyed := false
+
+	index := list.FindIndex(id)
+
+	if index != -1 {
+		list.items = append(list.items[:index], list.items[index+1:]...)
+	}
+
+	return hasDestroyed
+}
