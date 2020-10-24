@@ -93,21 +93,35 @@ func (dict *Dictionary) ValueBool(key string) bool {
 }
 
 func (dict *Dictionary) ValueList(key string) []interface{} {
-	value := dict.properties[key]
+	slice, asserted := dict.properties[key].([]interface{})
 
-	if value == nil {
+	if !asserted {
 		return []interface{}{}
 	}
 
-	return value.([]interface{})
+	return slice
 }
 
 func (dict *Dictionary) ValueDicts(key string) []*Dictionary {
-	slice := dict.ValueList(key)
-	dicts := make([]*Dictionary, len(slice))
+	var dicts []*Dictionary
+	slice, asserted := dict.properties[key].([]interface{})
 
-	for i := 0; i < len(slice); i++ {
-		dicts[i] = MakeDictionary(slice[i].(map[string]interface{}))
+	if asserted {
+		dicts = make([]*Dictionary, len(slice))
+
+		for i := 0; i < len(slice); i++ {
+			dicts[i] = MakeDictionary(slice[i].(H))
+		}
+	} else {
+		slice, asserted := dict.properties[key].([]H)
+
+		if asserted {
+			dicts = make([]*Dictionary, len(slice))
+
+			for i := 0; i < len(slice); i++ {
+				dicts[i] = MakeDictionary(slice[i])
+			}
+		}
 	}
 
 	return dicts
