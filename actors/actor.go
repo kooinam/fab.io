@@ -21,15 +21,13 @@ func makeRootActor(manager *Manager, actable Actable) *Actor {
 	identifier := actable.GetActorIdentifier()
 
 	actor := &Actor{
-		identifier:     identifier,
-		children:       []*Actor{},
-		actionsHandler: makeActionsHandler(manager),
-		ch:             make(chan event),
-		isRoot:         true,
-		messages:       []*Message{},
-		mutex:          &sync.Mutex{},
+		identifier: identifier,
+		children:   []*Actor{},
+		ch:         make(chan event),
+		isRoot:     true,
+		messages:   []*Message{},
+		mutex:      &sync.Mutex{},
 	}
-
 	actor.root = actor
 
 	return actor
@@ -41,13 +39,13 @@ func makeActor(manager *Manager, actable Actable, parent *Actor) *Actor {
 	identifier := actable.GetActorIdentifier()
 
 	actor := &Actor{
-		identifier:     identifier,
-		root:           root,
-		parent:         parent,
-		children:       []*Actor{},
-		actionsHandler: makeActionsHandler(manager),
-		ch:             root.ch,
+		identifier: identifier,
+		root:       root,
+		parent:     parent,
+		children:   []*Actor{},
+		ch:         root.ch,
 	}
+	actor.actionsHandler = makeActionsHandler(manager, actor)
 
 	return actor
 }
@@ -60,22 +58,6 @@ func (actor *Actor) Identifier() string {
 // Root used to retrieve root parent of actor
 func (actor *Actor) Root() string {
 	return actor.root.Identifier()
-}
-
-// PopMessage used to pop message from messages queue, return nil if queue is empty
-func (actor *Actor) PopMessage() *Message {
-	actor.mutex.Lock()
-	defer actor.mutex.Unlock()
-
-	var message *Message
-
-	if len(actor.messages) > 0 {
-		message = actor.messages[0]
-
-		actor.messages = actor.messages[1:]
-	}
-
-	return message
 }
 
 func (actor *Actor) pushMessage(message *Message) {
@@ -115,6 +97,7 @@ func (actor *Actor) handleEvent(event event) bool {
 	}
 
 	if event.cascade || actor.identifier == event.actorIdentifier {
+		// execute event handler
 		actor.actionsHandler.handleEvent(event)
 
 		handled = true

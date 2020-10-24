@@ -8,14 +8,16 @@ import (
 // Context used to represent actor execution context with data
 type Context struct {
 	viewsManager *views.Manager
+	actor        *Actor
 	params       *helpers.Dictionary
 	properties   *helpers.Dictionary
 }
 
 // makeContext use to instantiate controller context instance
-func makeContext(viewsManager *views.Manager, params helpers.H) *Context {
+func makeContext(viewsManager *views.Manager, actor *Actor, params helpers.H) *Context {
 	context := &Context{
 		viewsManager: viewsManager,
+		actor:        actor,
 		params:       helpers.MakeDictionary(params),
 		properties:   helpers.MakeDictionary(helpers.H{}),
 	}
@@ -92,4 +94,22 @@ func (context *Context) Tell(actor *Actor, eventName string, params map[string]i
 	event := makeEvent(actor.Identifier(), eventName, params, nil, cascade)
 
 	event.dispatch(ch)
+}
+
+// PopMessage used to pop message from messages queue, return nil if queue is empty
+func (context *Context) PopMessage() *Message {
+	actor := context.actor
+
+	actor.mutex.Lock()
+	defer actor.mutex.Unlock()
+
+	var message *Message
+
+	if len(actor.messages) > 0 {
+		message = actor.messages[0]
+
+		actor.messages = actor.messages[1:]
+	}
+
+	return message
 }
