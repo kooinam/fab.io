@@ -28,6 +28,7 @@ func makeRootActor(manager *Manager, actable Actable) *Actor {
 		messages:   []*Message{},
 		mutex:      &sync.Mutex{},
 	}
+	actor.actionsHandler = makeActionsHandler(manager, actor)
 	actor.root = actor
 
 	return actor

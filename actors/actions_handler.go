@@ -1,5 +1,7 @@
 package actors
 
+import "github.com/kooinam/fab.io/logger"
+
 // Hook is alias for func(string, *Context)
 type Hook func(string, *Context)
 
@@ -28,6 +30,7 @@ func makeActionsHandler(manager *Manager, actor *Actor) *ActionsHandler {
 
 // RegisterBeforeActionHook used to add before hook
 func (handler *ActionsHandler) RegisterBeforeActionHook(beforeActionHook Hook) {
+	logger.Debug("%v", handler)
 	handler.beforeActionHooks = append(handler.beforeActionHooks, beforeActionHook)
 }
 
