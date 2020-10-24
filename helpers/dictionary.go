@@ -110,7 +110,7 @@ func (dict *Dictionary) ValueDicts(key string) []*Dictionary {
 		dicts = make([]*Dictionary, len(slice))
 
 		for i := 0; i < len(slice); i++ {
-			dicts[i] = MakeDictionary(slice[i].(H))
+			dicts[i] = MakeDictionary(slice[i].(map[string]interface{}))
 		}
 	} else {
 		slice, asserted := dict.properties[key].([]H)
