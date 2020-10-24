@@ -92,6 +92,22 @@ func (manager *Manager) Request(actorIdentifier string, eventName string, params
 	return err
 }
 
+// Deliver used to deliver message
+func (manager *Manager) Deliver(actorIdentifier string, topic string, params map[string]interface{}) error {
+	var err error
+
+	actor := manager.getActor(actorIdentifier)
+
+	if actor == nil {
+		panic(fmt.Sprintf("%v not registered", actorIdentifier))
+	}
+
+	message := makeMessage(topic, params)
+	actor.pushMessage(message)
+
+	return err
+}
+
 // GetActors used to return all registered actors
 func (manager *Manager) GetActors() []*Actor {
 	manager.mutex.RLock()

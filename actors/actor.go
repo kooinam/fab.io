@@ -1,5 +1,7 @@
 package actors
 
+import "sync"
+
 // Actor is the base representation of actor in actor model
 type Actor struct {
 	manager        *Manager
@@ -10,6 +12,8 @@ type Actor struct {
 	actionsHandler *ActionsHandler
 	ch             chan event
 	isRoot         bool
+	messages       []*Message
+	mutex          *sync.Mutex
 }
 
 // makeRootActor used to instantiate root actor
@@ -22,6 +26,8 @@ func makeRootActor(manager *Manager, actable Actable) *Actor {
 		actionsHandler: makeActionsHandler(manager),
 		ch:             make(chan event),
 		isRoot:         true,
+		messages:       []*Message{},
+		mutex:          &sync.Mutex{},
 	}
 
 	actor.root = actor
@@ -51,12 +57,32 @@ func (actor *Actor) Identifier() string {
 	return actor.identifier
 }
 
-func (actor *Actor) Ch() chan event {
-	return actor.ch
-}
-
+// Root used to retrieve root parent of actor
 func (actor *Actor) Root() string {
 	return actor.root.Identifier()
+}
+
+// PopMessage used to pop message from messages queue, return nil if queue is empty
+func (actor *Actor) PopMessage() *Message {
+	actor.mutex.Lock()
+	defer actor.mutex.Unlock()
+
+	var message *Message
+
+	if len(actor.messages) > 0 {
+		message = actor.messages[0]
+
+		actor.messages = actor.messages[1:]
+	}
+
+	return message
+}
+
+func (actor *Actor) pushMessage(message *Message) {
+	actor.mutex.Lock()
+	defer actor.mutex.Unlock()
+
+	actor.messages = append(actor.messages, message)
 }
 
 func (actor *Actor) handleRegistered() {

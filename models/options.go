@@ -12,12 +12,6 @@ func Options() *options {
 	return options
 }
 
-func (options *options) WithStorable(storable bool) *options {
-	options.storable = storable
-
-	return options
-}
-
 func (options *options) WithShouldStore(storable bool) *options {
 	options.storable = storable
 
