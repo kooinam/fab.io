@@ -25,3 +25,8 @@ func (message *Message) Topic() string {
 func (message *Message) ParamDicts(key string) []*helpers.Dictionary {
 	return message.params.ValueDicts(key)
 }
+
+// ParamInt used to retrieve int
+func (message *Message) ParamInt(key string, fallback int) int {
+	return message.params.ValueInt(key, fallback)
+}
