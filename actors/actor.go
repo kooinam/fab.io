@@ -1,6 +1,9 @@
 package actors
 
-import "sync"
+import (
+	"sync"
+	"time"
+)
 
 // Actor is the base representation of actor in actor model
 type Actor struct {
@@ -14,6 +17,7 @@ type Actor struct {
 	isRoot         bool
 	messages       []*Message
 	mutex          *sync.Mutex
+	lastRunnedAt   time.Time
 }
 
 // makeRootActor used to instantiate root actor
@@ -57,8 +61,34 @@ func (actor *Actor) Identifier() string {
 }
 
 // Root used to retrieve root parent of actor
-func (actor *Actor) Root() string {
+func (actor *Actor) Root() *Actor {
+	return actor.root
+}
+
+// RootIdentifier used to retrieve root parent's identifier of actor
+func (actor *Actor) RootIdentifier() string {
 	return actor.root.Identifier()
+}
+
+// Children used to retrieve actor's children actors
+func (actor *Actor) Children() []*Actor {
+	return actor.children
+}
+
+// ChildrenIdentifiers used to retrieve actor's children actors' identifiers
+func (actor *Actor) ChildrenIdentifiers() []string {
+	identifiers := []string{}
+
+	for _, child := range actor.children {
+		identifiers = append(identifiers, child.Identifier())
+	}
+
+	return identifiers
+}
+
+// LastRunnedAt used to retrieve actor's last runned at
+func (actor *Actor) LastRunnedAt() time.Time {
+	return actor.lastRunnedAt
 }
 
 func (actor *Actor) pushMessage(message *Message) {
@@ -66,12 +96,6 @@ func (actor *Actor) pushMessage(message *Message) {
 	defer actor.mutex.Unlock()
 
 	actor.messages = append(actor.messages, message)
-}
-
-func (actor *Actor) handleRegistered() {
-	if actor.parent != nil {
-		actor.parent.children = append(actor.parent.children, actor)
-	}
 }
 
 func (actor *Actor) start() {
@@ -105,4 +129,32 @@ func (actor *Actor) handleEvent(event event) bool {
 	}
 
 	return handled
+}
+
+func (actor *Actor) registered() {
+	parent := actor.parent
+
+	if parent != nil {
+		parent.children = append(parent.children, actor)
+	}
+}
+
+func (actor *Actor) unregistered() {
+	parent := actor.parent
+
+	if parent != nil {
+		index := -1
+
+		for i, child := range parent.children {
+			if child.identifier == actor.identifier {
+				index = i
+
+				break
+			}
+		}
+
+		if index != -1 {
+			parent.children = append(parent.children[:index], parent.children[index+1:]...)
+		}
+	}
 }

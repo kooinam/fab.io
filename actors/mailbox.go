@@ -40,13 +40,25 @@ func (mailbox *Mailbox) registerActor(actable Actable) error {
 	}
 
 	actable.RegisterActorActions(actor.actionsHandler)
-	actor.handleRegistered()
+	actor.registered()
 
 	actor.start()
 
 	go func() {
 		mailbox.manager.Tell(actorIdentifier, "Start", helpers.H{})
 	}()
+
+	return err
+}
+
+// deregisterActor used for deregistering an actor
+func (mailbox *Mailbox) deregisterActor(actorIdentifier string) error {
+	var err error
+
+	actor := mailbox.getActor(actorIdentifier)
+	actor.unregistered()
+
+	mailbox.unsetActor(actorIdentifier)
 
 	return err
 }
@@ -73,7 +85,7 @@ func (mailbox *Mailbox) registerChildActor(actable Actable, parent Actable) erro
 	}
 
 	actable.RegisterActorActions(actor.actionsHandler)
-	actor.handleRegistered()
+	actor.registered()
 
 	go func() {
 		mailbox.manager.Tell(actorIdentifier, "Start", helpers.H{})
@@ -106,6 +118,27 @@ func (mailbox *Mailbox) setActor(actorIdentifier string, actor *Actor) error {
 	}
 
 	mailbox.addresses[actorIdentifier] = actor
+
+	return err
+}
+
+func (mailbox *Mailbox) unsetActor(actorIdentifier string) error {
+	var err error
+
+	mailbox.mutex.Lock()
+	defer mailbox.mutex.Unlock()
+
+	if len(actorIdentifier) == 0 {
+		err = fmt.Errorf("actor identifier is empty")
+
+		return err
+	} else if mailbox.addresses[actorIdentifier] == nil {
+		err = fmt.Errorf("actor is not registered")
+
+		return err
+	}
+
+	delete(mailbox.addresses, actorIdentifier)
 
 	return err
 }

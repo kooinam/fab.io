@@ -70,7 +70,7 @@ func (collection *Collection) Create(values helpers.H) *SingleResult {
 	result.Set(item, err, false)
 
 	if result.StatusSuccess() {
-		item.GetHooksHandler().ExecuteAfterCreateHook()
+		item.GetHooksHandler().ExecuteAfterCreateHooks()
 	}
 
 	return result

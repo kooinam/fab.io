@@ -41,6 +41,13 @@ func (manager *Manager) RegisterActor(actable Actable) error {
 	return err
 }
 
+// DeregisterActor used for deregistering an actor
+func (manager *Manager) DeregisterActor(actorIdentifier string) error {
+	err := manager.deregisterActor(actorIdentifier)
+
+	return err
+}
+
 // RegisterActorWithOptions used for registering an actor with options
 func (manager *Manager) RegisterActorWithOptions(actable Actable) error {
 	err := manager.registerActor(actable)
@@ -110,6 +117,7 @@ func (manager *Manager) Deliver(actorIdentifier string, topic string, params map
 
 // GetActors used to return all registered actors
 func (manager *Manager) GetActors() []*Actor {
+
 	manager.mutex.RLock()
 	defer manager.mutex.RUnlock()
 
@@ -120,6 +128,11 @@ func (manager *Manager) GetActors() []*Actor {
 	}
 
 	return actors
+}
+
+// GetActor used to return all registered actors
+func (manager *Manager) GetActor(actorIdentifier string) *Actor {
+	return manager.getActor(actorIdentifier)
 }
 
 func (manager *Manager) update(dt float64) {

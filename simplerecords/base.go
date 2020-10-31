@@ -62,3 +62,14 @@ func (base *Base) Store() {
 func (base *Base) StoreInList(list *models.List) {
 	list.Add(base.item)
 }
+
+// Destroy used to delete record from database
+func (base *Base) Destroy() error {
+	var err error
+
+	base.collection.List().Destroy(base.GetID())
+
+	base.GetHooksHandler().ExecuteDestroyHooks()
+
+	return err
+}

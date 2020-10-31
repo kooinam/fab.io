@@ -1,6 +1,10 @@
 package actors
 
-import "github.com/kooinam/fab.io/logger"
+import (
+	"time"
+
+	"github.com/kooinam/fab.io/logger"
+)
 
 // Hook is alias for func(string, *Context)
 type Hook func(string, *Context)
@@ -73,6 +77,8 @@ func (handler *ActionsHandler) handleEvent(event event) {
 		err := action(context)
 
 		if err == nil {
+			handler.actor.lastRunnedAt = time.Now()
+
 			event.ack()
 
 			handler.executeAfterActionHooks(event.name, context)
