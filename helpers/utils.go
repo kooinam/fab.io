@@ -65,6 +65,12 @@ func MapValues(ss interface{}, field string) []interface{} {
 	return values
 }
 
+// RandRange used to generate a random number from min to max inclusively
 func RandRange(min int, max int) int {
 	return rand.Intn(max-min) + min
+}
+
+// Rand used to generate a random float from 0.0 - 1.0
+func Rand() float32 {
+	return rand.Float32()
 }
