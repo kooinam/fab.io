@@ -91,3 +91,12 @@ func (belongsTo *BelongsTo) Item() Modellable {
 
 	return item
 }
+
+// Empty used to determine if belongs_to association is empty
+func (belongsTo *BelongsTo) Empty() bool {
+	if belongsTo.result == nil && belongsTo.result.Item() == nil {
+		return false
+	}
+
+	return true
+}
