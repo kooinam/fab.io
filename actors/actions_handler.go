@@ -1,6 +1,7 @@
 package actors
 
 import (
+	"runtime/debug"
 	"time"
 
 	"github.com/kooinam/fab.io/logger"
@@ -67,6 +68,15 @@ func (handler *ActionsHandler) executeAfterActionHooks(action string, context *C
 }
 
 func (handler *ActionsHandler) handleEvent(event event) {
+	defer func() {
+		if r := recover(); r != nil {
+			logger.Debug("%v", r)
+			debug.PrintStack()
+
+			event.nak(r.(error).Error())
+		}
+	}()
+
 	action := handler.actions[event.name]
 
 	if action != nil {
