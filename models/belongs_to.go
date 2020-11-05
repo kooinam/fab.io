@@ -1,6 +1,8 @@
 package models
 
 import (
+	"fmt"
+
 	"github.com/kooinam/fab.io/helpers"
 	"github.com/kooinam/fab.io/logger"
 )
@@ -50,6 +52,7 @@ func (belongsTo *BelongsTo) ClearKey() error {
 	return err
 }
 
+// SetKey used to set association's reference key
 func (belongsTo *BelongsTo) SetKey(key string) error {
 	var err error
 
@@ -68,14 +71,25 @@ func (belongsTo *BelongsTo) SetKey(key string) error {
 	}
 
 	err = belongsTo.result.Error()
+	if err != nil {
+		return err
+	}
+
+	if belongsTo.IsEmpty() {
+		err = fmt.Errorf("belongs_to not found - %v:%v:%v", belongsTo.collection.Name(), belongsTo.key, belongsTo.result.Error())
+
+		return err
+	}
 
 	return err
 }
 
+// Key used to retrieve association's reference key
 func (belongsTo *BelongsTo) Key() string {
 	return belongsTo.key
 }
 
+// Item used to retrieve association's item
 func (belongsTo *BelongsTo) Item() Modellable {
 	if belongsTo.result == nil {
 		return nil
@@ -99,4 +113,9 @@ func (belongsTo *BelongsTo) IsEmpty() bool {
 	}
 
 	return false
+}
+
+// Equals used to compare if item is association
+func (belongsTo *BelongsTo) Equals(item Modellable) bool {
+	return item.GetID() == belongsTo.Key()
 }
