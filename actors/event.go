@@ -29,9 +29,9 @@ func (event *event) dispatch(ch chan event) {
 	}
 }
 
-func (event *event) ack() {
+func (event *event) ack(result string) {
 	if event.resCh != nil {
-		response := makeResponse(0, "ok")
+		response := makeResponse(0, result)
 
 		event.resCh <- *response
 	}

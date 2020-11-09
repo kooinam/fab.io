@@ -89,7 +89,7 @@ func (handler *ActionsHandler) handleEvent(event event) {
 		if err == nil {
 			handler.actor.lastRunnedAt = time.Now()
 
-			event.ack()
+			event.ack(context.Result())
 
 			handler.executeAfterActionHooks(event.name, context)
 		} else {

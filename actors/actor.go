@@ -38,8 +38,8 @@ func makeRootActor(manager *Manager, actable Actable) *Actor {
 	return actor
 }
 
-// makeActor used to instantiate actor instance
-func makeActor(manager *Manager, actable Actable, parent *Actor) *Actor {
+// makeChildActor used to instantiate actor instance
+func makeChildActor(manager *Manager, actable Actable, parent *Actor) *Actor {
 	root := parent.root
 	identifier := actable.GetActorIdentifier()
 
@@ -135,6 +135,7 @@ func (actor *Actor) registered() {
 	parent := actor.parent
 
 	if parent != nil {
+		// is child actor
 		parent.children = append(parent.children, actor)
 	}
 }
@@ -143,6 +144,7 @@ func (actor *Actor) unregistered() {
 	parent := actor.parent
 
 	if parent != nil {
+		// is child actor
 		index := -1
 
 		for i, child := range parent.children {
@@ -156,5 +158,8 @@ func (actor *Actor) unregistered() {
 		if index != -1 {
 			parent.children = append(parent.children[:index], parent.children[index+1:]...)
 		}
+	} else {
+		// is root actor
+		close(actor.ch)
 	}
 }

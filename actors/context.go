@@ -11,6 +11,7 @@ type Context struct {
 	actor        *Actor
 	params       *helpers.Dictionary
 	properties   *helpers.Dictionary
+	result       string
 }
 
 // makeContext use to instantiate controller context instance
@@ -116,4 +117,12 @@ func (context *Context) PopMessage() *Message {
 	}
 
 	return message
+}
+
+func (context *Context) SetResult(result string) {
+	context.result = result
+}
+
+func (context *Context) Result() string {
+	return context.result
 }

@@ -75,7 +75,7 @@ func (manager *Manager) Tell(actorIdentifier string, eventName string, params ma
 	manager.tell(actor, eventName, params, false)
 }
 
-// Request used to delegating a task to an actor synchronously with an response
+// Request used to delegating a task to an actor synchronously without a response
 func (manager *Manager) Request(actorIdentifier string, eventName string, params map[string]interface{}) error {
 	var err error
 
@@ -97,6 +97,30 @@ func (manager *Manager) Request(actorIdentifier string, eventName string, params
 	}
 
 	return err
+}
+
+// RequestResult used to delegating a task to an actor synchronously with a response
+func (manager *Manager) RequestResult(actorIdentifier string, eventName string, params map[string]interface{}) (string, error) {
+	var err error
+
+	actor := manager.getActor(actorIdentifier)
+
+	if actor == nil {
+		panic(fmt.Sprintf("%v not registered", actorIdentifier))
+	}
+
+	ch := actor.ch
+	resCh := make(chan Response)
+	event := makeEvent(actorIdentifier, eventName, params, resCh, false)
+
+	event.dispatch(ch)
+	res := <-resCh
+
+	if res.status != 0 {
+		err = fmt.Errorf(res.message)
+	}
+
+	return res.message, err
 }
 
 // Deliver used to deliver message

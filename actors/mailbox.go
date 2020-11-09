@@ -76,7 +76,7 @@ func (mailbox *Mailbox) registerChildActor(actable Actable, parent Actable) erro
 	}
 
 	actorIdentifier := actable.GetActorIdentifier()
-	actor := makeActor(mailbox.manager, actable, parentActor)
+	actor := makeChildActor(mailbox.manager, actable, parentActor)
 
 	err = mailbox.setActor(actorIdentifier, actor)
 
