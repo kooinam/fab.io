@@ -70,10 +70,8 @@ func (query *Query) ToList() *models.ListResults {
 		sortField := query.sorts["field"].(string)
 		sortAsc := query.sorts["asc"].(bool)
 
-		newList = newList.Sort(func(i int, j int) bool {
+		newList = newList.Sort(func(item1 models.Modellable, item2 models.Modellable) bool {
 			s := true
-			item1 := newList.Items()[i]
-			item2 := newList.Items()[j]
 
 			fieldValue1 := helpers.GetFieldValueByName(item1, sortField)
 			fieldValue2 := helpers.GetFieldValueByName(item2, sortField)

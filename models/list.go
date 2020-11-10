@@ -9,8 +9,8 @@ import (
 // FindPredicate is alias for func(Modellable) bool
 type FindPredicate func(Modellable) bool
 
-// SortPredictate is alias for func(int, int) bool
-type SortPredictate func(int, int) bool
+// SortPredictate is alias for func(Modellable, Modellable) bool
+type SortPredictate func(Modellable, Modellable) bool
 
 // List is an in-memory storage of items
 type List struct {
@@ -84,7 +84,9 @@ func (list *List) Sort(predicate SortPredictate) *List {
 	for _, el := range list.items {
 		sorted = append(sorted, el)
 	}
-	sort.Slice(sorted, predicate)
+	sort.SliceStable(sorted, func(i int, j int) bool {
+		return predicate(sorted[i], sorted[j])
+	})
 
 	newList.items = sorted
 
@@ -186,8 +188,8 @@ func (list *List) FindIndex(id string) int {
 }
 
 // Destroy used to remove item from list
-func (list *List) Destroy(id string) bool {
-	hasDestroyed := false
+func (list *List) Destroy(id string) error {
+	var err error
 
 	index := list.FindIndex(id)
 
@@ -195,5 +197,5 @@ func (list *List) Destroy(id string) bool {
 		list.items = append(list.items[:index], list.items[index+1:]...)
 	}
 
-	return hasDestroyed
+	return err
 }
