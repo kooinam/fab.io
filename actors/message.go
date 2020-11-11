@@ -30,3 +30,7 @@ func (message *Message) ParamDicts(key string) []*helpers.Dictionary {
 func (message *Message) ParamInt(key string, fallback int) int {
 	return message.params.ValueInt(key, fallback)
 }
+
+func (message *Message) Params(key string) *helpers.Dictionary {
+	return message.params
+}
