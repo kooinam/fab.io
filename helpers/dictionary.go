@@ -127,6 +127,12 @@ func (dict *Dictionary) ValueDicts(key string) []*Dictionary {
 	return dicts
 }
 
+func (dict *Dictionary) ValueDict(key string) *Dictionary {
+	val := MakeDictionary(dict.properties[key].(map[string]interface{}))
+
+	return val
+}
+
 // Set used to set property
 func (dict *Dictionary) Set(key string, value interface{}) {
 	dict.properties[key] = value
