@@ -133,6 +133,16 @@ func (dict *Dictionary) ValueDict(key string) *Dictionary {
 	return val
 }
 
+func (dict *Dictionary) ValueH(key string) H {
+	h, asserted := dict.properties[key].(H)
+
+	if asserted == false {
+		h = H{}
+	}
+
+	return h
+}
+
 // Set used to set property
 func (dict *Dictionary) Set(key string, value interface{}) {
 	dict.properties[key] = value
