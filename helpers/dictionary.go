@@ -134,7 +134,7 @@ func (dict *Dictionary) ValueDict(key string) *Dictionary {
 }
 
 func (dict *Dictionary) ValueH(key string) H {
-	h, asserted := dict.properties[key].(H)
+	h, asserted := dict.properties[key].(map[string]interface{})
 
 	if asserted == false {
 		h = H{}
