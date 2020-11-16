@@ -39,7 +39,8 @@ func (belongsTo *BelongsTo) WithForeignKey(foreignKey string) *BelongsTo {
 	return belongsTo
 }
 
-func (belongsTo *BelongsTo) ClearKey() error {
+// Clear used to clear association
+func (belongsTo *BelongsTo) Clear() error {
 	var err error
 
 	belongsTo.key = ""
@@ -48,6 +49,25 @@ func (belongsTo *BelongsTo) ClearKey() error {
 	}
 
 	belongsTo.result = nil
+
+	return err
+}
+
+// Set used to set association
+func (belongsTo *BelongsTo) Set(item Modellable) error {
+	var err error
+
+	key := helpers.GetFieldValueByName(item, belongsTo.foreignKey)
+	belongsTo.key = key.(string)
+
+	if belongsTo.item != nil && len(belongsTo.foreignKey) > 0 {
+		helpers.SetFieldValueByNameStr(belongsTo.item, belongsTo.foreignKey, belongsTo.key)
+	}
+
+	result := MakeSingleResult()
+	result.Set(item, nil, false)
+
+	belongsTo.result = result
 
 	return err
 }
