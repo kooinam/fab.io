@@ -57,7 +57,7 @@ func (belongsTo *BelongsTo) Clear() error {
 func (belongsTo *BelongsTo) Set(item Modellable) error {
 	var err error
 
-	key := helpers.GetFieldValueByName(item, belongsTo.foreignKey)
+	key := helpers.GetFieldValueByName(item, belongsTo.primaryKey)
 	belongsTo.key = key.(string)
 
 	if belongsTo.item != nil && len(belongsTo.foreignKey) > 0 {
