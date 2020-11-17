@@ -147,3 +147,7 @@ func (dict *Dictionary) ValueH(key string) H {
 func (dict *Dictionary) Set(key string, value interface{}) {
 	dict.properties[key] = value
 }
+
+func (dict *Dictionary) Properties() H {
+	return dict.properties
+}
