@@ -3,17 +3,15 @@ package models
 // StatusError used to represent errored query or operation
 const StatusError = "error"
 
-// StatusNotFound used to represent not found query
-const StatusNotFound = "notfound"
-
 // StatusSuccess used to represent success query or operation
 const StatusSuccess = "success"
 
 // SingleResult used to wrap single record result from query or create operation
 type SingleResult struct {
-	item   Modellable
-	err    error
-	status string
+	item     Modellable
+	err      error
+	status   string
+	notFound bool
 }
 
 // MakeSingleResult used to instantiate single result
@@ -26,11 +24,6 @@ func MakeSingleResult() *SingleResult {
 // StatusError used to check if operation is errored
 func (result *SingleResult) StatusError() bool {
 	return result.status == StatusError
-}
-
-// StatusNotFound used to check if record is not found
-func (result *SingleResult) StatusNotFound() bool {
-	return result.status == StatusNotFound
 }
 
 // StatusSuccess used to check if operation is success
@@ -51,10 +44,9 @@ func (result *SingleResult) Error() error {
 func (result *SingleResult) Set(item Modellable, err error, notFound bool) {
 	result.item = item
 	result.err = err
+	result.notFound = notFound
 
-	if notFound {
-		result.status = StatusNotFound
-	} else if err != nil {
+	if err != nil {
 		result.status = StatusError
 	} else {
 		result.status = StatusSuccess
@@ -73,4 +65,8 @@ func (result *SingleResult) ErrorMessage() string {
 // Item used to retrieve result's item
 func (result *SingleResult) Item() Modellable {
 	return result.item
+}
+
+func (result *SingleResult) NotFound() bool {
+	return result.notFound
 }

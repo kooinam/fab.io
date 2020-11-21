@@ -114,7 +114,7 @@ func (query *Query) First() *models.SingleResult {
 func (query *Query) FirstOrCreate(attributes helpers.H) *models.SingleResult {
 	result := query.First()
 
-	if result.StatusNotFound() {
+	if result.NotFound() {
 		// not found, create one
 		result = query.collection.Create(helpers.Merge(query.filters, attributes))
 	}

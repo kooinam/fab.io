@@ -138,7 +138,8 @@ func (tester *Tester) QueryCount() {
 	result = collection.Query().Where(helpers.H{
 		"text": "no",
 	}).First()
-	expect.Expect(result.Status()).To.Equal(models.StatusNotFound)
+	expect.Expect(result.Status()).To.Equal(models.StatusError)
+	expect.Expect(result.NotFound()).To.Equal(true)
 
 	result = collection.Query().Where(helpers.H{
 		"text": "no",
