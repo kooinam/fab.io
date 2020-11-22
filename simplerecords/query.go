@@ -152,7 +152,7 @@ func (query *Query) First() *models.SingleResult {
 	if found != nil {
 		result.Set(found, nil, false)
 	} else {
-		result.Set(found, fmt.Errorf("item not found"), true)
+		result.Set(found, fmt.Errorf("%v not found", query.collection.Name()), true)
 	}
 
 	return result
