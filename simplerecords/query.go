@@ -168,7 +168,11 @@ func (query *Query) Find(id string) *models.SingleResult {
 	result := models.MakeSingleResult()
 	found := query.collection.List().FindByID(id)
 
-	result.Set(found, nil, found == nil)
+	if found != nil {
+		result.Set(found, nil, false)
+	} else {
+		result.Set(found, fmt.Errorf("%v not found", query.collection.Name()), true)
+	}
 
 	return result
 }
