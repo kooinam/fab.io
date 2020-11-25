@@ -12,32 +12,40 @@ import (
 // Hook is alias for func(string, *Context)
 type Hook func(string, *Context)
 
+type hookhandler struct {
+	hook  Hook
+	onlys []string
+}
+
 // Action is alias for func(*Connection) (interface{}, error)
 type Action func(*Context)
 
 // ActionsHandler used to mange callbacks for controllers
 type ActionsHandler struct {
-	manager           *Manager
-	controllerHandler *ControllerHandler
-	beforeActionHooks []Hook
-	actions           map[string]Action
+	manager                  *Manager
+	controllerHandler        *ControllerHandler
+	beforeActionHookHandlers []*hookhandler
+	actions                  map[string]Action
 }
 
 // makeActionsHandler used to instantiate ActionsHandler
 func makeActionsHandler(manager *Manager, controllerHandler *ControllerHandler) *ActionsHandler {
 	actionsHandler := &ActionsHandler{
-		manager:           manager,
-		controllerHandler: controllerHandler,
-		beforeActionHooks: []Hook{},
-		actions:           make(map[string]Action),
+		manager:                  manager,
+		controllerHandler:        controllerHandler,
+		beforeActionHookHandlers: []*hookhandler{},
+		actions:                  make(map[string]Action),
 	}
 
 	return actionsHandler
 }
 
 // RegisterBeforeActionHook used to add before hook
-func (handler *ActionsHandler) RegisterBeforeActionHook(beforeActionHook Hook) {
-	handler.beforeActionHooks = append(handler.beforeActionHooks, beforeActionHook)
+func (handler *ActionsHandler) RegisterBeforeActionHook(hook Hook, onlys []string) {
+	handler.beforeActionHookHandlers = append(handler.beforeActionHookHandlers, &hookhandler{
+		hook:  hook,
+		onlys: onlys,
+	})
 }
 
 // RegisterAction used to register action
@@ -91,8 +99,22 @@ func (handler *ActionsHandler) RegisterErrorAction(action Action) {
 
 // executeBeforeActionHooks used to execute before action hooks
 func (handler *ActionsHandler) executeBeforeActionHooks(action string, context *Context) {
-	for _, hook := range handler.beforeActionHooks {
-		hook(action, context)
+	for _, hookHandler := range handler.beforeActionHookHandlers {
+		if hookHandler.onlys != nil {
+			found := false
+
+			for _, only := range hookHandler.onlys {
+				if only == action {
+					found = true
+				}
+			}
+
+			if !found {
+				continue
+			}
+		}
+
+		hookHandler.hook(action, context)
 
 		if context.result != nil {
 			break
