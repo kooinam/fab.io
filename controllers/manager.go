@@ -4,8 +4,11 @@ import (
 	"fmt"
 	"net/http"
 
+	engineio "github.com/googollee/go-engine.io"
 	"github.com/kooinam/fab.io/views"
 
+	"github.com/googollee/go-engine.io/transport"
+	"github.com/googollee/go-engine.io/transport/websocket"
 	socketio "github.com/googollee/go-socket.io"
 	"github.com/kooinam/fab.io/helpers"
 	"github.com/kooinam/fab.io/logger"
@@ -23,7 +26,13 @@ func (manager *Manager) Setup(viewsManager *views.Manager) {
 	manager.viewsManager = viewsManager
 	manager.controllerHandlers = make(map[string]*ControllerHandler)
 
-	server, err := socketio.NewServer(nil)
+	transporter := websocket.Default
+	transporter.CheckOrigin = func(req *http.Request) bool {
+		return true
+	}
+
+	options := &engineio.Options{Transports: []transport.Transport{transporter}}
+	server, err := socketio.NewServer(options)
 
 	if err != nil {
 		logger.Debug("socket.io error %v", err)
