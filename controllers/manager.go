@@ -7,6 +7,10 @@ import (
 	"github.com/kooinam/fab.io/views"
 
 	socketio "github.com/googollee/go-socket.io"
+	"github.com/googollee/go-socket.io/engineio"
+	"github.com/googollee/go-socket.io/engineio/transport"
+	"github.com/googollee/go-socket.io/engineio/transport/polling"
+	"github.com/googollee/go-socket.io/engineio/transport/websocket"
 	"github.com/kooinam/fab.io/helpers"
 	"github.com/kooinam/fab.io/logger"
 )
@@ -28,8 +32,16 @@ func (manager *Manager) Setup(viewsManager *views.Manager) {
 	// 	return true
 	// }
 
-	// options := &engineio.Options{Transports: []transport.Transport{transporter}}
-	server, err := socketio.NewServer(nil)
+	server, err := socketio.NewServer(&engineio.Options{
+		Transports: []transport.Transport{
+			polling.Default,
+			&websocket.Transport{
+				CheckOrigin: func(r *http.Request) bool {
+					return true
+				},
+			},
+		},
+	})
 
 	if err != nil {
 		logger.Debug("socket.io error %v", err)
