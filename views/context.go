@@ -2,13 +2,12 @@ package views
 
 import (
 	"github.com/kooinam/fab.io/helpers"
-	"github.com/kooinam/fab.io/models"
 )
 
 // Context used to represent view rendering context with data
 type Context struct {
 	manager *Manager
-	item    models.Modellable
+	item    interface{}
 	params  *helpers.Dictionary
 }
 
@@ -48,7 +47,7 @@ func (context *Context) ParamsBool(key string) bool {
 }
 
 // Item used to retrieve itme in context
-func (context *Context) Item() models.Modellable {
+func (context *Context) Item() interface{} {
 	return context.item
 }
 
@@ -56,6 +55,6 @@ func (context *Context) PrepareRender(viewName string) *Renderer {
 	return context.manager.PrepareRender(viewName)
 }
 
-func (context *Context) setItem(item models.Modellable) {
+func (context *Context) setItem(item interface{}) {
 	context.item = item
 }
