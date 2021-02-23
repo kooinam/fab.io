@@ -37,7 +37,7 @@ func (renderer *Renderer) WithParams(params helpers.H) *Renderer {
 }
 
 // RenderSingle used to render single item's view with options
-func (renderer *Renderer) RenderSingle(item models.Modellable) interface{} {
+func (renderer *Renderer) RenderSingle(item interface{}) interface{} {
 	viewHandler := renderer.manager.viewHandlers[renderer.viewName]
 
 	if viewHandler == nil {
