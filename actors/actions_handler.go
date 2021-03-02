@@ -10,8 +10,8 @@ import (
 // Hook is alias for func(string, *Context)
 type Hook func(string, *Context)
 
-// Action is alias for func(context *Context) error
-type Action func(context *Context) error
+// Action is alias for func(context *Context) (interface{}, error)
+type Action func(context *Context) (interface{}, error)
 
 // ActionsHandler used to mange callbacks for controllers
 type ActionsHandler struct {
@@ -84,12 +84,12 @@ func (handler *ActionsHandler) handleEvent(event event) {
 
 		handler.executeBeforeActionHooks(event.name, context)
 
-		err := action(context)
+		result, err := action(context)
 
 		if err == nil {
 			handler.actor.lastRunnedAt = time.Now()
 
-			event.ack(context.Result())
+			event.ack(result)
 
 			handler.executeAfterActionHooks(event.name, context)
 		} else {

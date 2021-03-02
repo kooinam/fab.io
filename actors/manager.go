@@ -76,7 +76,7 @@ func (manager *Manager) Tell(actorIdentifier string, eventName string, params ma
 }
 
 // Request used to delegating a task to an actor synchronously without a response
-func (manager *Manager) Request(actorIdentifier string, eventName string, params map[string]interface{}) error {
+func (manager *Manager) Request(actorIdentifier string, eventName string, params map[string]interface{}) (interface{}, error) {
 	var err error
 
 	actor := manager.getActor(actorIdentifier)
@@ -96,7 +96,7 @@ func (manager *Manager) Request(actorIdentifier string, eventName string, params
 		err = fmt.Errorf(res.message)
 	}
 
-	return err
+	return res, err
 }
 
 // RequestResult used to delegating a task to an actor synchronously with a response

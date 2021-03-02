@@ -118,11 +118,3 @@ func (context *Context) PopMessage() *Message {
 
 	return message
 }
-
-func (context *Context) SetResult(result string) {
-	context.result = result
-}
-
-func (context *Context) Result() string {
-	return context.result
-}

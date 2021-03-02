@@ -4,12 +4,14 @@ package actors
 type Response struct {
 	status  int // 0 -> success, 1 -> failed
 	message string
+	result  interface{}
 }
 
-func makeResponse(status int, message string) *Response {
+func makeResponse(status int, message string, result interface{}) *Response {
 	response := &Response{
 		status:  status,
 		message: message,
+		result:  result,
 	}
 
 	return response
