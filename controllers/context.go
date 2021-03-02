@@ -1,6 +1,8 @@
 package controllers
 
 import (
+	"fmt"
+
 	socketio "github.com/googollee/go-socket.io"
 	"github.com/kooinam/fab.io/helpers"
 	"github.com/kooinam/fab.io/views"
@@ -102,11 +104,18 @@ func (context *Context) SetSuccessResult(content interface{}) {
 	context.result.Set(content, StatusSuccess, nil)
 }
 
-// SetErrorResult used to halt controller's chain and acknowledge request with status and error
-func (context *Context) SetErrorResult(status string, err error) {
+// SetErrorResult used to halt controller's chain and acknowledge request with error status and error
+func (context *Context) SetErrorResult(err error) {
 	context.result = makeResult()
 
-	context.result.Set(nil, status, err)
+	context.result.Set(nil, StatusError, err)
+}
+
+// SetUnauthorizedResult used to halt controller's chain and acknowledge request with unthorized status
+func (context *Context) SetUnauthorizedResult() {
+	context.result = makeResult()
+
+	context.result.Set(nil, StatusError, fmt.Errorf("unauthorized"))
 }
 
 func (context *Context) PrepareRender(viewName string) *views.Renderer {
