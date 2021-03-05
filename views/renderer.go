@@ -3,7 +3,6 @@ package views
 import (
 	"github.com/kooinam/fab.io/helpers"
 	"github.com/kooinam/fab.io/logger"
-	"github.com/kooinam/fab.io/models"
 )
 
 type Renderer struct {
@@ -60,7 +59,7 @@ func (renderer *Renderer) RenderSingle(item interface{}) interface{} {
 }
 
 // RenderList used to render list view with options
-func (renderer *Renderer) RenderList(list *models.List) interface{} {
+func (renderer *Renderer) RenderList(items []interface{}) interface{} {
 	viewHandler := renderer.manager.viewHandlers[renderer.viewName]
 
 	if viewHandler == nil {
@@ -69,10 +68,10 @@ func (renderer *Renderer) RenderList(list *models.List) interface{} {
 		return nil
 	}
 
-	views := make([]interface{}, list.Count())
+	views := make([]interface{}, len(items))
 	context := makeContext(renderer.manager, renderer.params)
 
-	for i, item := range list.Items() {
+	for i, item := range items {
 		viewRenderer := viewHandler.newHandler()
 		context.setItem(item)
 
