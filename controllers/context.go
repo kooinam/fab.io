@@ -65,16 +65,6 @@ func (context *Context) Property(key string) interface{} {
 	return context.properties.Value(key)
 }
 
-// Params used to retrieve params value
-func (context *Context) Params(key string) interface{} {
-	return context.params.Value(key)
-}
-
-// ParamsStr used to retrieve params value in string
-func (context *Context) ParamsStr(key string) string {
-	return context.params.ValueStr(key)
-}
-
 // QueryStr used to retrieve params value in string
 func (context *Context) QueryStr(key string) string {
 	url := context.conn.URL()
@@ -82,19 +72,34 @@ func (context *Context) QueryStr(key string) string {
 	return url.Query().Get(key)
 }
 
-// ParamsInt used to retrieve params value in int
-func (context *Context) ParamsInt(key string, fallback int) int {
+// Param used to retrieve params value
+func (context *Context) Param(key string) interface{} {
+	return context.params.Value(key)
+}
+
+// ParamStr used to retrieve params value in string
+func (context *Context) ParamStr(key string) string {
+	return context.params.ValueStr(key)
+}
+
+// ParamInt used to retrieve params value in int
+func (context *Context) ParamInt(key string, fallback int) int {
 	return context.params.ValueInt(key, fallback)
 }
 
-// ParamsFloat64 used to retrieve params value in float64
-func (context *Context) ParamsFloat64(key string, fallback float64) float64 {
+// ParamFloat64 used to retrieve params value in float64
+func (context *Context) ParamFloat64(key string, fallback float64) float64 {
 	return context.params.ValueFloat64(key, fallback)
 }
 
-// ParamsBool used to retrieve params value in bool
-func (context *Context) ParamsBool(key string) bool {
+// ParamBool used to retrieve params value in bool
+func (context *Context) ParamBool(key string) bool {
 	return context.params.ValueBool(key)
+}
+
+// ParamDict used to retrieve params value in dict
+func (context *Context) ParamDict(key string) *helpers.Dictionary {
+	return context.params.ValueDict(key)
 }
 
 // SetSuccessResult used to halt controller's chain and acknowledge request with content
