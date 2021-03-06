@@ -102,6 +102,11 @@ func (context *Context) ParamDict(key string) *helpers.Dictionary {
 	return context.params.ValueDict(key)
 }
 
+// ParamH used to retrieve params value in H
+func (context *Context) ParamH(key string) helpers.H {
+	return context.params.ValueH(key)
+}
+
 // SetSuccessResult used to halt controller's chain and acknowledge request with content
 func (context *Context) SetSuccessResult(content interface{}) {
 	context.result = makeResult()
